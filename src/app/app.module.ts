@@ -1,14 +1,13 @@
-import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
-import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { UiModule } from './components/ui.module';
-import { PageModule } from './pages/page.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,8 +16,7 @@ import { PageModule } from './pages/page.module';
     IonicModule.forRoot(),
     FormsModule,
     AppRoutingModule,
-    UiModule,
-    PageModule
+    UiModule
   ],
   providers: [
     {

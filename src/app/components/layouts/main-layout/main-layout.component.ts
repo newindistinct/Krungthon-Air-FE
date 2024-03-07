@@ -7,14 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainLayoutComponent implements OnInit {
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    { title: 'Inbox', url: '/krungthon/folder/inbox', icon: 'mail' },
+    { title: 'Outbox', url: '/krungthon/folder/outbox', icon: 'paper-plane' },
+    { title: 'Favorites', url: '/krungthon/folder/favorites', icon: 'heart' },
+    { title: 'Archived', url: '/krungthon/folder/archived', icon: 'archive' },
+    { title: 'Trash', url: '/krungthon/folder/trash', icon: 'trash' },
+    { title: 'Spam', url: '/krungthon/folder/spam', icon: 'warning' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
   constructor() { }
   ngOnInit() { }
 
