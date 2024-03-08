@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { collection, where, query } from 'firebase/firestore';
+import * as dayjs from 'dayjs';
+import { collection, query, where } from 'firebase/firestore';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
-import * as dayjs from 'dayjs';
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  selector: 'app-job-schedule',
+  templateUrl: './job-schedule.page.html',
+  styleUrls: ['./job-schedule.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class JobSchedulePage implements OnInit {
   date = new Date();
   selectedColor = '';
   time = {

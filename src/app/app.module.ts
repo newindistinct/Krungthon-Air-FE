@@ -8,6 +8,9 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UiModule } from './components/ui.module';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,13 +19,15 @@ import { UiModule } from './components/ui.module';
     IonicModule.forRoot(),
     FormsModule,
     AppRoutingModule,
-    UiModule
+    UiModule,
+    MatDatepickerModule
   ],
   providers: [
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
-    }
+    },
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent],
 })

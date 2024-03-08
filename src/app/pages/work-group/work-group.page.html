@@ -1,13 +1,57 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
     <ion-title>work-group</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">work-group</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="w-full grid grid-cols-1 sm:grid-cols-2">
+    <!-- <ion-card class="flex flex-col justify-between" *ngFor="let team of teams" mode="md">
+      <div>
+        <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+        <div class="flex flex-row justify-between items-center">
+          <ion-card-header>
+            <ion-card-title>{{team.title}}</ion-card-title>
+            <ion-card-subtitle>{{team.subtitle}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-icon class="m-8 text-2xl" name="pencil-outline" (click)="editTeam(team)"></ion-icon>
+        </div>
+
+        <ion-card-content>
+          {{team.description}}
+        </ion-card-content>
+      </div>
+
+      <div class="flex justify-end p-2">
+        <ion-button>เพิ่มงาน</ion-button>
+        <ion-button (click)="showTeamDetail(team)">รายละเอียด</ion-button>
+      </div>
+    </ion-card> -->
+    <ion-card class="flex flex-col justify-between" *ngFor="let group of groups" mode="md">
+      <div>
+        <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+        <div class="flex flex-row justify-between items-center">
+          <ion-card-header>
+            <ion-card-title>{{group.name}}</ion-card-title>
+            <ion-card-subtitle>ผู้รับผิดชอบ : {{group.reader}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-icon class="m-8 text-2xl" name="pencil-outline" (click)="editTeam(group)"></ion-icon>
+        </div>
+
+        <ion-card-content>
+          <span class="mr-2" *ngFor="let list of group.site_groups.site">#{{list.name}}</span>
+
+        </ion-card-content>
+      </div>
+
+      <div class="flex justify-end p-2">
+        <ion-button>เพิ่มงาน</ion-button>
+        <ion-button (click)="showTeamDetail(group)">รายละเอียด</ion-button>
+      </div>
+    </ion-card>
+    <div class="bg-gray-200 flex justify-center items-center m-2 rounded min-h-96" (click)="getTeam()">
+      <ion-icon class="text-8xl text-gray-500" name="add-circle-outline"></ion-icon>
+      <!-- <ion-label>เพิ่มทีมงาน</ion-label> -->
+    </div>
+  </div>
 </ion-content>

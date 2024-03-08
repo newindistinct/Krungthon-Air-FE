@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
+import { LoggedInGuard } from './common/guards/logged-in.guard';
 
 const routes: Routes = [
   {
@@ -13,27 +14,48 @@ const routes: Routes = [
     component: MainLayoutComponent,
     children: [
       {
-        path: 'home',
-        loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
-      },
-      {
         path: 'folder/:id',
         loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
+      },
+      {
+        path: 'login',
+        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
+      },
+      {
+        path: 'register',
+        loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
+      },
+      {
+        path: 'work-group',
+        loadChildren: () => import('./pages/work-group/work-group.module').then(m => m.WorkGroupPageModule)
+      },
+      {
+        path: 'user',
+        loadChildren: () => import('./pages/user/user.module').then(m => m.UserPageModule)
+      },
+      {
+        path: 'job-schedule',
+        loadChildren: () => import('./pages/job-schedule/job-schedule.module').then(m => m.JobSchedulePageModule)
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule)
+      },
+      {
+        path: 'home',
+        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+      },
+      {
+        path: 'setting',
+        loadChildren: () => import('./pages/setting/setting.module').then(m => m.SettingPageModule)
       },
     ],
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
+    canActivate: [LoggedInGuard]
   },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
-  },
-  {
-    path: 'work-group',
-    loadChildren: () => import('./pages/work-group/work-group.module').then(m => m.WorkGroupPageModule)
-  }
 ];
 
 @NgModule({
