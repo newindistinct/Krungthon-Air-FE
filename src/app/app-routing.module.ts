@@ -1,9 +1,15 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
 import { LoggedInGuard } from './common/guards/logged-in.guard';
+import { MainLayoutComponent } from './components/layouts/main-layout/main-layout.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { HomeComponent } from './pages/home/home.component';
+import { JobScheduleComponent } from './pages/job-schedule/job-schedule.component';
+import { SettingComponent } from './pages/setting/setting.component';
+import { UserComponent } from './pages/user/user.component';
+import { WorkGroupComponent } from './pages/work-group/work-group.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     redirectTo: 'krungthon/home',
@@ -18,6 +24,10 @@ const routes: Routes = [
         loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
       },
       {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
         path: 'login',
         loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
       },
@@ -27,27 +37,23 @@ const routes: Routes = [
       },
       {
         path: 'work-group',
-        loadChildren: () => import('./pages/work-group/work-group.module').then(m => m.WorkGroupPageModule)
+        component: WorkGroupComponent
       },
       {
         path: 'user',
-        loadChildren: () => import('./pages/user/user.module').then(m => m.UserPageModule)
+        component: UserComponent
       },
       {
         path: 'job-schedule',
-        loadChildren: () => import('./pages/job-schedule/job-schedule.module').then(m => m.JobSchedulePageModule)
-      },
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule)
+        component: JobScheduleComponent
       },
       {
         path: 'home',
-        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+        component: HomeComponent
       },
       {
         path: 'setting',
-        loadChildren: () => import('./pages/setting/setting.module').then(m => m.SettingPageModule)
+        component: SettingComponent
       },
     ],
   },

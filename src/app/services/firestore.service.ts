@@ -91,7 +91,7 @@ export class FirestoreService {
       snapshot.then((querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data(), id: docs.id });
+          data.push({ ...docs.data() });
         }
         this.groups = data;
         this.groupsChange.next(this.groups);
@@ -104,6 +104,33 @@ export class FirestoreService {
     let nextDay = new Date(date);
     nextDay.setDate(date.getDate() + 1);
     const q = query(collection(db, "jobs"), where("book.date", ">", date), where("book.date", "<", nextDay), where("project_id", "==", this.user[0].project_id));
+    return new Promise<any>((resolve) => {
+      const snapshot = getDocs(q);
+      snapshot.then((querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({
+            ...docs.data(),
+            id: docs.id,
+            time: docs.data().book.time[0],
+          });
+        }
+        this.jobs = data;
+        this.jobsChange.next(this.jobs);
+        resolve(data);
+      });
+    });
+  }
+
+  fetchDataJobByGroup(group) {
+    const querydate = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    const q = query(collection(db, "jobs"),
+      where("group_id", "==", group.id),
+      where("book.date", ">=", formatQueryDate),
+      where("project_id", "==", group.project_id)
+    );
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);
       snapshot.then((querySnapshot) => {
@@ -158,6 +185,7 @@ export class FirestoreService {
         });
       });
     } else {
+      this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานเวลานี้อยู่แล้ว', () => { }, { confirmOnly: true })
     }
   }
 

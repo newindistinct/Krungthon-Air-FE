@@ -69,3 +69,19 @@ $app-theme: mat.define-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Custom CSS */
+ion-modal .my-custom-class{
+  --backdrop-opacity: 0.5;
+  --background: #ffffff;
+  --border-color: #3880ff;
+  --border-radius: 4px;
+  --border-style: solid;
+  --border-width: 8px;
+  --height: 80%;
+  // --max-height: 100%;
+  // --max-width: 100%;
+  // --min-height: 100%;
+  // --min-width: 100%;
+  --width: 500px;
+}

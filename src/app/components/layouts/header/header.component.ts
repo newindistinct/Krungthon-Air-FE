@@ -1,14 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {  CUSTOM_ELEMENTS_SCHEMA, Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-
-  constructor() { }
+  @Input() title: string;
+  @Input() modal: boolean = false;
+  constructor(
+    private modalController: ModalController
+  ) { }
 
   ngOnInit() { }
 
+  dismissModal(){
+    this.modalController.dismiss();
+  }
 }

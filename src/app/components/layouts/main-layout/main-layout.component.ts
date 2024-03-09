@@ -17,11 +17,11 @@ export class MainLayoutComponent implements OnInit {
     // { title: 'Trash', url: '/krungthon/folder/trash', icon: 'trash' },
     // { title: 'Spam', url: '/krungthon/folder/spam', icon: 'warning' },
     { title: 'home', url: '/krungthon/home', icon: 'home' },
-    { title: 'dashboard', url: '/krungthon/dashboard', icon: 'home' },
+    { title: 'dashboard', url: '/krungthon/dashboard', icon: 'pie-chart' },
+    { title: 'ตารางงาน', url: '/krungthon/job-schedule', icon: 'calendar' },
+    { title: 'ทีมงาน', url: '/krungthon/work-group', icon: 'people-circle' },
     { title: 'ผู้ใช้งาน', url: '/krungthon/user', icon: 'person-circle' },
-    { title: 'ตารางงาน', url: '/krungthon/job-schedule', icon: 'person-circle' },
-    { title: 'ทีมงาน', url: '/krungthon/work-group', icon: 'document' },
-    { title: 'ตั้งค่า', url: '/krungthon/setting', icon: 'person-circle' },
+    { title: 'ตั้งค่า', url: '/krungthon/setting', icon: 'settings' },
   ];
   constructor(
     private authService: AuthService,
@@ -37,11 +37,11 @@ export class MainLayoutComponent implements OnInit {
         if (res == true) {
           const UserFormAuth = this.authService.getUserFormAuth();
           const phone = this.formatPhoneNumber(UserFormAuth.phoneNumber);
-          this.service.dismissLoading();
           this.firestoreService.fetchDataUser(phone).then(async (users) => {
             if (users.length > 0) {
               const site = await this.firestoreService.fetchDataSite(users[0].project_id);
               const group = await this.firestoreService.fetchDataGroup(users[0].project_id);
+              this.service.dismissLoading();
             }
           });
         } else {

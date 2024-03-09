@@ -5,22 +5,28 @@ import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UiModule } from './components/ui.module';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { LayoutsModule } from './components/layouts/layouts.module';
+import { PagesModule } from './pages/pages.module';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    // HeaderComponent
+  ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     FormsModule,
     AppRoutingModule,
-    UiModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    // UiModule,
+    LayoutsModule,
+    PagesModule,
   ],
   providers: [
     {
