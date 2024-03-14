@@ -1,18 +1,19 @@
+// import { query } from '@angular/animations';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, where, query } from 'firebase/firestore';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
-  selector: 'app-add-job',
-  templateUrl: './add-job.component.html',
-  styleUrls: ['./add-job.component.scss'],
+  selector: 'app-add-group',
+  templateUrl: './add-group.component.html',
+  styleUrls: ['./add-group.component.scss'],
 })
-export class AddJobComponent implements OnInit {
+export class AddGroupComponent implements OnInit {
   @Input() group: any;
   sites = [];
   jobs = [];
@@ -74,17 +75,12 @@ export class AddJobComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      name: ['test', Validators.required],
-      start_time: ['', Validators.required],
-      time: ['', Validators.required],
-      site_id: ['', Validators.required],
-      room: ['test', Validators.required],
-      building: ['test', Validators.required],
-      floor: ['test', Validators.required],
-      type: ['test', Validators.required],
-      phone: ['test', Validators.required],
-      description: ['test'],
-      remark: ['test']
+      id: [''],
+      image: [''],
+      limit: [''],
+      name: ['', Validators.required],
+      site: ['', Validators.required],
+      reader: ['', Validators.required],
     })
   }
 
@@ -236,45 +232,28 @@ export class AddJobComponent implements OnInit {
   }
 
   submit() {
-    const time = this.form.value.time;
-    const hour = time.split(".")[0];
-    const collectionRef = collection(db, "jobs");
-    const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
-    const querydate = new Date(this.form.value.start_time).setHours(0, 0, 0, 0);
-    const formatQueryDate = new Date(querydate);
-    formatQueryDate.setDate(formatQueryDate.getDate());
-    const nextDay = new Date(formatQueryDate);
-    nextDay.setDate(formatQueryDate.getDate() + 1);
-    const q = query(collectionRef,
-      where("group_id", "==", this.group.id),
-      // where("site_id", "==", site_id),
-      where("book.date", ">", formatQueryDate),
-      where("book.date", "<", nextDay),
-      where("book.time", "array-contains", time),
-    );
-    const date = new Date(this.form.value.start_time).setHours(hour, 0, 0, 0);
-    const formatDate = new Date(date);
-    formatDate.setDate(formatDate.getDate());
+    const collectionRef = collection(db, "groups");
+    // const q = query(collectionRef,
+    //   // where("group_id", "==", this.group.id),
+    //   // where("site_id", "==", site_id),
+    //   // where("book.date", ">", formatQueryDate),
+    //   // where("book.date", "<", nextDay),
+    //   // where("book.time", "array-contains", time),
+    // );
     const data = {
-      book: { time: [time], date: formatDate },
-      group_id: this.group.id,
-      job_id: uuidv4(),
-      project_id: this.group.project_id,
-      room: this.form.value.room,
-      floor: this.form.value.floor,
-      building: this.form.value.building,
-      site_id: this.form.value.site_id,
-      type: this.form.value.type,
-      phone: this.form.value.phone,
-      created_at: new Date(),
-      updated_at: new Date(),
-
+      id: uuidv4(),
+      name: this.form.value.name,
+      site: this.form.value.site,
+      image: this.form.value.image,
+      limit: this.form.value.limit,
+      reader: this.form.value.reader,
+      project_id: this.firestoreService.user[0].project_id,
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
-      this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => { }, { confirmOnly: true })
+      this.service.showAlert('Success', 'เพิ่มทีมสําเร็จ', () => { }, { confirmOnly: true })
       this.closeModal();
     }).catch((error) => {
-      this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })
+      this.service.showAlert('ไม่สามารถเพิ่มทีมได้', error.message, () => { }, { confirmOnly: true })
       console.error(error);
     });
   }

@@ -5,12 +5,13 @@ import { IonicModule } from '@ionic/angular';
 import { AppRoutingModule } from '../app-routing.module';
 import { AddJobComponent } from '../pages/add-job/add-job.component';
 import { LayoutsModule } from './layouts/layouts.module';
+import { InputComponent } from './forms/input/input.component';
 
 
 
 @NgModule({
   declarations: [
-    
+    InputComponent
   ],
   imports: [
     CommonModule,
@@ -19,7 +20,7 @@ import { LayoutsModule } from './layouts/layouts.module';
     AppRoutingModule
   ],
   exports: [
-    
+    InputComponent
   ]
 })
 export class UiModule { }

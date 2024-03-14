@@ -68,27 +68,24 @@ export class FirestoreService {
   async fetchDataSite(project_id): Promise<any> {
     const q = query(collection(db, "sites"), where("project_id", "==", project_id));
     return await new Promise<any>((resolve) => {
-      const snapshot = getDocs(q);
-      snapshot.then((querySnapshot) => {
+      onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({
             ...docs.data(),
-            id: docs.id,
           });
         }
         this.sites = data;
         this.sitesChange.next(this.sites);
         resolve(data);
-      })
+      });
     });
   }
 
   async fetchDataGroup(project_id): Promise<any> {
     const q = query(collection(db, "groups"), where("project_id", "==", project_id));
     return await new Promise<any>((resolve) => {
-      const snapshot = getDocs(q);
-      snapshot.then((querySnapshot) => {
+      onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({ ...docs.data() });
@@ -102,7 +99,7 @@ export class FirestoreService {
 
   fetchDataJob(date) {
     let nextDay = new Date(date);
-    nextDay.setDate(date.getDate() + 1);
+    nextDay.setDate(nextDay.getDate() + 1);
     const q = query(collection(db, "jobs"), where("book.date", ">", date), where("book.date", "<", nextDay), where("project_id", "==", this.user[0].project_id));
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);
@@ -175,18 +172,19 @@ export class FirestoreService {
     return dayjs(date).startOf('day').format('ddd MMM DD YYYY 00:00:00 [GMT+0700]');
   }
 
-  async addDatatoFirebase(collectionRef: any, data: any, q: any) {
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      return new Promise<any>(async (resolve) => {
-        await addDoc(collectionRef, data).then((res) => {
-          resolve(res);
-        }).catch((error) => {
-        });
+  async addDatatoFirebase(collectionRef: any, data: any) {
+    // const querySnapshot = await getDocs(q);
+    // if (querySnapshot.empty) {
+    return new Promise<any>(async (resolve) => {
+      await addDoc(collectionRef, data).then((res) => {
+        resolve(res);
+      }).catch((error) => {
+        console.error(error);
       });
-    } else {
-      this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานเวลานี้อยู่แล้ว', () => { }, { confirmOnly: true })
-    }
+    });
+    // } else {
+    //   this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานเวลานี้อยู่แล้ว', () => { }, { confirmOnly: true })
+    // }
   }
 
   setSiteId(siteId: string): void {
@@ -233,21 +231,28 @@ export class FirestoreService {
   }
 
   getSites() {
-    return this.sites;
+    const updatedSites = this.sites.map(site => {
+      const siteGroup = this.groups.filter(group => group.id === site.group_id);
+      return {
+        ...site,
+        group: siteGroup.length > 0 ? {
+          id: siteGroup[0].id,
+          name: siteGroup[0].name,
+          color: siteGroup[0].color
+        } : null
+      };
+    })
+    return updatedSites;
   }
-  getGroup() {
-    this.groups.filter((item: any) => {
-      const sites = []
-      item.site_groups.site_id.forEach(group => {
-        this.sites.filter((site: any) => {
-          if (site.site_id == group) {
-            sites.push(site);
-            item.site_groups = { ...item.site_groups, site: sites }
-          }
-        })
-      });
+  data: any = [];
+  getGroups() {
+    const updatedGroups = this.groups.map(group => {
+      const groupSites = this.sites.filter(site => group.site_groups.site_id.includes(site.site_id));
+      return { ...group, site_groups: { ...group.site_groups, site: groupSites } };
     });
-    return this.groups;
+    this.data = { groups: updatedGroups };
+
+    return updatedGroups;
   }
 }
 

@@ -16,6 +16,8 @@ import { WorkGroupComponent } from './work-group/work-group.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { AddJobComponent } from './add-job/add-job.component';
 import { JobsListComponent } from './jobs-list/jobs-list.component';
+import { UiModule } from '../components/ui.module';
+import { AddGroupComponent } from './add-group/add-group.component';
 
 
 
@@ -28,7 +30,8 @@ import { JobsListComponent } from './jobs-list/jobs-list.component';
     UserComponent,
     WorkGroupComponent,
     AddJobComponent,
-    JobsListComponent
+    JobsListComponent,
+    AddGroupComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +42,7 @@ import { JobsListComponent } from './jobs-list/jobs-list.component';
     MatFormFieldModule,
     MatInputModule,
     LayoutsModule,
+    UiModule,
     ReactiveFormsModule
   ],
   exports: [

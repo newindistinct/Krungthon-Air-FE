@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { collection, where,query } from 'firebase/firestore';
+import { logEvent } from 'firebase/analytics';
+import { collection, where, query } from 'firebase/firestore';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
@@ -9,8 +10,8 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   templateUrl: './job-schedule.component.html',
   styleUrls: ['./job-schedule.component.scss'],
 })
-export class JobScheduleComponent  implements OnInit {
-  date = new Date();
+export class JobScheduleComponent implements OnInit {
+  date = new Date()
   selectedColor = '';
   time = {
     '8.00': '',
@@ -28,172 +29,29 @@ export class JobScheduleComponent  implements OnInit {
   // colors = Color.filter((color: any) => color.includes('400'));
   column = ['8.00', '9.00', '10.00', '11.00', '12.00', '13.00', '14.00', '15.00', '16.00']
   rows = []
+  sites = []
 
-  work = [
-    {
-      work_id: '1',
-      site_ref: '1',
-      site_name: 'สถานที่ 1',
-      group_id: '1',
-      group_name: 'กลุ่ม 1',
-      group_detail: 'กลุ่ม 1',
-      type: 'ล้าง',
-      time: ['8.00', '9.00'],
-      location: 'A10',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '2',
-      site_ref: '2',
-      site_name: 'สถานที่ 2',
-      group_id: '1',
-      group_name: 'กลุ่ม 1',
-      group_detail: 'กลุ่ม 1',
-      type: 'ล้าง',
-      time: ['9.00'],
-      location: 'A20',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '3',
-      site_ref: '3',
-      site_name: 'สถานที่ 3',
-      group_id: '2',
-      group_name: 'กลุ่ม 2',
-      group_detail: 'กลุ่ม 2',
-      type: 'ล้าง',
-      time: ['10.00'],
-      location: 'A30',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '4',
-      site_ref: '4',
-      site_name: 'สถานที่ 4',
-      group_id: '3',
-      group_name: 'กลุ่ม 3',
-      group_detail: 'กลุ่ม 3',
-      type: 'ล้าง',
-      time: ['11.00'],
-      location: 'A40',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '5',
-      site_ref: '5',
-      site_name: 'สถานที่ 5',
-      group_id: '2',
-      group_name: 'กลุ่ม 2',
-      group_detail: 'กลุ่ม 2',
-      type: 'ล้าง',
-      time: ['12.00'],
-      location: 'A50',
-      detail: 'รายละเอียดงาน'
-    }
-  ]
   constructor(
     private firestoreService: FirestoreService,
     // private datePipe: DatePipe
   ) { }
 
   ngOnInit() {
-    this.initRows();
-    // this.work.filter((work: any) => {
-    //   if (work.time) {
-    //     work.time.forEach((time: any) => {
-    //       this.rows.filter((row: any) => {
-    //         if (row.site_id === work.site_ref) {
-    //           row.time[time] = work.location + ' ' + work.type;
-    //         }
-    //       })
-    //     });
-    //   }
-    // });
+    this.sites = this.getSites();
+    if (this.sites.length > 0) {
+      this.initRows(this.sites);
+      this.searchJobsToday();
+    }
   }
 
-  initRows() {
-    this.rows = [
-      {
-        color: 'bg-yellow-400',
-        site_id: '1',
-        group_id: '1',
-        site_name: 'สถานที่ 1',
-        time: {
-          '8.00': '',
-          '9.00': '',
-          '10.00': '',
-          '11.00': '',
-          '12.00': '',
-          '13.00': '',
-          '14.00': '',
-          '15.00': '',
-          '16.00': '',
-          '17.00': '',
-          '18.00': ''
-        }
-      },
-      {
-        color: 'bg-lime-400',
-        site_id: '3',
-        group_id: '2',
-        site_name: 'สถานที่ 2',
-        time: {
-          '8.00': '',
-          '9.00': '',
-          '10.00': '',
-          '11.00': '',
-          '12.00': '',
-          '13.00': '',
-          '14.00': '',
-          '15.00': '',
-          '16.00': '',
-          '17.00': '',
-          '18.00': ''
-        }
-      },
-      {
-        color: 'bg-yellow-400',
-        site_id: '2',
-        group_id: '1',
-        site_name: 'สถานที่ 3',
-        time: {
-          '8.00': '',
-          '9.00': '',
-          '10.00': '',
-          '11.00': '',
-          '12.00': '',
-          '13.00': '',
-          '14.00': '',
-          '15.00': '',
-          '16.00': '',
-          '17.00': '',
-          '18.00': ''
-        }
-      },
-      {
-        color: 'bg-pink-400',
-        site_id: '4',
-        group_id: '3',
-        site_name: 'สถานที่ 4',
-        time: {
-          '8.00': '',
-          '9.00': '',
-          '10.00': '',
-          '11.00': '',
-          '12.00': '',
-          '13.00': '',
-          '14.00': '',
-          '15.00': '',
-          '16.00': '',
-          '17.00': '',
-          '18.00': ''
-        }
-      },
-      {
-        color: 'bg-lime-400',
-        site_id: '5',
-        group_id: '2',
-        site_name: 'สถานที่ 5',
+  getSites() {
+    return this.firestoreService.getSites();
+  }
+
+  initRows(sites) {
+    this.rows = sites.map((site: any) => {
+      return {
+        ...site,
         time: {
           '8.00': '',
           '9.00': '',
@@ -208,7 +66,7 @@ export class JobScheduleComponent  implements OnInit {
           '18.00': ''
         }
       }
-    ]
+    })
   }
 
   onActivate(event: Event) {
@@ -217,53 +75,63 @@ export class JobScheduleComponent  implements OnInit {
   }
 
   getRowClass(row) {
-    return row.color;
-  }
-  jobs: any = [];
-  async searchJobs() {
-    this.initRows();
-    this.jobs = await this.firestoreService.fetchDataJob(this.date);
-    if (this.jobs.length > 0) {
-      this.updateRow();
-    }
+    return row.group !== null ? row.group.color : 'bg-white';
   }
 
-  add() {
-    const collectionRef = collection(db, "jobs");
-    // const sites = ["1", "2", "3"];
-    const groups = [{ id: "1", sites: ["1", "3"] }, { id: "2", sites: ["2"] }];
-    const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
-    const { time, hour } = this.randomTime();
-    const num = [1, 2];
-    const group = groups[Math.floor(Math.random() * groups.length)];
-    const site_id = group.sites[Math.floor(Math.random() * group.sites.length)];
-    const randomNum = Math.floor(Math.random() * num.length);
-    const querydate = new Date().setHours(0, 0, 0, 0);
-    const formatQueryDate = new Date(querydate);
-    formatQueryDate.setDate(formatQueryDate.getDate() + randomNum);
-    const nextDay = new Date(formatQueryDate);
-    nextDay.setDate(formatQueryDate.getDate() + 1);
-    const q = query(collectionRef,
-      where("group_id", "==", group.id),
-      // where("site_id", "==", site_id),
-      where("book.date", ">", formatQueryDate),
-      where("book.date", "<", nextDay),
-      where("book.time", "array-contains", time),
-    );
-    const date = new Date().setHours(hour, 0, 0, 0);
-    const formatDate = new Date(date);
-    formatDate.setDate(formatDate.getDate() + randomNum);
-    const data = {
-      book: { time: [time], date: formatDate },
-      group_id: group.id,
-      job_id: "1",
-      project_id: "1",
-      room: room[Math.floor(Math.random() * room.length)],
-      site_id: site_id,
-      type: "ล้าง",
-    }
-    this.firestoreService.addDatatoFirebase(collectionRef, data, q);
+  jobs: any = [];
+  async searchJobs() {
+    this.initRows(this.sites);
+    this.jobs = await this.firestoreService.fetchDataJob(this.date);
+    this.updateRow();
   }
+
+  async searchJobsToday() {
+    const date = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(date);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    this.initRows(this.sites);
+    this.jobs = await this.firestoreService.fetchDataJob(formatQueryDate);
+    this.updateRow();
+  }
+
+
+
+  // add() {
+  //   const collectionRef = collection(db, "jobs");
+  //   // const sites = ["1", "2", "3"];
+  //   const groups = [{ id: "1", sites: ["1", "3"] }, { id: "2", sites: ["2"] }];
+  //   const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
+  //   const { time, hour } = this.randomTime();
+  //   const num = [1, 2];
+  //   const group = groups[Math.floor(Math.random() * groups.length)];
+  //   const site_id = group.sites[Math.floor(Math.random() * group.sites.length)];
+  //   const randomNum = Math.floor(Math.random() * num.length);
+  //   const querydate = new Date().setHours(0, 0, 0, 0);
+  //   const formatQueryDate = new Date(querydate);
+  //   formatQueryDate.setDate(formatQueryDate.getDate() + randomNum);
+  //   const nextDay = new Date(formatQueryDate);
+  //   nextDay.setDate(formatQueryDate.getDate() + 1);
+  //   const q = query(collectionRef,
+  //     where("group_id", "==", group.id),
+  //     // where("site_id", "==", site_id),
+  //     where("book.date", ">", formatQueryDate),
+  //     where("book.date", "<", nextDay),
+  //     where("book.time", "array-contains", time),
+  //   );
+  //   const date = new Date().setHours(hour, 0, 0, 0);
+  //   const formatDate = new Date(date);
+  //   formatDate.setDate(formatDate.getDate() + randomNum);
+  //   const data = {
+  //     book: { time: [time], date: formatDate },
+  //     group_id: group.id,
+  //     job_id: "1",
+  //     project_id: "1",
+  //     room: room[Math.floor(Math.random() * room.length)],
+  //     site_id: site_id,
+  //     type: "ล้าง",
+  //   }
+  //   this.firestoreService.addDatatoFirebase(collectionRef, data, q);
+  // }
 
   randomTime() {
     const hours = ["8.00", "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];

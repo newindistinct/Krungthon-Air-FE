@@ -41,6 +41,7 @@ export class MainLayoutComponent implements OnInit {
             if (users.length > 0) {
               const site = await this.firestoreService.fetchDataSite(users[0].project_id);
               const group = await this.firestoreService.fetchDataGroup(users[0].project_id);
+              
               this.service.dismissLoading();
             }
           });

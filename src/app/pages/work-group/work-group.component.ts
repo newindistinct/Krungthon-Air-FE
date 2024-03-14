@@ -82,7 +82,7 @@ export class WorkGroupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.getTeam()
+    this.getGroups()
   }
 
   editTeam(team) {
@@ -103,8 +103,8 @@ export class WorkGroupComponent implements OnInit {
     });
   }
 
-  getTeam() {
-    this.groups = this.firestoreService.getGroup();
+  getGroups() {
+    this.groups = this.firestoreService.getGroups();
   }
 
   // openModalAddGroup(){

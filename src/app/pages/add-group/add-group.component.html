@@ -1,30 +1,14 @@
 <app-header title="เพิ่มงาน" [modal]="true"></app-header>
 <ion-content class="ion-padding">
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <mat-form-field class="w-full py-2">
-      <mat-label>เลือกวัน</mat-label>
-      <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="start_time" (dateChange)="searchJobs()">
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-      <ion-item class="custom-input my-2">
-        <ion-label>เวลา</ion-label>
-        <ion-select interface="popover" placeholder="เลือกเวลา" formControlName="time" (ionChange)="timeChange()">
-          <ion-select-option *ngFor="let time of times" [disabled]="!time.has_job"
-            [value]="time.time">{{time.time}}</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item class="custom-input my-2">
-        <ion-label>สถานที่</ion-label>
-        <ion-select interface="popover" placeholder="เลือกสถานที่" formControlName="site_id">
-          <ion-select-option *ngFor="let site of sites" [disabled]="!site.has_job"
-            [value]="site.site_id">{{site.name}}</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </div>
+    
+    <ion-item class="custom-input my-2">
+      <ion-label>สถานที่</ion-label>
+      <ion-select interface="popover" placeholder="เลือกสถานที่" formControlName="site_id">
+        <ion-select-option *ngFor="let site of sites" [disabled]="!site.has_job"
+          [value]="site.site_id">{{site.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
 
     <app-input [parentForm]="form" label="ชื่องาน" typeInput="text" formControlName="name"
       placeholder="ชื่องาน"></app-input>
