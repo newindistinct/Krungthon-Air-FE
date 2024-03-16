@@ -1,22 +1,29 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, forwardRef } from '@angular/core';
-import { FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { InputComponent } from '../input/input.component';
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.scss'],
+  selector: 'app-select',
+  templateUrl: './select.component.html',
+  styleUrls: ['./select.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputComponent),
+      useExisting: forwardRef(() => SelectComponent),
       multi: true,
     }
   ]
 })
-export class InputComponent implements OnInit {
+export class SelectComponent implements OnInit {
   @ViewChild('childrenWrapper') content: ElementRef<HTMLElement>;
 
-  @Input() typeInput :string;
+  @Input() options = [{
+    title: 'test',
+    value: 'test',
+    disabled: false
+  }];
+  @Input() multiple: boolean = false;
+  @Input() typeInput: string;
   @Input() parentForm: FormGroup;
   @Input() formControlName: string;
   @Input() label: string;
@@ -31,11 +38,11 @@ export class InputComponent implements OnInit {
   touched: () => void;
 
   constructor() {
-   
+
   }
 
   ngOnInit() {
-    
+
   }
   // get styledLabel(): any {
   //   if (!this.label) {
@@ -74,9 +81,10 @@ export class InputComponent implements OnInit {
     this.value = value;
   }
 
-  public onChange(event: Event): void {
-    const value: string =
-      (event.target as HTMLInputElement).value;
+  public onChange(event) {
+    const value = event.target.value;
+    console.log(value);
+
     this.touched();
     this.changed(value);
   }
@@ -92,4 +100,5 @@ export class InputComponent implements OnInit {
   public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
+
 }

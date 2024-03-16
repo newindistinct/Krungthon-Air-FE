@@ -19,7 +19,7 @@ export class LoggedInGuard {
       return true;
     }
     else {
-      this.router.navigate(['/krungthon/register']);
+      this.router.navigate(['/krungthon/home']);
       return false;
     }
   }

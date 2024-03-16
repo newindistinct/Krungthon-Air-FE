@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as dayjs from 'dayjs';
-import { logEvent } from 'firebase/analytics';
-import { collection, where, query } from 'firebase/firestore';
-import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { ServiceService } from 'src/app/services/service.service';
 
 @Component({
   selector: 'app-job-schedule',
@@ -33,19 +31,23 @@ export class JobScheduleComponent implements OnInit {
 
   constructor(
     private firestoreService: FirestoreService,
-    // private datePipe: DatePipe
+    private service: ServiceService
   ) { }
 
   ngOnInit() {
-    this.sites = this.getSites();
-    if (this.sites.length > 0) {
-      this.initRows(this.sites);
-      this.searchJobsToday();
-    }
+    const interval = setInterval(() => {
+      if (this.sites.length > 0) {
+        this.initRows(this.sites);
+        this.searchJobsToday();
+        clearInterval(interval);
+      } else {
+        this.getSites();
+      }
+    }, 1000);
   }
 
   getSites() {
-    return this.firestoreService.getSites();
+    this.sites = this.firestoreService.getSites();
   }
 
   initRows(sites) {

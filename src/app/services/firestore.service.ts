@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Unsubscribe } from 'firebase/auth';
-import { addDoc, collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { Subject } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ServiceService } from './service.service';
@@ -13,47 +13,38 @@ import * as dayjs from 'dayjs';
   providedIn: 'root'
 })
 export class FirestoreService {
-  site_id: any
-  site: any;
-  user: any;
-  jobs: any;
-  groups: any;
-  equipment: any;
-  building: any;
-  room: any;
-  siteIdChange: Subject<any> = new Subject<any>();
-  siteChange: Subject<any> = new Subject<any>();
+  data: any = {
+    sites: [],
+    groups: [],
+    jobs: []
+  };
+  user: any = []
+  jobs: any = []
+  groups: any = []
+  sites: any = []
+  allUsers: any = []
+  allJobs: any = []
+  allJobsChange: Subject<any> = new Subject<any>();
+  allUsersChange: Subject<any> = new Subject<any>();
+  sitesChange: Subject<any> = new Subject<any>();
   userChange: Subject<any> = new Subject<any>();
   jobsChange: Subject<any> = new Subject<any>();
   groupsChange: Subject<any> = new Subject<any>();
-  equipmentChange: Subject<any> = new Subject<any>();
-  buildingChange: Subject<any> = new Subject<any>();
-  roomChange: Subject<any> = new Subject<any>();
-  totalUser: number;
-  totalDepartment: number;
-  totalSystem: number;
-  totalEquipment: number;
-  totalBuilding: number;
-  totalRoom: number;
-  has_canUse: any = [];
 
-  sites: any;
-  sitesChange: Subject<any> = new Subject<any>();
-  subscribtionOnSnapshotUser: Unsubscribe;
-  subscribtionOnSnapshotSite: Unsubscribe;
-  subscribtionOnSnapshotDepartment: Unsubscribe;
-  subscribtionOnSnapshotSystem: Unsubscribe;
-  subscribtionOnSnapshotEquipment: Unsubscribe;
-  subscribtionOnSnapshotBuilding: Unsubscribe;
+  subscriptionAllUsers;
+  subscriptionSites;
+  subscriptionGroups;
+  subscriptionAllJobs;
+
+
   constructor(
-    private authService: AuthService,
     private service: ServiceService,
-    private router: Router
   ) { }
+
   async fetchDataUser(phone: any): Promise<any> {
     const q = query(collection(db, "users"), where("phone", "==", phone),);
     return await new Promise<any>((resolve) => {
-      this.subscribtionOnSnapshotUser = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+      onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({ ...docs.data(), id: docs.id });
@@ -65,10 +56,31 @@ export class FirestoreService {
     });
   }
 
+  async fetchDataAllUser(project_id: any): Promise<any> {
+    const q = query(collection(db, "users"), where("project_id", "==", project_id),);
+    if (this.subscriptionAllUsers) {
+      this.subscriptionAllUsers();
+    }
+    return await new Promise<any>((resolve) => {
+      this.subscriptionAllUsers = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data() });
+        }
+        this.allUsers = data;
+        this.allUsersChange.next(this.allUsers);
+        resolve(this.user);
+      });
+    });
+  }
+
   async fetchDataSite(project_id): Promise<any> {
     const q = query(collection(db, "sites"), where("project_id", "==", project_id));
+    if (this.subscriptionSites) {
+      this.subscriptionSites();
+    }
     return await new Promise<any>((resolve) => {
-      onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+      this.subscriptionSites = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({
@@ -82,10 +94,29 @@ export class FirestoreService {
     });
   }
 
+  fetchDataSiteNoGroup(): Promise<any> {
+    const q = query(collection(db, "sites"),
+      where("project_id", "==", this.user[0].project_id),
+      where("group_id", "==", ''),);
+    return new Promise<any>((resolve) => {
+      const snapshot = getDocs(q);
+      snapshot.then((querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data(), key: docs.id });
+        }
+        resolve(data);
+      });
+    });
+  }
+
   async fetchDataGroup(project_id): Promise<any> {
     const q = query(collection(db, "groups"), where("project_id", "==", project_id));
+    if (this.subscriptionGroups) {
+      this.subscriptionGroups();
+    }
     return await new Promise<any>((resolve) => {
-      onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+      this.subscriptionGroups = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({ ...docs.data() });
@@ -100,7 +131,10 @@ export class FirestoreService {
   fetchDataJob(date) {
     let nextDay = new Date(date);
     nextDay.setDate(nextDay.getDate() + 1);
-    const q = query(collection(db, "jobs"), where("book.date", ">", date), where("book.date", "<", nextDay), where("project_id", "==", this.user[0].project_id));
+    const q = query(collection(db, "jobs"),
+      where("book.date", ">", date),
+      where("book.date", "<", nextDay),
+      where("project_id", "==", this.user[0].project_id));
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);
       snapshot.then((querySnapshot) => {
@@ -146,6 +180,24 @@ export class FirestoreService {
     });
   }
 
+  async fetchDataAllJob(project_id): Promise<any> {
+    const q = query(collection(db, "jobs"), where("project_id", "==", project_id));
+    if (this.subscriptionAllJobs) {
+      this.subscriptionAllJobs();
+    }
+    return await new Promise<any>((resolve) => {
+      this.subscriptionAllJobs = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data() });
+        }
+        this.allJobs = data;
+        this.allJobsChange.next(this.allJobs);
+        resolve(data);
+      });
+    });
+  }
+
   async CheckUserOnSite(phone: any) {
     const q = query(collection(db, "users"), where("phone", "==", phone));
     // const q = query(collection(db, "users"), where("user_phone", "==", phone), where("user_is_enabled", "==", true), where("user_is_deleted", "==", false));
@@ -168,9 +220,6 @@ export class FirestoreService {
     });
     return user;
   }
-  formatDate(date) {
-    return dayjs(date).startOf('day').format('ddd MMM DD YYYY 00:00:00 [GMT+0700]');
-  }
 
   async addDatatoFirebase(collectionRef: any, data: any) {
     // const querySnapshot = await getDocs(q);
@@ -187,34 +236,21 @@ export class FirestoreService {
     // }
   }
 
-  setSiteId(siteId: string): void {
-    this.site_id = siteId;
-    this.siteIdChange.next(this.site_id);
+  async updateDatatoFirebase(collectionRef: any, data: any) {
+    // const querySnapshot = await getDocs(q);
+    // if (querySnapshot.empty) {
+    return new Promise<any>(async (resolve) => {
+      await updateDoc(collectionRef, data).then((res) => {
+        resolve(res);
+      }).catch((error) => {
+        console.error(error);
+      });
+    });
+    // } else {
+    //   this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานเวลานี้อยู่แล้ว', () => { }, { confirmOnly: true })
+    // }
   }
-  getSiteId() {
-    return this.site_id;
-  }
-  getSite() {
-    return this.site;
-  }
-  getUser() {
-    return this.user;
-  }
-  getDepartment() {
-    return this.groups;
-  }
-  getSystem() {
-    return this.jobs;
-  }
-  getEquipment() {
-    return this.equipment;
-  }
-  getRoom() {
-    return this.room;
-  }
-  getBuilding() {
-    return this.building;
-  }
+
   changeDatetime(timestamp: any) {
     const date = new Date(timestamp.seconds * 1000);
     const options: Intl.DateTimeFormatOptions = {
@@ -231,28 +267,39 @@ export class FirestoreService {
   }
 
   getSites() {
-    const updatedSites = this.sites.map(site => {
-      const siteGroup = this.groups.filter(group => group.id === site.group_id);
-      return {
-        ...site,
-        group: siteGroup.length > 0 ? {
-          id: siteGroup[0].id,
-          name: siteGroup[0].name,
-          color: siteGroup[0].color
-        } : null
-      };
-    })
-    return updatedSites;
+    if (this.groups.length > 0 && this.sites.length > 0) {
+      const updatedSites = this.sites.map(site => {
+        const siteGroup = this.groups.filter(group => group.id === site.group_id);
+        return {
+          ...site,
+          group: siteGroup.length > 0 ? {
+            id: siteGroup[0].id,
+            name: siteGroup[0].name,
+            color: siteGroup[0].color
+          } : null
+        };
+      })
+      this.data = { ...this.data, sites: updatedSites };
+      console.log('this.data', this.data);
+      return updatedSites;
+    } else {
+      console.log('no data');
+    }
   }
-  data: any = [];
-  getGroups() {
-    const updatedGroups = this.groups.map(group => {
-      const groupSites = this.sites.filter(site => group.site_groups.site_id.includes(site.site_id));
-      return { ...group, site_groups: { ...group.site_groups, site: groupSites } };
-    });
-    this.data = { groups: updatedGroups };
 
-    return updatedGroups;
+  getGroups() {
+    if (this.groups.length > 0 && this.sites.length > 0) {
+      const updatedGroups = this.groups.map(group => {
+        const groupSites = this.sites.filter(site => group.site_groups.site_id.includes(site.site_id));
+        return { ...group, site_groups: { ...group.site_groups, site: groupSites } };
+      });
+      this.data = { ...this.data, groups: updatedGroups };
+      console.log('this.data', this.data);
+      return updatedGroups;
+    }
+    else {
+      console.log('no data');
+    }
   }
 }
 

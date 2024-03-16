@@ -20,7 +20,7 @@ export class MainLayoutComponent implements OnInit {
     { title: 'dashboard', url: '/krungthon/dashboard', icon: 'pie-chart' },
     { title: 'ตารางงาน', url: '/krungthon/job-schedule', icon: 'calendar' },
     { title: 'ทีมงาน', url: '/krungthon/work-group', icon: 'people-circle' },
-    { title: 'ผู้ใช้งาน', url: '/krungthon/user', icon: 'person-circle' },
+    // { title: 'ผู้ใช้งาน', url: '/krungthon/user', icon: 'person-circle' },
     { title: 'ตั้งค่า', url: '/krungthon/setting', icon: 'settings' },
   ];
   constructor(
@@ -30,7 +30,7 @@ export class MainLayoutComponent implements OnInit {
   ) { }
   async ngOnInit() {
     // await disableNetwork(db);
-    this.service.presentLoadingWithOutTime('Loading...');
+    this.service.presentLoadingWithOutTime2('Loading...');
     const isLogedIn = await this.authService.SessionIsLogedIn();
     if (isLogedIn == true) {
       await this.authService.checkAuth().then((res) => {
@@ -38,11 +38,10 @@ export class MainLayoutComponent implements OnInit {
           const UserFormAuth = this.authService.getUserFormAuth();
           const phone = this.formatPhoneNumber(UserFormAuth.phoneNumber);
           this.firestoreService.fetchDataUser(phone).then(async (users) => {
+            this.service.dismissLoading2();
             if (users.length > 0) {
               const site = await this.firestoreService.fetchDataSite(users[0].project_id);
               const group = await this.firestoreService.fetchDataGroup(users[0].project_id);
-              
-              this.service.dismissLoading();
             }
           });
         } else {

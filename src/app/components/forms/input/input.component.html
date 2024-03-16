@@ -5,7 +5,7 @@
 
   <div class="input-wrap">
     <input [type]="typeInput" [name]="formControlName" [id]="formControlName" [placeholder]="placeholder"
-      [disabled]="disabled" (input)="onChange($event)"
+      [disabled]="disabled" (input)="onChange($event)" [value]="value"
       class="custom-input"
       required>
     <div #childrenWrapper>
@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <span class="field-error text-red-500" *ngIf="!formField?.valid && formField?.touched">
+  <span class="field-error text-red-500" *ngIf="formField?.invalid && formField?.touched">
     {{'ERROR.' + errorMessage }}
   </span>
 </div>

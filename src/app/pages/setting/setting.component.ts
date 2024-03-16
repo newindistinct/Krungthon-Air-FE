@@ -5,10 +5,30 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './setting.component.html',
   styleUrls: ['./setting.component.scss'],
 })
-export class SettingComponent  implements OnInit {
-
+export class SettingComponent implements OnInit {
+  segment = 'user';
+  segment_option = [
+    {
+      title: 'user',
+      value: 'user'
+    }, 
+    {
+      title: 'site',
+      value: 'site'
+    },
+    {
+      title: 'group',
+      value: 'group'
+    },
+    {
+      title: 'job',
+      value: 'job'
+    },
+  ]
   constructor() { }
 
-  ngOnInit() {}
-
+  ngOnInit() { }
+  segmentChanged(event) {
+    this.segment = event.target.value;
+  }
 }

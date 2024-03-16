@@ -248,6 +248,10 @@ export const Color = [
     'bg-rose-950',
 ]
 export function randomColor() {
-    const colors = Color.filter((color: any) => color.includes('400'))
+    const colors = Color.filter((color: any) => color.includes('200'))
     return colors[Math.floor(Math.random() * colors.length)];
+}
+export function getColor() {
+    const colors = Color.filter((color: any) => color.includes('200'))
+    return colors;
 }

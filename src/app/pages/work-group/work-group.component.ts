@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { AddJobComponent } from 'src/app/pages/add-job/add-job.component';
+import { AddJobComponent } from 'src/app/pages/work-group/add-job/add-job.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { JobsListComponent } from '../jobs-list/jobs-list.component';
 
@@ -82,7 +82,17 @@ export class WorkGroupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getGroups()
+    const interval = setInterval(() => {
+      if (this.groups.length > 0) {
+        clearInterval(interval);
+      } else {
+        this.getGroups();
+      }
+    }, 1000)
+
+    // this.firestoreService.groupsChange.subscribe(groups => {
+    //   this.getGroups()
+    // })
   }
 
   editTeam(team) {
@@ -123,6 +133,15 @@ export class WorkGroupComponent implements OnInit {
       }
     }).then(modal => modal.present());
   }
+
+  // openModalAddGroup() {
+  //   this.modalController.create({
+  //     component: AddGroupComponent,
+  //     cssClass: 'my-custom-class',
+  //     componentProps: {
+  //     }
+  //   }).then(modal => modal.present());
+  // }
 
   async jobsList(group) {
     await this.firestoreService.fetchDataJobByGroup(group).then((jobs) => {

@@ -6,8 +6,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { JobScheduleComponent } from './pages/job-schedule/job-schedule.component';
 import { SettingComponent } from './pages/setting/setting.component';
-import { UserComponent } from './pages/user/user.component';
+import { UserComponent } from './pages/setting/user/user.component';
 import { WorkGroupComponent } from './pages/work-group/work-group.component';
+import { AuthGuard } from './common/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -18,30 +19,15 @@ export const routes: Routes = [
   {
     path: 'krungthon',
     component: MainLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
-      {
-        path: 'folder/:id',
-        loadChildren: () => import('./folder/folder.module').then(m => m.FolderPageModule)
-      },
       {
         path: 'dashboard',
         component: DashboardComponent
       },
       {
-        path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
-      },
-      {
-        path: 'register',
-        loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
-      },
-      {
         path: 'work-group',
         component: WorkGroupComponent
-      },
-      {
-        path: 'user',
-        component: UserComponent
       },
       {
         path: 'job-schedule',
