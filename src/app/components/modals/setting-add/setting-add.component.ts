@@ -149,7 +149,6 @@ export class SettingAddComponent implements OnInit {
       id: group_id,
       project_id: this.firestoreService.user[0].project_id,
     }
-    console.log(data);
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
       this.form.value.site_groups.forEach((site) => {
         const docRef = doc(db, "sites", site.key);

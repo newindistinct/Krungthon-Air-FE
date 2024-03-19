@@ -288,8 +288,6 @@ export class FirestoreService {
   }
 
   getSites() {
-    console.log(this.sites, this.groups);
-    
     if (this.groups.length > 0 && this.sites.length > 0) {
       const updatedSites = this.sites.map(site => {
         const siteGroup = this.groups.filter(group => group.id === site.group_id);
@@ -303,7 +301,6 @@ export class FirestoreService {
         };
       })
       this.data = { ...this.data, sites: updatedSites };
-      console.log('this.data', this.data);
       return updatedSites;
     } else {
       console.log('no data');
@@ -317,7 +314,6 @@ export class FirestoreService {
         return { ...group, site_groups: { ...group.site_groups, site: groupSites } };
       });
       this.data = { ...this.data, groups: updatedGroups };
-      console.log('this.data', this.data);
       return updatedGroups;
     }
     else {

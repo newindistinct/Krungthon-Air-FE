@@ -22,6 +22,7 @@ export class SelectComponent implements OnInit {
     value: 'test',
     disabled: false
   }];
+  @Input() Change: any;
   @Input() multiple: boolean = false;
   @Input() typeInput: string;
   @Input() parentForm: FormGroup;
@@ -83,7 +84,6 @@ export class SelectComponent implements OnInit {
 
   public onChange(event) {
     const value = event.target.value;
-    // console.log(value);
 
     this.touched();
     this.changed(value);

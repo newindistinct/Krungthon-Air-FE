@@ -21,18 +21,23 @@ export class AddJobComponent implements OnInit {
   minDate = new Date();
   maxDate = new Date();
   date = new Date();
+  prevTime;
+  subscriptionTime;
   types = [
     {
-      name: 'ล้าง',
-      value: 'ล้าง'
+      title: 'ล้าง',
+      value: 'ล้าง',
+      disabled: false
     },
     {
-      name: 'ติดตั้ง',
-      value: 'ติดตั้ง'
+      title: 'ติดตั้ง',
+      value: 'ติดตั้ง',
+      disabled: false
     },
     {
-      name: 'อื่นๆ',
-      value: 'อื่นๆ'
+      title: 'อื่นๆ',
+      value: 'อื่นๆ',
+      disabled: false
     }
   ]
   constructor(
@@ -47,8 +52,12 @@ export class AddJobComponent implements OnInit {
     this.initForm();
     this.initSites();
     this.initTimes();
-
   }
+
+  ngDestroy() {
+    this.subscriptionTime.unsubscribe();
+  }
+
   initDate() {
     this.date = new Date();
     this.minDate = new Date();
@@ -58,7 +67,9 @@ export class AddJobComponent implements OnInit {
     this.sites = this.group.site_groups.site.map((site: any) => {
       return {
         ...site,
-        has_job: false
+        title: site.name,
+        value: site.site_id,
+        disabled: true
       }
     })
   }
@@ -67,7 +78,9 @@ export class AddJobComponent implements OnInit {
     this.sites = this.group.site_groups.site.map((site: any) => {
       return {
         ...site,
-        has_job: true
+        title: site.name,
+        value: site.site_id,
+        disabled: false
       }
     })
   }
@@ -77,7 +90,7 @@ export class AddJobComponent implements OnInit {
       name: ['test', Validators.required],
       start_time: ['', Validators.required],
       time: ['', Validators.required],
-      site_id: ['', Validators.required],
+      site: ['', Validators.required],
       room: ['test', Validators.required],
       building: ['test', Validators.required],
       floor: ['test', Validators.required],
@@ -86,104 +99,114 @@ export class AddJobComponent implements OnInit {
       description: ['test'],
       remark: ['test']
     })
-  }
-
-  initTimes() {
-    this.times = [
-      {
-        time: '8.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '9.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '10.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '11.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '12.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '13.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '14.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '15.00',
-        count: 0,
-        has_job: false,
-      },
-      {
-        time: '16.00',
-        count: 0,
-        has_job: false,
-      },
-    ]
+    if (this.subscriptionTime) {
+      this.subscriptionTime.unsubscribe();
+    }
+    this.prevTime = this.form.value.time
+    this.subscriptionTime = this.form.valueChanges.subscribe((res) => {
+      if (this.prevTime != res.time) {
+        this.timeChange();
+        this.prevTime = res.time;
+      }
+    });
   }
 
   setJob() {
     this.times = [
       {
-        time: '8.00',
+        title: '8.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '9.00',
+        title: '9.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '10.00',
+        title: '10.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '11.00',
+        title: '11.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '12.00',
+        title: '12.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '13.00',
+        title: '13.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '14.00',
+        title: '14.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '15.00',
+        title: '15.00',
         count: 0,
-        has_job: true,
+        disabled: false,
       },
       {
-        time: '16.00',
+        title: '16.00',
         count: 0,
-        has_job: true,
+        disabled: false,
+      },
+    ]
+  }
+
+  initTimes() {
+    this.times = [
+      {
+        title: '8.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '9.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '10.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '11.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '12.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '13.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '14.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '15.00',
+        count: 0,
+        disabled: true,
+      },
+      {
+        title: '16.00',
+        count: 0,
+        disabled: true,
       },
     ]
   }
@@ -193,10 +216,11 @@ export class AddJobComponent implements OnInit {
       if (job.book.time) {
         job.book.time.forEach((time: any) => {
           this.times.filter((data: any) => {
-            if (data.time === time && this.group.id === job.group_id) {
+            if (data.title === time && this.group.id === job.group_id) {
               data.count++;
+              // if (data.count >= 2) {
               if (data.count >= this.group.limit) {
-                data.has_job = false;
+                data.disabled = true;
               }
             }
           })
@@ -211,10 +235,10 @@ export class AddJobComponent implements OnInit {
     this.jobs.filter((job: any) => {
       if (job.book.time) {
         job.book.time.forEach((time: any) => {
-          if (time === this.form.value.time && this.group.id === job.group_id) {
+          if (time === this.form.value.time.title && this.group.id === job.group_id) {
             this.sites.filter((site: any) => {
               if (site.site_id === job.site_id) {
-                site.has_job = false;
+                site.disabled = true;
               }
             })
           }
@@ -232,26 +256,28 @@ export class AddJobComponent implements OnInit {
       this.updateTimes();
     } else {
       this.setJob();
+      this.form.patchValue({ time: '' });
+      this.prevTime = this.form.value.time;
     }
   }
 
   submit() {
-    const time = this.form.value.time;
+    const time = this.form.value.time.title;
     const hour = time.split(".")[0];
     const collectionRef = collection(db, "jobs");
-    const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
-    const querydate = new Date(this.form.value.start_time).setHours(0, 0, 0, 0);
-    const formatQueryDate = new Date(querydate);
-    formatQueryDate.setDate(formatQueryDate.getDate());
-    const nextDay = new Date(formatQueryDate);
-    nextDay.setDate(formatQueryDate.getDate() + 1);
-    const q = query(collectionRef,
-      where("group_id", "==", this.group.id),
-      // where("site_id", "==", site_id),
-      where("book.date", ">", formatQueryDate),
-      where("book.date", "<", nextDay),
-      where("book.time", "array-contains", time),
-    );
+    // const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
+    // const querydate = new Date(this.form.value.start_time).setHours(0, 0, 0, 0);
+    // const formatQueryDate = new Date(querydate);
+    // formatQueryDate.setDate(formatQueryDate.getDate());
+    // const nextDay = new Date(formatQueryDate);
+    // nextDay.setDate(formatQueryDate.getDate() + 1);
+    // const q = query(collectionRef,
+    //   where("group_id", "==", this.group.id),
+    //   // where("site_id", "==", site_id),
+    //   where("book.date", ">", formatQueryDate),
+    //   where("book.date", "<", nextDay),
+    //   where("book.time", "array-contains", time),
+    // );
     const date = new Date(this.form.value.start_time).setHours(hour, 0, 0, 0);
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
@@ -263,12 +289,11 @@ export class AddJobComponent implements OnInit {
       room: this.form.value.room,
       floor: this.form.value.floor,
       building: this.form.value.building,
-      site_id: this.form.value.site_id,
-      type: this.form.value.type,
+      site_id: this.form.value.site.value,
+      type: this.form.value.type.title,
       phone: this.form.value.phone,
       created_at: new Date(),
       updated_at: new Date(),
-
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
       this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => { }, { confirmOnly: true })

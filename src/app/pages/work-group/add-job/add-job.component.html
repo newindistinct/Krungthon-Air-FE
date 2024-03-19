@@ -3,14 +3,20 @@
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field class="w-full py-2">
       <mat-label>เลือกวัน</mat-label>
-      <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="start_time" (dateChange)="searchJobs()">
+      <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="start_time"
+        (dateChange)="searchJobs()">
       <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-2">
-      <ion-item class="custom-input my-2">
+      <app-select [parentForm]="form" label="เวลา" formControlName="time" placeholder="เลือกเวลา" [multiple]="false"
+        [options]="times"></app-select>
+
+      <app-select [parentForm]="form" label="สถานที่" formControlName="site" placeholder="เลือกสถานที่"
+        [multiple]="false" [options]="sites"></app-select>
+      <!-- <ion-item class="custom-input my-2">
         <ion-label>เวลา</ion-label>
         <ion-select interface="popover" placeholder="เลือกเวลา" formControlName="time" (ionChange)="timeChange()">
           <ion-select-option *ngFor="let time of times" [disabled]="!time.has_job"
@@ -23,7 +29,7 @@
           <ion-select-option *ngFor="let site of sites" [disabled]="!site.has_job"
             [value]="site.site_id">{{site.name}}</ion-select-option>
         </ion-select>
-      </ion-item>
+      </ion-item> -->
     </div>
 
     <app-input [parentForm]="form" label="ชื่องาน" typeInput="text" formControlName="name"
@@ -46,13 +52,8 @@
       placeholder="หมายเหตุ"></app-input>
 
     <!-- phonenumber -->
-    <ion-item class="custom-input my-2">
-      <ion-label>ประเภทงาน</ion-label>
-      <ion-select interface="popover" placeholder="เลือกประเภทงาน" formControlName="type">
-        <ion-select-option *ngFor="let type of types"
-          [value]="type.name">{{type.name}}</ion-select-option>
-      </ion-select>
-    </ion-item>
+    <app-select [parentForm]="form" label="บริการ" formControlName="type" placeholder="เลือกบริการ" [multiple]="false"
+      [options]="types"></app-select>
 
     <!-- <app-input [parentForm]="form" label="ประเภทงาน" typeInput="text" formControlName="type"
       placeholder="ประเภทงาน"></app-input> -->

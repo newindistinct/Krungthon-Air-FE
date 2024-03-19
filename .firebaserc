@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "testbackup-ed680",
+    "default": "krungthon-air",
     "prod": "krungthon-air"
   },
   "targets": {},

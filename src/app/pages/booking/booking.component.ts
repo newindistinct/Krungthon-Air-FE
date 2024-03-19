@@ -59,8 +59,6 @@ export class BookingComponent implements OnInit {
   ) { }
 
   onInputPhone() {
-    //('ionInput', this.ionInputDepartmentName.value);
-    console.log(this.form.value.phone);
     this.form.value.phone = this.form.value.phone.replace(/[^0-9]/g, '').replace(' ', '');
   }
 
@@ -108,9 +106,6 @@ export class BookingComponent implements OnInit {
             //     data.push({ ...doc.data() });
             //   });
             //   this.jobs = data
-            //   console.log('jobs', this.jobs)
-            //   console.log('site', this.site)
-            //   console.log('group', this.group)
             // });
           });
         })
@@ -170,7 +165,6 @@ export class BookingComponent implements OnInit {
         querySnapshot.forEach((doc) => {
           data.push({ ...doc.data() });
         });
-        console.log('jobs', data)
         resolve(data)
       });
     })
@@ -207,10 +201,9 @@ export class BookingComponent implements OnInit {
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
       try {
-        console.log("sendLineNotify");
         this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
           message: `${this.site.name}
-${formatDate} 
+วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
 บริการ : ${this.form.value.type.title} 
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}`,
@@ -232,7 +225,6 @@ ${formatDate}
 
   async sendLineNotify() {
     try {
-      console.log("sendLineNotify");
       this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
         message: `test form booking`,
         stickerPackageId: 6632,
@@ -254,7 +246,6 @@ ${formatDate}
         times.push(`${time + i}.00`);
       }
     }
-    console.log('times', times)
     return times
   }
 
@@ -270,7 +261,7 @@ ${formatDate}
         this.service.dismissLoading();
         this.alertEnterOTP();
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
         const { header, message } = sendOTPverifyFail();
         this.service.showAlert(header, message, () => {
           window.location.reload();
@@ -428,5 +419,17 @@ ${formatDate}
         disabled: true,
       },
     ]
+  }
+
+  formatDateToThaiString(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = {
+      // weekday: 'long',
+      // year: 'numeric',
+      // month: 'long',
+      // day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+    return date.toLocaleDateString('th-TH', options);
   }
 }
