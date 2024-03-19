@@ -1,7 +1,7 @@
 {
   "projects": {
     "default": "testbackup-ed680",
-    "test": "testbackup-ed680"
+    "prod": "krungthon-air"
   },
   "targets": {},
   "etags": {}

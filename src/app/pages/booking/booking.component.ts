@@ -207,13 +207,22 @@ export class BookingComponent implements OnInit {
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
       try {
-        this.test().then((res) => {
+        console.log("sendLineNotify");
+        this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+          message: `${this.site.name}
+${formatDate} 
+บริการ : ${this.form.value.type.title} 
+จํานวน : ${this.form.value.qty} ตัว 
+เบอร์โทร : ${this.form.value.phone}`,
+          stickerPackageId: 6632,
+          stickerId: 11825396
+        }).subscribe((res) => {
           console.log(res);
         })
-        this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => { }, { confirmOnly: true })
       } catch (error) {
         console.error(error);
       }
+      this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => { }, { confirmOnly: true })
     }).catch((error) => {
       this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })
       console.error(error);
@@ -221,41 +230,19 @@ export class BookingComponent implements OnInit {
 
   }
 
-  lineNotify() {
-    return this.http.post<any>('https://notify-api.line.me/api/notify', {
-      params: {
-        message: `วันที่ : ${this.form.value.start_time} 
-        ห้อง : ${this.form.value.room} 
-        บริการ : ${this.form.value.type.title} 
-        จํานวน : ${this.form.value.qty} ตัว 
-        เบอร์โทร :${this.form.value.phone}`,
+  async sendLineNotify() {
+    try {
+      console.log("sendLineNotify");
+      this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+        message: `test form booking`,
         stickerPackageId: 6632,
         stickerId: 11825396
-      }
-    }, {
-      headers: {
-        Authorization: 'Bearer 3wxeL2CNj7vBWIuteKDNhiWCx5dT9vQrhYScH86eCGn'
-      }
-    })
-  }
-
-  async test() {
-    return await axios({
-      method: "post",
-      url: "https://notify-api.line.me/api/notify",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        // "Authorization": "Bearer 3wxeL2CNj7vBWIuteKDNhiWCx5dT9vQrhYScH86eCGn",
-        "Authorization": "Bearer 44MKbwPihLY8IzYYNJmTjk6WQfkxJMZ7XN4LZwIJcd4",
-      },
-      data: 'message=hello'
-    })
-      .then((response) => {
-        console.log(response);
+      }).subscribe((res) => {
+        console.log(res);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 
   qtyMoreThanOne(qty) {
