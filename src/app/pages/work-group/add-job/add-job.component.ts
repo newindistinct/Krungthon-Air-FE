@@ -44,8 +44,8 @@ export class AddJobComponent implements OnInit {
 
   ngOnInit() {
     this.initDate()
-    this.initSites();
     this.initForm();
+    this.initSites();
     this.initTimes();
 
   }

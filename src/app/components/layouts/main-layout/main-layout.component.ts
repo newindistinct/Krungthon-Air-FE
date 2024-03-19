@@ -57,4 +57,7 @@ export class MainLayoutComponent implements OnInit {
       return phoneNumber;
     }
   }
+  logout(){
+    this.authService.signout();
+  }
 }

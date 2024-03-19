@@ -20,6 +20,7 @@ import { SiteComponent } from './setting/site/site.component';
 import { UserComponent } from './setting/user/user.component';
 import { AddJobComponent } from './work-group/add-job/add-job.component';
 import { WorkGroupComponent } from './work-group/work-group.component';
+import { BookingComponent } from './booking/booking.component';
 
 
 
@@ -36,6 +37,7 @@ import { WorkGroupComponent } from './work-group/work-group.component';
     SiteComponent,
     GroupComponent,
     JobComponent,
+    BookingComponent
   ],
   imports: [
     CommonModule,

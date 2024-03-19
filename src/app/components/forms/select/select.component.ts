@@ -83,7 +83,7 @@ export class SelectComponent implements OnInit {
 
   public onChange(event) {
     const value = event.target.value;
-    console.log(value);
+    // console.log(value);
 
     this.touched();
     this.changed(value);

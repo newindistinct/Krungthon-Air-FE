@@ -36,12 +36,11 @@ export class JobScheduleComponent implements OnInit {
 
   ngOnInit() {
     const interval = setInterval(() => {
+      this.getSites();
       if (this.sites.length > 0) {
         this.initRows(this.sites);
         this.searchJobsToday();
         clearInterval(interval);
-      } else {
-        this.getSites();
       }
     }, 1000);
   }

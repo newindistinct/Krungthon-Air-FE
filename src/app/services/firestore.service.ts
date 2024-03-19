@@ -198,6 +198,27 @@ export class FirestoreService {
     });
   }
 
+  customerFetchDataJob(date, site) {
+    let nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const q = query(collection(db, "jobs"),
+      where("book.date", ">", date),
+      where("book.date", "<", nextDay),
+      where("project_id", "==", site.project_id));
+    return new Promise<any>((resolve) => {
+      const snapshot = getDocs(q);
+      snapshot.then((querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({
+            ...docs.data()
+          });
+        }
+        resolve(data);
+      });
+    });
+  }
+
   async CheckUserOnSite(phone: any) {
     const q = query(collection(db, "users"), where("phone", "==", phone));
     // const q = query(collection(db, "users"), where("user_phone", "==", phone), where("user_is_enabled", "==", true), where("user_is_deleted", "==", false));
@@ -267,6 +288,8 @@ export class FirestoreService {
   }
 
   getSites() {
+    console.log(this.sites, this.groups);
+    
     if (this.groups.length > 0 && this.sites.length > 0) {
       const updatedSites = this.sites.map(site => {
         const siteGroup = this.groups.filter(group => group.id === site.group_id);

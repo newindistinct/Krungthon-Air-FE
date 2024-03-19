@@ -19,8 +19,8 @@ export const sendOTPverify = (phone: string) => {
 // เบอร์โทรศัพท์ไม่ถูกต้อง
 export const sendOTPverifyFail = () => {
     return {
-        header: "แจ้งเตือน",
-        message: "เบอร์โทรศัพท์ไม่ถูกต้อง"
+        header: "เกิดข้อผิดพลาด",
+        message: "กรุณาทำรายการใหม่อีกครั้ง"
     }
 }
 // รหัส OTP ไม่ถูกต้อง

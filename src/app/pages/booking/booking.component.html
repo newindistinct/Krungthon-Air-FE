@@ -1,0 +1,44 @@
+<ion-header class="ion-padding ion-no-border">
+  <ion-toolbar>
+    <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <!-- <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span> -->
+  <form [formGroup]="form" (ngSubmit)="newSubmit()" *ngIf="site && group">
+    <mat-form-field class="w-full py-2">
+      <mat-label>เลือกวัน</mat-label>
+      <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="start_time"
+        (dateChange)="searchJobs()">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <app-select [parentForm]="form" label="เวลา" formControlName="time" placeholder="เลือกเวลา" [multiple]="false"
+      [options]="times" *ngIf="has_date"></app-select>
+
+    <div *ngIf="form.value.time">
+
+      <app-input [parentForm]="form" label="เบอร์โทรศัพท์" typeInput="text" formControlName="phone"
+        placeholder="เบอร์โทรศัพท์"></app-input>
+
+      <app-select [parentForm]="form" label="บริการ" formControlName="type" placeholder="เลือกบริการ" [multiple]="false"
+        [options]="types"></app-select>
+
+      <app-input [parentForm]="form" label="จํานวน" typeInput="number" formControlName="qty"
+        placeholder="จํานวน"></app-input>
+
+      <app-input [parentForm]="form" label="อื่นๆ(โปรดระบุ)" typeInput="text" formControlName="type_other"
+        placeholder="อื่นๆ(โปรดระบุ)" *ngIf="form.value.type.value=== 'อื่นๆ'"></app-input>
+
+      <app-input [parentForm]="form" label="ที่อยู่" typeInput="text" formControlName="room"
+        placeholder="กรุณาระบุตึกและหมายเลขห้อง เช่น A001"></app-input>
+    </div>
+  </form>
+  <div style="display: none;" id="sign-in-button"></div>
+</ion-content>
+
+<ion-footer class="ion-no-border ion-padding">
+  <ion-button type="submit" expand="block" (click)="newSubmit()" [disabled]="form.invalid">บันทึก</ion-button>
+</ion-footer>

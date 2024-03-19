@@ -9,6 +9,7 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { UserComponent } from './pages/setting/user/user.component';
 import { WorkGroupComponent } from './pages/work-group/work-group.component';
 import { AuthGuard } from './common/guards/auth.guard';
+import { BookingComponent } from './pages/booking/booking.component';
 
 export const routes: Routes = [
   {
@@ -48,6 +49,10 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
     canActivate: [LoggedInGuard]
   },
+  {
+    path: 'booking/:id',
+    component: BookingComponent
+  }
 ];
 
 @NgModule({

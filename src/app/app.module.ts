@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutsModule } from './components/layouts/layouts.module';
 import { PagesModule } from './pages/pages.module';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { PagesModule } from './pages/pages.module';
     IonicModule.forRoot(),
     FormsModule,
     AppRoutingModule,
+    HttpClientModule,
     MatDatepickerModule,
     // UiModule,
     LayoutsModule,
