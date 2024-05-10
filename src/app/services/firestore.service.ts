@@ -52,7 +52,7 @@ export class FirestoreService {
       onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data(), id: docs.id });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.user = data;
         this.userChange.next(this.user);
@@ -70,7 +70,7 @@ export class FirestoreService {
       this.subscriptionAllUsers = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.allUsers = data;
         this.allUsersChange.next(this.allUsers);
@@ -125,7 +125,7 @@ export class FirestoreService {
       this.subscriptionGroups = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.groups = data;
         this.groupsChange.next(this.groups);
@@ -175,7 +175,7 @@ export class FirestoreService {
         for (const docs of querySnapshot.docs) {
           data.push({
             ...docs.data(),
-            id: docs.id,
+            key: docs.id,
             time: docs.data().book.time[0],
           });
         }
@@ -195,7 +195,7 @@ export class FirestoreService {
       this.subscriptionAllJobs = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.allJobs = data;
         this.allJobsChange.next(this.allJobs);
@@ -213,7 +213,7 @@ export class FirestoreService {
       const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.jobPendingChange.next(data);
         resolve(data);
@@ -231,7 +231,7 @@ export class FirestoreService {
       const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.jobBookedChange.next(data);
         resolve(data);
@@ -241,7 +241,7 @@ export class FirestoreService {
   }
 
   fetchJobCompleted() {
-    const querydate = new Date()
+    const querydate = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(querydate);
     formatQueryDate.setDate(formatQueryDate.getDate());
     const q = query(collection(db, "jobs"), where("status", "==", "COMPLETED"), where("book.date", ">=", formatQueryDate));
@@ -249,7 +249,7 @@ export class FirestoreService {
       const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data() });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.jobCompletedChange.next(data);
         resolve(data);
@@ -279,7 +279,7 @@ export class FirestoreService {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({
-            ...docs.data()
+            ...docs.data(), key: docs.id
           });
         }
         resolve(data);

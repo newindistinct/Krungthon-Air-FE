@@ -8,6 +8,7 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  sites = [];
   jobPending = [];
   jobBooked = [];
   jobCompleted = [];
@@ -31,10 +32,13 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.firestoreService.fetchDataSite('1');
     this.firestoreService.fetchJobPending();
     this.firestoreService.fetchJobBooked();
     this.firestoreService.fetchJobCompleted();
-
+    this.firestoreService.sitesChange.subscribe(sites => {
+      this.sites = sites;
+    })
     this.firestoreService.jobPendingChange.subscribe(jobs => {
       this.jobPending = jobs;
       this.sortJobs(this.jobPending);
@@ -44,13 +48,13 @@ export class HomeComponent implements OnInit {
       this.sortJobs(this.jobBooked);
     })
     this.firestoreService.jobCompletedChange.subscribe(jobs => {
-      this.jobCompleted = jobs; 
+      this.jobCompleted = jobs;
       this.sortJobs(this.jobCompleted);
     })
   }
 
   ngOnDestroy() {
-   this.firestoreService.unsubscribeSubscriptions()
+    this.firestoreService.unsubscribeSubscriptions()
   }
 
   segmentChanged(event) {
@@ -88,4 +92,9 @@ export class HomeComponent implements OnInit {
       }
     })
   }
+  getSiteName(site_id: string) {
+    const site = this.sites.find(site => site.site_id === site_id);
+    return site ? site.name : '';
+  }
+
 }

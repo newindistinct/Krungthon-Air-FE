@@ -280,7 +280,7 @@ export class AddJobComponent implements OnInit {
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
     const data = {
-      book: { time: [time], date: formatDate },
+      book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne(this.form.value.qty) : [time], date: formatDate },
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
@@ -299,6 +299,18 @@ export class AddJobComponent implements OnInit {
       this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })
       console.error(error);
     });
+  }
+
+  qtyMoreThanOne(qty) {
+    let times = []
+    let time = this.form.value.time.title.split(".")[0] // 8.00
+    time = parseInt(time)
+    for (let i = 0; i < qty; i++) {
+      if (time + i < 17) {
+        times.push(`${time + i}.00`);
+      }
+    }
+    return times
   }
 
   closeModal() {

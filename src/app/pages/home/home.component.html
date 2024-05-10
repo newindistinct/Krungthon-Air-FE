@@ -9,33 +9,33 @@
         <div *ngSwitchCase="'booking'">
             <ion-card *ngFor="let job of jobPending">
                 <ion-card-header>
-                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-title>{{job.book.time[0]}} {{getSiteName(job.site_id)}}</ion-card-title>
                     <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
                 </ion-card-header>
                 <ion-card-content>
-                    {{job.address}} {{job.type}}
+                    {{job.address}} {{job.type}} จำนวน {{job.book.time.length}} เครื่อง
                 </ion-card-content>
             </ion-card>
         </div>
         <div *ngSwitchCase="'pending'">
             <ion-card *ngFor="let job of jobBooked">
                 <ion-card-header>
-                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-title>{{job.book.time[0]}} {{getSiteName(job.site_id)}}</ion-card-title>
                     <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
                 </ion-card-header>
                 <ion-card-content>
-                    {{job.address}} {{job.type}}
+                    {{job.address}} {{job.type}} จำนวน {{job.book.time.length}} เครื่อง
                 </ion-card-content>
-            </ion-card> 
+            </ion-card>
         </div>
         <div *ngSwitchCase="'Completed'">
             <ion-card *ngFor="let job of jobCompleted">
                 <ion-card-header>
-                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-title>{{job.book.time[0]}} {{getSiteName(job.site_id)}}</ion-card-title>
                     <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
                 </ion-card-header>
                 <ion-card-content>
-                    {{job.address}} {{job.type}}
+                    {{job.address}} {{job.type}} จำนวน {{job.book.time.length}} เครื่อง
                 </ion-card-content>
             </ion-card>
         </div>

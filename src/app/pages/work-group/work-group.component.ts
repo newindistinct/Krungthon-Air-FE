@@ -95,7 +95,9 @@ export class WorkGroupComponent implements OnInit {
     // })
   }
 
-  editTeam(team) {
+  editTeam(group) {
+    console.log(group);
+    
   }
 
   showTeamDetail(team) {

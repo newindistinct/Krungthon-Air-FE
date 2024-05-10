@@ -1,30 +1,9 @@
 <app-header title="Work Group"></app-header>
 <ion-content>
   <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" *ngIf="groups.length > 0">
-    <!-- <ion-card class="flex flex-col justify-between" *ngFor="let team of teams" mode="md">
-      <div>
-        <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-        <div class="flex flex-row justify-between items-center">
-          <ion-card-header>
-            <ion-card-title>{{team.title}}</ion-card-title>
-            <ion-card-subtitle>{{team.subtitle}}</ion-card-subtitle>
-          </ion-card-header>
-          <ion-icon class="m-8 text-2xl" name="pencil-outline" (click)="editTeam(team)"></ion-icon>
-        </div>
-
-        <ion-card-content>
-          {{team.description}}
-        </ion-card-content>
-      </div>
-
-      <div class="flex justify-end p-2">
-        <ion-button>เพิ่มงาน</ion-button>
-        <ion-button (click)="showTeamDetail(team)">รายละเอียด</ion-button>
-      </div>
-    </ion-card> -->
+    
     <ion-card class="flex flex-col justify-between" *ngFor="let group of groups" mode="md">
       <div>
-        <!-- <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" /> -->
         <div class="flex flex-row justify-between items-center">
           <ion-card-header>
             <ion-card-title>{{group.name}}</ion-card-title>
@@ -35,7 +14,7 @@
 
         <ion-card-content>
           <div class="flex flex-wrap gap-2">
-            <div class=" mr-2 bg-gray-400 text-white p-2 rounded-lg" *ngFor="let list of group.site_groups.site">
+            <div class=" mr-2 text-black p-2 rounded-lg" [class]="group.color" *ngFor="let list of group.site_groups.site">
               #{{list.name}}</div>
           </div>
 
