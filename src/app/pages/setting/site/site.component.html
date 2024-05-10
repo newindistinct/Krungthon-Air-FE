@@ -5,7 +5,7 @@
 </div>
 <ngx-datatable class="flex w-full. material expandable" [columnMode]="'force'" [rows]="results" [limit]="10"
   rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" (activate)="onActivate($event)"
-    *ngIf="data.length > 0">
+  *ngIf="data.length > 0">
   <!-- <ngx-datatable-column name="Site ID" prop="site_id">
     <ng-template let-row="row" ngx-datatable-cell-template>
       {{row.site_id}}
@@ -23,8 +23,11 @@
   </ngx-datatable-column>
   <ngx-datatable-column name="ACTION">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <ion-text (click)="edit(row)" color="primary">
+      <!-- <ion-text (click)="edit(row)" color="primary">
         แก้ไข
+      </ion-text> -->
+      <ion-text (click)="showQrCode(row)" color="primary">
+        แสดง QR Code
       </ion-text>
     </ng-template>
   </ngx-datatable-column>

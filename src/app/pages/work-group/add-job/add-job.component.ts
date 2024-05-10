@@ -87,17 +87,15 @@ export class AddJobComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      name: ['test', Validators.required],
       start_time: ['', Validators.required],
       time: ['', Validators.required],
       site: ['', Validators.required],
-      room: ['test', Validators.required],
-      building: ['test', Validators.required],
-      floor: ['test', Validators.required],
-      type: ['test', Validators.required],
-      phone: ['test', Validators.required],
-      description: ['test'],
-      remark: ['test']
+      address: ['', Validators.required],
+      type: ['', Validators.required],
+      phone: ['', Validators.required],
+      type_other: [''],
+      qty: [1, Validators.required],
+      description: [''],
     })
     if (this.subscriptionTime) {
       this.subscriptionTime.unsubscribe();
@@ -265,7 +263,7 @@ export class AddJobComponent implements OnInit {
     const time = this.form.value.time.title;
     const hour = time.split(".")[0];
     const collectionRef = collection(db, "jobs");
-    // const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
+    // const address = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
     // const querydate = new Date(this.form.value.start_time).setHours(0, 0, 0, 0);
     // const formatQueryDate = new Date(querydate);
     // formatQueryDate.setDate(formatQueryDate.getDate());
@@ -286,12 +284,11 @@ export class AddJobComponent implements OnInit {
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
-      room: this.form.value.room,
-      floor: this.form.value.floor,
-      building: this.form.value.building,
+      address: this.form.value.address,
       site_id: this.form.value.site.value,
       type: this.form.value.type.title,
       phone: this.form.value.phone,
+      status: 'BOOKED',
       created_at: new Date(),
       updated_at: new Date(),
     }
@@ -306,13 +303,5 @@ export class AddJobComponent implements OnInit {
 
   closeModal() {
     this.modalController.dismiss();
-  }
-
-  randomTime() {
-    const hours = ["8.00", "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
-    const randomHourIndex = Math.floor(Math.random() * hours.length);
-    const randomHour = hours[randomHourIndex];
-    const hourNumber = parseInt(randomHour.split(".")[0]);
-    return { time: randomHour, hour: hourNumber };
   }
 }

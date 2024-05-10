@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./setting.component.scss'],
 })
 export class SettingComponent implements OnInit {
-  segment = 'user';
+  segment = 'site';
   segment_option = [
     {
       title: 'user',

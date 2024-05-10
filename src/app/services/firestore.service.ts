@@ -30,11 +30,16 @@ export class FirestoreService {
   userChange: Subject<any> = new Subject<any>();
   jobsChange: Subject<any> = new Subject<any>();
   groupsChange: Subject<any> = new Subject<any>();
+  jobPendingChange: Subject<any> = new Subject<any>();
+  jobBookedChange: Subject<any> = new Subject<any>();
+  jobCompletedChange: Subject<any> = new Subject<any>();
 
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
   subscriptionAllJobs;
+  subscriptions = [];
+
 
 
   constructor(
@@ -85,6 +90,7 @@ export class FirestoreService {
         for (const docs of querySnapshot.docs) {
           data.push({
             ...docs.data(),
+            key: docs.id
           });
         }
         this.sites = data;
@@ -198,6 +204,68 @@ export class FirestoreService {
     });
   }
 
+  fetchJobPending() {
+    const querydate = new Date()
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    const q = query(collection(db, "jobs"), where("status", "==", "PENDING"), where("book.date", ">=", formatQueryDate));
+    return new Promise<any>((resolve) => {
+      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data() });
+        }
+        this.jobPendingChange.next(data);
+        resolve(data);
+      })
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  fetchJobBooked() {
+    const querydate = new Date()
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    const q = query(collection(db, "jobs"), where("status", "==", "BOOKED"), where("book.date", ">=", formatQueryDate));
+    return new Promise<any>((resolve) => {
+      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data() });
+        }
+        this.jobBookedChange.next(data);
+        resolve(data);
+      })
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  fetchJobCompleted() {
+    const querydate = new Date()
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    const q = query(collection(db, "jobs"), where("status", "==", "COMPLETED"), where("book.date", ">=", formatQueryDate));
+    return new Promise<any>((resolve) => {
+      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data() });
+        }
+        this.jobCompletedChange.next(data);
+        resolve(data);
+      })
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  unsubscribeSubscriptions() {
+    this.subscriptions.forEach((subscription) => {
+      subscription();
+    });
+    this.subscriptions = [];
+  }
+
+
   customerFetchDataJob(date, site) {
     let nextDay = new Date(date);
     nextDay.setDate(nextDay.getDate() + 1);
@@ -258,8 +326,6 @@ export class FirestoreService {
   }
 
   async updateDatatoFirebase(collectionRef: any, data: any) {
-    // const querySnapshot = await getDocs(q);
-    // if (querySnapshot.empty) {
     return new Promise<any>(async (resolve) => {
       await updateDoc(collectionRef, data).then((res) => {
         resolve(res);
@@ -267,9 +333,6 @@ export class FirestoreService {
         console.error(error);
       });
     });
-    // } else {
-    //   this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานเวลานี้อยู่แล้ว', () => { }, { confirmOnly: true })
-    // }
   }
 
   changeDatetime(timestamp: any) {

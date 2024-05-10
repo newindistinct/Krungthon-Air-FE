@@ -21,6 +21,7 @@ import { UserComponent } from './setting/user/user.component';
 import { AddJobComponent } from './work-group/add-job/add-job.component';
 import { WorkGroupComponent } from './work-group/work-group.component';
 import { BookingComponent } from './booking/booking.component';
+import { ShowQrCodeComponent } from './show-qr-code/show-qr-code.component';
 
 
 
@@ -37,7 +38,8 @@ import { BookingComponent } from './booking/booking.component';
     SiteComponent,
     GroupComponent,
     JobComponent,
-    BookingComponent
+    BookingComponent,
+    ShowQrCodeComponent
   ],
   imports: [
     CommonModule,

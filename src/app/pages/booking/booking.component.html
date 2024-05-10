@@ -1,7 +1,7 @@
-<ion-header class="ion-padding ion-no-border">
-  <ion-toolbar>
-    <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span>
-  </ion-toolbar>
+<ion-header>
+  <div class="flex flex-col justify-center items-center p-4 " [class]="group?.color">
+    <span *ngIf="site" class="text-black text-3xl">{{site.name}} สวัสดี</span>
+  </div>
 </ion-header>
 <ion-content class="ion-padding">
   <!-- <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span> -->
@@ -32,7 +32,7 @@
       <app-input [parentForm]="form" label="อื่นๆ(โปรดระบุ)" typeInput="text" formControlName="type_other"
         placeholder="อื่นๆ(โปรดระบุ)" *ngIf="form.value.type.value=== 'อื่นๆ'"></app-input>
 
-      <app-input [parentForm]="form" label="ที่อยู่" typeInput="text" formControlName="room"
+      <app-input [parentForm]="form" label="ที่อยู่" typeInput="text" formControlName="address"
         placeholder="กรุณาระบุตึกและหมายเลขห้อง เช่น A001"></app-input>
     </div>
   </form>
@@ -42,6 +42,8 @@
   <div style="display: none;" id="sign-in-button"></div>
 </ion-content>
 
-<ion-footer class="ion-no-border ion-padding">
-  <ion-button type="submit" expand="block" (click)="newSubmit()" [disabled]="form.invalid">บันทึก</ion-button>
+<ion-footer class="ion-no-border">
+  <div class="flex justify-center items-center p-4 bg-white" >
+    <ion-button type="submit" class="w-full h-10 text-white text-xl" (click)="newSubmit()" [disabled]="form.invalid">บันทึก</ion-button>
+  </div>
 </ion-footer>

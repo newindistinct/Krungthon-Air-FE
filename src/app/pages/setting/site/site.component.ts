@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
+import { ShowQrCodeComponent } from '../../show-qr-code/show-qr-code.component';
 
 @Component({
   selector: 'app-site',
@@ -68,5 +69,15 @@ export class SiteComponent implements OnInit {
 
   edit(user) {
     console.log(user);
+  }
+
+  showQrCode(site) {
+    this.modalController.create({
+      component: ShowQrCodeComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        site: site
+      }
+    }).then(modal => modal.present());
   }
 }

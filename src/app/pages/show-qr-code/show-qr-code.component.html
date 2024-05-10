@@ -1,0 +1,22 @@
+<div class="flex flex-col justify-center items-center p-4">
+  <div  class="flex flex-row justify-around items-center gap-4">
+    <span class="text-3xl">{{site.name}}</span>
+  </div>
+  <div class="h-72 w-72 my-2">
+    <!-- <img [src]="'https://via.placeholder.com/160x160'" alt="" class="w-full object-cover"> -->
+    <div id="qrcode-container" class="w-full object-cover rounded-lg"></div>
+  </div>
+  <div *ngIf="group" class="flex flex-row justify-around items-center gap-4">
+    <div [class]="group.color" class="h-8 w-8 rounded-3xl "></div>
+    <span class="text-xl">{{group.name}}</span>
+  </div>
+</div>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()" >
+        ปิด
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

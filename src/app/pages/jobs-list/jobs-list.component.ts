@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Timestamp } from 'firebase/firestore';
+import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
   selector: 'app-jobs-list',
@@ -8,10 +9,15 @@ import { Timestamp } from 'firebase/firestore';
 })
 export class JobsListComponent implements OnInit {
   @Input() jobs: any[]
-  constructor() { }
+  constructor(
+    private firestoreService: FirestoreService
+  ) { }
 
   ngOnInit() {
-    // เรียงตามวันและเวลา
+    this.sortJobs()
+  }
+
+  sortJobs(){
     this.jobs.sort((a, b) => {
       if (a.book.date.seconds < b.book.date.seconds) {
         return -1

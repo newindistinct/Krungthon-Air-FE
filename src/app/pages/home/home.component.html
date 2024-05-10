@@ -1,18 +1,43 @@
 <app-header title="Home"></app-header>
-<ion-content class="ion-padding">
-    <!-- <form [formGroup]="form" (ngSubmit)="submit()">
-        <app-select [parentForm]="form" label="สถานะงาน" formControlName="status" placeholder="สถานะงาน"
-            [multiple]="true"
-            [options]="[{title:'ทั้งหมด1',value:'all1',disabled:false},{title:'ทั้งหมด2',value:'all2',disabled:false}]"></app-select>
-
-        <app-input [parentForm]="form" label="ผู้รับผิดชอบ" typeInput="text" formControlName="reader"
-            placeholder="ผู้รับผิดชอบ"></app-input>
-
-        <ion-button [disabled]="form.invalid" type="submit" expand="block">
-            Click me
-        </ion-button>
-    </form> -->
-    <!-- <ion-button (click)="add()" expand="block" fill="clear" shape="round">
-        Click me
-    </ion-button> -->
+<ion-content>
+    <ion-segment [value]="segment" mode="md" (ionChange)="segmentChanged($event)">
+        <ion-segment-button [value]="option.value" *ngFor="let option of segment_option">
+            <ion-label>{{option.title}}</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+    <div [ngSwitch]="segment">
+        <div *ngSwitchCase="'booking'">
+            <ion-card *ngFor="let job of jobPending">
+                <ion-card-header>
+                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                    {{job.address}} {{job.type}}
+                </ion-card-content>
+            </ion-card>
+        </div>
+        <div *ngSwitchCase="'pending'">
+            <ion-card *ngFor="let job of jobBooked">
+                <ion-card-header>
+                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                    {{job.address}} {{job.type}}
+                </ion-card-content>
+            </ion-card> 
+        </div>
+        <div *ngSwitchCase="'Completed'">
+            <ion-card *ngFor="let job of jobCompleted">
+                <ion-card-header>
+                    <ion-card-title>{{job.book.time[0]}}</ion-card-title>
+                    <ion-card-subtitle>{{formatTime(job.book.date)}}</ion-card-subtitle>
+                </ion-card-header>
+                <ion-card-content>
+                    {{job.address}} {{job.type}}
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </div>
 </ion-content>

@@ -69,19 +69,14 @@ export class BookingComponent implements OnInit {
   }
   initForm() {
     this.form = this.fb.group({
-      // name: ['test', Validators.required],
       start_time: ['', Validators.required],
       time: ['', Validators.required],
-      // site_id: ['', Validators.required],
-      room: ['', Validators.required],
-      // building: ['test', Validators.required],
-      // floor: ['test', Validators.required],
+      address: ['', Validators.required],
       type: ['', Validators.required],
       phone: ['', Validators.required],
       type_other: [''],
       qty: [1, Validators.required],
-      // description: ['test'],
-      // remark: ['test']
+      description: [''],
     })
   }
 
@@ -190,12 +185,11 @@ export class BookingComponent implements OnInit {
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
-      room: this.form.value.room,
-      floor: this.form.value.floor || '',
-      building: this.form.value.building || '',
+      address: this.form.value.address,
       site_id: this.site.site_id,
       type: this.form.value.type.title,
       phone: this.form.value.phone,
+      status:'PENDING',
       created_at: new Date(),
       updated_at: new Date(),
     }

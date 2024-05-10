@@ -228,43 +228,6 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  // add() {
-  //   const collectionRef = collection(db, "jobs");
-  //   // const sites = ["1", "2", "3"];
-  //   const groups = [{ id: "1", sites: ["1", "3"] }, { id: "2", sites: ["2"] }];
-  //   const room = ["A01", "A02", "A03", "A04", "A05", "A06", "A07", "A08", "A09", "A10"];
-  //   const { time, hour } = this.randomTime();
-  //   const num = [1, 2];
-  //   const group = groups[Math.floor(Math.random() * groups.length)];
-  //   const site_id = group.sites[Math.floor(Math.random() * group.sites.length)];
-  //   const randomNum = Math.floor(Math.random() * num.length);
-  //   const querydate = new Date().setHours(0, 0, 0, 0);
-  //   const formatQueryDate = new Date(querydate);
-  //   formatQueryDate.setDate(formatQueryDate.getDate() + randomNum);
-  //   const nextDay = new Date(formatQueryDate);
-  //   nextDay.setDate(formatQueryDate.getDate() + 1);
-  //   const q = query(collectionRef,
-  //     where("group_id", "==", group.id),
-  //     // where("site_id", "==", site_id),
-  //     where("book.date", ">", formatQueryDate),
-  //     where("book.date", "<", nextDay),
-  //     where("book.time", "array-contains", time)
-  //   );
-  //   const date = new Date().setHours(hour, 0, 0, 0);
-  //   const formatDate = new Date(date);
-  //   formatDate.setDate(formatDate.getDate() + randomNum);
-  //   const data = {
-  //     book: { time: [time], date: formatDate },
-  //     group_id: group.id,
-  //     job_id: "1",
-  //     project_id: "1",
-  //     room: room[Math.floor(Math.random() * room.length)],
-  //     site_id: site_id,
-  //     type: "ล้าง",
-  //   }
-  //   this.firestoreService.addDatatoFirebase(collectionRef, data, q);
-  // }
-
   randomTime() {
     const hours = ["8.00", "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
     const randomHourIndex = Math.floor(Math.random() * hours.length);
@@ -279,7 +242,7 @@ export class RegisterPage implements OnInit {
         job.book.time.forEach((time: any) => {
           this.rows.filter((row: any) => {
             if (row.group_id === job.group_id && row.site_id === job.site_id) {
-              row.time[time] = job.room + ' ' + job.type;
+              row.time[time] = job.address + ' ' + job.type;
             }
           })
         });

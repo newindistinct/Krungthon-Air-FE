@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { collection, doc, getDoc } from 'firebase/firestore';
-import { db } from 'src/app/services/firebase-config';
+import { Timestamp } from 'firebase/firestore';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
@@ -10,55 +8,84 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  form: FormGroup
+  jobPending = [];
+  jobBooked = [];
+  jobCompleted = [];
+  segment = 'booking';
+  segment_option = [
+    {
+      title: 'รับงาน',
+      value: 'booking'
+    },
+    {
+      title: 'รอดำเนินการ',
+      value: 'pending'
+    },
+    {
+      title: 'เสร็จสิ้น',
+      value: 'Completed'
+    },
+  ]
   constructor(
-    private formBuilder: FormBuilder,
     private firestoreService: FirestoreService
   ) { }
 
   ngOnInit() {
-    // this.form = this.formBuilder.group({
-    //   status: ['', Validators.required],
-    //   reader: ['', Validators.required],
-    // })
-    const hour = 8
-    const date = new Date().setHours(hour, 0, 0, 0);
-    const formatDate = new Date(date);
-    formatDate.setDate(formatDate.getDate() + 1);
+    this.firestoreService.fetchJobPending();
+    this.firestoreService.fetchJobBooked();
+    this.firestoreService.fetchJobCompleted();
+
+    this.firestoreService.jobPendingChange.subscribe(jobs => {
+      this.jobPending = jobs;
+      this.sortJobs(this.jobPending);
+    })
+    this.firestoreService.jobBookedChange.subscribe(jobs => {
+      this.jobBooked = jobs;
+      this.sortJobs(this.jobBooked);
+    })
+    this.firestoreService.jobCompletedChange.subscribe(jobs => {
+      this.jobCompleted = jobs; 
+      this.sortJobs(this.jobCompleted);
+    })
   }
 
-  formatDateToThaiString(date: Date): string {
+  ngOnDestroy() {
+   this.firestoreService.unsubscribeSubscriptions()
+  }
+
+  segmentChanged(event) {
+    this.segment = event.target.value;
+  }
+
+  formatTime(timestamp: Timestamp) {
+    const date = new Date(timestamp.seconds * 1000);
     const options: Intl.DateTimeFormatOptions = {
-      // weekday: 'long',
-      // year: 'numeric',
-      // month: 'long',
-      // day: 'numeric',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
+      second: 'numeric',
+      timeZoneName: 'short'
     };
-    return date.toLocaleDateString('th-TH', options);
+    const formattedDate = date.toLocaleDateString('th-TH', options);
+    return formattedDate;
   }
-
-  submit() {
-    console.log(this.form.value)
+  sortJobs(jobs) {
+    jobs.sort((a, b) => {
+      if (a.book.date.seconds < b.book.date.seconds) {
+        return -1
+      } else if (a.book.date.seconds > b.book.date.seconds) {
+        return 1
+      } else {
+        if (a.book.time[0] < b.book.time[0]) {
+          return -1
+        } else if (a.book.time[0] > b.book.time[0]) {
+          return 1
+        } else {
+          return 0
+        }
+      }
+    })
   }
-
-  // add() {
-  //   const data = {
-  //     test: "test",
-  //     test2: "test2",
-  //     test3: "test3"
-  //   }
-  //   this.firestoreService.addDatatoFirebase(collection(db, "test"), data).then((res) => {
-  //     const collectionRef = (res._key.path.segments[0])
-  //     const id = (res.id)
-  //     console.log({ collectionRef, id })
-  //     const docRef = doc(db, collectionRef, id);
-  //     getDoc(docRef).then((doc) => {
-  //       console.log({ ...doc.data(), id: doc.id })
-  //     })
-  //   }).catch((error) => {
-  //     console.error(error)
-  //   })
-  // }
 }

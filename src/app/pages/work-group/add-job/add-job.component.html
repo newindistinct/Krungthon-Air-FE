@@ -16,57 +16,23 @@
 
       <app-select [parentForm]="form" label="สถานที่" formControlName="site" placeholder="เลือกสถานที่"
         [multiple]="false" [options]="sites"></app-select>
-      <!-- <ion-item class="custom-input my-2">
-        <ion-label>เวลา</ion-label>
-        <ion-select interface="popover" placeholder="เลือกเวลา" formControlName="time" (ionChange)="timeChange()">
-          <ion-select-option *ngFor="let time of times" [disabled]="!time.has_job"
-            [value]="time.time">{{time.time}}</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item class="custom-input my-2">
-        <ion-label>สถานที่</ion-label>
-        <ion-select interface="popover" placeholder="เลือกสถานที่" formControlName="site_id">
-          <ion-select-option *ngFor="let site of sites" [disabled]="!site.has_job"
-            [value]="site.site_id">{{site.name}}</ion-select-option>
-        </ion-select>
-      </ion-item> -->
     </div>
 
-    <app-input [parentForm]="form" label="ชื่องาน" typeInput="text" formControlName="name"
-      placeholder="ชื่องาน"></app-input>
+    <app-select [parentForm]="form" label="บริการ" formControlName="type" placeholder="เลือกบริการ" [multiple]="false"
+      [options]="types"></app-select>
 
-    <app-input [parentForm]="form" label="รายละเอียด" typeInput="text" formControlName="description"
-      placeholder="รายละเอียด"></app-input>
-
-    <app-input [parentForm]="form" label="อาคาร" typeInput="text" formControlName="building"
-      placeholder="อาคาร"></app-input>
-
-    <app-input [parentForm]="form" label="ชั้น" typeInput="text" formControlName="floor" placeholder="ชั้น"></app-input>
-
-    <app-input [parentForm]="form" label="ห้อง" typeInput="text" formControlName="room" placeholder="ห้อง"></app-input>
+    <app-input [parentForm]="form" label="จำนวน" typeInput="number" formControlName="qty"
+      placeholder="จำนวน"></app-input>
 
     <app-input [parentForm]="form" label="เบอร์โทรศัพท์" typeInput="text" formControlName="phone"
       placeholder="เบอร์โทรศัพท์"></app-input>
 
-    <app-input [parentForm]="form" label="หมายเหตุ" typeInput="text" formControlName="remark"
-      placeholder="หมายเหตุ"></app-input>
+    <app-input [parentForm]="form" label="ที่อยู่" typeInput="text" formControlName="address" placeholder="กรุณาระบุตึกและหมายเลขห้อง เช่น A001"></app-input>
 
-    <!-- phonenumber -->
-    <app-select [parentForm]="form" label="บริการ" formControlName="type" placeholder="เลือกบริการ" [multiple]="false"
-      [options]="types"></app-select>
-
-    <!-- <app-input [parentForm]="form" label="ประเภทงาน" typeInput="text" formControlName="type"
-      placeholder="ประเภทงาน"></app-input> -->
-
-    <!-- <ion-item>
-      <ion-label>ผู้รับผิดชอบ</ion-label>
-      <ion-select formControlName="reader_id">
-        <ion-select-option *ngFor="let reader of readers" [value]="reader.id">{{reader.name}}</ion-select-option>
-      </ion-select>
-    </ion-item> -->
-    <!-- <ion-button type="submit" expand="block" [disabled]="form.invalid">เพิ่มงาน</ion-button> -->
+    <app-input [parentForm]="form" label="รายละเอียด" typeInput="text" formControlName="description"
+      placeholder="รายละเอียด"></app-input>
   </form>
 </ion-content>
-<ion-footer class="ion-no-border ion-padding">
+<ion-footer class="ion-no-border ion-padding" *ngIf="form">
   <ion-button type="submit" expand="block" (click)="submit()" [disabled]="form.invalid">บันทึก</ion-button>
 </ion-footer>
