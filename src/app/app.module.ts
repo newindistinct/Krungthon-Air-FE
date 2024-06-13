@@ -12,6 +12,8 @@ import { AppComponent } from './app.component';
 import { LayoutsModule } from './components/layouts/layouts.module';
 import { PagesModule } from './pages/pages.module';
 import { HttpClientModule } from '@angular/common/http';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MyDateAdapter, MY_DATE_FORMATS } from './common/constant/date-format';
 
 
 @NgModule({
@@ -33,6 +35,14 @@ import { HttpClientModule } from '@angular/common/http';
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
+    },
+    {
+      provide: DateAdapter,
+      useClass: MyDateAdapter
+    },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: MY_DATE_FORMATS
     },
     provideAnimationsAsync()
   ],

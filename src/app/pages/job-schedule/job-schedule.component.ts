@@ -134,7 +134,7 @@ export class JobScheduleComponent implements OnInit {
           this.rows.filter((row: any) => {
             if (row.group_id === job.group_id && row.site_id === job.site_id) {
               row.time[time] = {
-                name: job.address + ' ' + job.type,
+                name: `${job.address} ${job.type} ${job.qty || 1} ตัว`,
                 status: job.status || '',
                 job: job
               };

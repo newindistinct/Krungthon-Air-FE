@@ -10,13 +10,13 @@
       <mat-label>กรุณาเลือกวันที่ต้องการจอง</mat-label>
       <input matInput [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="start_time"
         (dateChange)="searchJobs()">
-      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <app-select [parentForm]="form" label="เวลา" formControlName="time" placeholder="กรุณาเลือกเวลา" [multiple]="false"
-      [options]="times" *ngIf="has_date" (selectChangeEvent)="timeChange()"></app-select>
+      [options]="times" *ngIf="has_date" (selectChange)="timeChange()"></app-select>
 
     <div *ngIf="form.value.time">
 
@@ -28,8 +28,6 @@
 
       <app-input [parentForm]="form" label="อื่นๆ(โปรดระบุ)" typeInput="text" formControlName="type_other"
         placeholder="อื่นๆ(โปรดระบุ)" *ngIf="form.value.type.value=== 'อื่นๆ'"></app-input>
-      <!-- <app-input [parentForm]="form" label="จํานวน" typeInput="number" formControlName="qty"
-        placeholder="จํานวน"></app-input> -->
 
       <label class="block my-1 text-sm font-medium text-black">
         <span>จํานวน<span class="text-red-500">*</span><span class="text-gray-400">( 1 ตัว = 1 ชั่วโมง )</span></span>

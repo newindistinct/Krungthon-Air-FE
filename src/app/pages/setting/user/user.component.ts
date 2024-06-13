@@ -24,18 +24,33 @@ export class UserComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    const interval = setInterval(() => {
-      if (this.firestoreService.user.length > 0) {
-        clearInterval(interval);
-        this.firestoreService.fetchDataAllUser(this.firestoreService.user[0].project_id)
-      }
-    }, 1000);
-    this.subscription = this.firestoreService.allUsersChange.subscribe(users => {
-      this.serviceService.dismissLoading();
-      this.data = users;
+    this.subscription = this.firestoreService.allUsersChange.subscribe(allUsers => {
+      this.data = allUsers;
       this.results = [...this.data];
+      this.serviceService.dismissLoading();
     })
+    const allUsers = this.firestoreService.allUsers;
+    if (allUsers.length > 0) {
+      this.data = allUsers
+      this.results = [...this.data];
+    } else {
+      this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+      this.firestoreService.fetchDataAllUser(this.firestoreService.user[0].project_id)
+    }
+
+
+    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+    // const interval = setInterval(() => {
+    //   if (this.firestoreService.user.length > 0) {
+    //     clearInterval(interval);
+    //     this.firestoreService.fetchDataAllUser(this.firestoreService.user[0].project_id)
+    //   }
+    // }, 1000);
+    // this.subscription = this.firestoreService.allUsersChange.subscribe(users => {
+    //   this.serviceService.dismissLoading();
+    //   this.data = users;
+    //   this.results = [...this.data];
+    // })
   }
 
   ngOnDestroy() {

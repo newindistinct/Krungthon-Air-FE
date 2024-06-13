@@ -120,7 +120,6 @@ export class BookingComponent implements OnInit {
     this.jobs = await this.firestoreService.customerFetchDataJob(date, this.site);
     if (this.jobs.length > 0) {
       console.log(this.jobs);
-
       this.updateTimes();
     } else {
       this.setJob();
@@ -133,10 +132,12 @@ export class BookingComponent implements OnInit {
         const timeOption = this.times.find((t: any) => t.title === time);
         if (timeOption && job.group_id === this.group.id) {
           timeOption.count++;
+          timeOption.title = timeOption.count >= this.group.limit ? timeOption.title + ' (มีคิวแล้ว)' : timeOption.title
           timeOption.disabled = timeOption.count >= this.group.limit;
         }
         const siteTimeOption = this.times.find((t: any) => t.title === time && job.site_id === this.site.site_id);
         if (siteTimeOption) {
+          siteTimeOption.title = siteTimeOption.title + ' (มีคิวแล้ว)'
           siteTimeOption.disabled = true;
         }
       });
@@ -180,58 +181,73 @@ export class BookingComponent implements OnInit {
     const time = this.form.value.time.title;
     const hour = time.split(".")[0];
     this.qtyMoreThanOne();
+    const address = this.form.value.address;
+    const addressUpperCase = address.toUpperCase();
     const collectionRef = collection(db, "jobs");
     const date = new Date(this.form.value.start_time).setHours(hour, 0, 0, 0);
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
     const data = {
-      book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
+      book: { time: [time], date: formatDate },
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
-      address: this.form.value.address,
+      address: addressUpperCase,
       site_id: this.site.site_id,
       type: this.form.value.type.title,
+      qty: this.form.value.qty,
       phone: this.form.value.phone,
       remark: this.form.value.remark,
       status: 'PENDING',
       created_at: new Date(),
       updated_at: new Date(),
+      // book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
+      // group_id: this.group.id,
+      // job_id: uuidv4(),
+      // project_id: this.group.project_id,
+      // address: this.form.value.address,
+      // site_id: this.site.site_id,
+      // type: this.form.value.type.title,
+      // phone: this.form.value.phone,
+      // remark: this.form.value.remark,
+      // status: 'PENDING',
+      // created_at: new Date(),
+      // updated_at: new Date(),
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(async (res) => {
       console.log('res', res.id);
-      try {
-        await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
-          message: `${this.site.name}
-วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-บริการ : ${this.form.value.type.title} 
-จํานวน : ${this.form.value.qty} ตัว 
-เบอร์โทร : ${this.form.value.phone}
-ที่อยู่/ห้อง : ${this.form.value.address}
-https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
-          stickerPackageId: 6632,
-          stickerId: 11825396
-        }).subscribe(async (res) => {
-          this.service.dismissLoading();
-          await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
-            window.location.reload();
-          }, { confirmOnly: true }).then(() => {
-            setTimeout(() => {
-              this.service.dismissLoading();
-              window.location.reload();
-            }, 3000);
-          })
-        })
-      } catch (error) {
-        this.service.dismissLoading();
-        console.error(error);
-      }
+      //       try {
+      //         await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+      //           message: `${this.site.name}
+      // วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
+      // บริการ : ${this.form.value.type.title} 
+      // จํานวน : ${this.form.value.qty} ตัว 
+      // เบอร์โทร : ${this.form.value.phone}
+      // ที่อยู่/ห้อง : ${this.form.value.address}
+      // https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
+      //           stickerPackageId: 6632,
+      //           stickerId: 11825396
+      //         }).subscribe(async (res) => {
+      //           this.service.dismissLoading();
+      //           await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
+      //             window.location.reload();
+      //           }, { confirmOnly: true }).then(() => {
+      //             setTimeout(() => {
+      //               this.service.dismissLoading();
+      //               window.location.reload();
+      //             }, 3000);
+      //           })
+      //         })
+      //       } catch (error) {
+      //         this.service.dismissLoading();
+      //         console.error(error);
+      //       }
+      this.service.dismissLoading();
     }).catch((error) => {
       this.service.dismissLoading();
       this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })
       console.error(error);
     });
-
   }
 
   async sendLineNotify() {
@@ -300,6 +316,12 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
   // }
 
   addQty() {
+    if (this.form.value.qty < 10) {
+      this.form.patchValue({ qty: this.form.value.qty + 1 });
+    }
+  }
+
+  addQtyByCondition() {
     const newQty = this.form.value.qty + 1;
 
     const newTimes = this.setTimeByQty(newQty);
@@ -345,7 +367,7 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
 
   subQty() {
     if (this.form.value.qty > 1) {
-      this.form.value.qty--;
+      this.form.patchValue({ qty: this.form.value.qty - 1 });
     }
   }
 
@@ -531,7 +553,9 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
     };
     return date.toLocaleDateString('th-TH', options);
   }
+
   timeChange() {
+    console.log('timeChange');
     this.form.patchValue({ qty: 1 });
   }
 

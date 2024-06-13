@@ -16,7 +16,7 @@ import { InputComponent } from '../input/input.component';
 })
 export class SelectComponent implements OnInit {
   @ViewChild('childrenWrapper') content: ElementRef<HTMLElement>;
-  @Output() selectChangeEvent = new EventEmitter<any>();
+  @Output() selectChange = new EventEmitter<any>();
   
   @Input() options = [{
     title: 'test',
@@ -89,7 +89,7 @@ export class SelectComponent implements OnInit {
     this.touched();
     this.changed(value);
 
-    this.selectChangeEvent.emit(value);
+    this.selectChange.emit(value);
   }
 
   public registerOnChange(fn: any): void {
@@ -105,6 +105,6 @@ export class SelectComponent implements OnInit {
   }
 
   emitSelectChangeEvent() {
-    this.selectChangeEvent.emit(this.value);
+    this.selectChange.emit(this.value);
   }
 }

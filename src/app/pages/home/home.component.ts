@@ -46,7 +46,6 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.param_id);
     if (this.param_id) {
       getDoc(doc(db, 'jobs', this.param_id)).then(doc => {
         this.infoJob(doc.data())
@@ -164,6 +163,7 @@ export class HomeComponent implements OnInit {
     const formattedDate = date.toLocaleDateString('th-TH', options);
     return formattedDate;
   }
+  
   sortJobs(jobs) {
     jobs.sort((a, b) => {
       if (a.book.date.seconds < b.book.date.seconds) {
@@ -181,6 +181,7 @@ export class HomeComponent implements OnInit {
       }
     })
   }
+
   getSiteName(site_id: string) {
     const site = this.sites.find(site => site.site_id === site_id);
     return site ? site.name : '';

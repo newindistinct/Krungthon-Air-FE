@@ -4,12 +4,12 @@
   <!-- <ion-button class="col-span-3 my-2" mode="md" (click)="add()">เพิ่มงาน</ion-button> -->
 </div>
 <ngx-datatable class="flex w-full. material expandable" [columnMode]="'force'" [rows]="results" [limit]="10"
-  rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" (activate)="onActivate($event)" 
-  [sorts]="[{prop: 'status', dir: 'asc'}]"
-  *ngIf="data.length > 0">
+  rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" (activate)="onActivate($event)"
+  [sorts]="[{prop: 'status', dir: 'asc'}]" *ngIf="data.length > 0">
   <ngx-datatable-column name="Status" prop="status">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <div class="w-full h-full text-white text-center rounded-md " [ngClass]="{'bg-red-400':row.status == 'BOOKED','bg-gray-400':row.status == 'PENDING','bg-green-400' :row.status == 'COMPLETED','bg-black':row.status == 'CANCELED' || row.status == 'REJECTED'}">
+      <div class="w-full h-full text-white text-center rounded-md "
+        [ngClass]="{'bg-red-400':row.status == 'BOOKED','bg-gray-400':row.status == 'PENDING','bg-green-400' :row.status == 'COMPLETED','bg-black':row.status == 'CANCELED' || row.status == 'REJECTED'}">
         {{row.status}}
       </div>
     </ng-template>
@@ -46,7 +46,7 @@
   </ngx-datatable-column>
   <ngx-datatable-column name="จำนวน" prop="book.time">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      {{row.book.time.length}}
+      {{row.qty || 1}}
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column name="ACTION">

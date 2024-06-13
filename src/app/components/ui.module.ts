@@ -10,6 +10,7 @@ import { SelectComponent } from './forms/select/select.component';
 import { SettingAddComponent } from './modals/setting-add/setting-add.component';
 import { SettingEditComponent } from './modals/setting-edit/setting-edit.component';
 import { JobInfoComponent } from './modals/job-info/job-info.component';
+import { CheckJobComponent } from '../pages/check-job/check-job.component';
 
 
 
@@ -19,7 +20,7 @@ import { JobInfoComponent } from './modals/job-info/job-info.component';
     SelectComponent,
     SettingAddComponent,
     SettingEditComponent,
-    JobInfoComponent
+    JobInfoComponent,
   ],
   imports: [
     CommonModule,

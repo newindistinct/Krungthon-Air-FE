@@ -297,6 +297,7 @@ export class FirestoreService {
     const q = query(collection(db, "jobs"),
       where("book.date", ">", date),
       where("book.date", "<", nextDay),
+      where("status", "in", ["BOOKED", "PENDING"]),
       where("project_id", "==", site.project_id));
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);

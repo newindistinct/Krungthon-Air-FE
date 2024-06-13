@@ -25,18 +25,32 @@ export class GroupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    const interval = setInterval(() => {
-      if (this.firestoreService.user.length > 0) {
-        clearInterval(interval);
-        this.firestoreService.fetchDataGroup(this.firestoreService.user[0].project_id)
-      }
-    }, 1000);
     this.subscription = this.firestoreService.groupsChange.subscribe(groups => {
-      this.serviceService.dismissLoading();
       this.data = groups;
       this.results = [...this.data];
+      this.serviceService.dismissLoading();
     })
+    const groups = this.firestoreService.groups;
+    if (groups.length > 0) {
+      this.data = groups
+      this.results = [...this.data];
+    } else {
+      this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+      this.firestoreService.fetchDataGroup(this.firestoreService.user[0].project_id)
+    }
+
+    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+    // const interval = setInterval(() => {
+    //   if (this.firestoreService.user.length > 0) {
+    //     clearInterval(interval);
+    //     this.firestoreService.fetchDataGroup(this.firestoreService.user[0].project_id)
+    //   }
+    // }, 1000);
+    // this.subscription = this.firestoreService.groupsChange.subscribe(groups => {
+    //   this.serviceService.dismissLoading();
+    //   this.data = groups;
+    //   this.results = [...this.data];
+    // })
   }
 
   ngOnDestroy() {

@@ -1,10 +1,10 @@
 ion-segment-button {
     // --background: #3880ff;
-    --background-checked: #0000ff;
+    --background-checked: var(--ion-color-primary);
     // --background-focused: #3880ff;
     // --background-focused-opacity: 1;
-    // --background-hover: #3880ff;
-    // --background-hover-opacity: 1;
+    --background-hover: var(--ion-color-primary-tint);
+    --background-hover-opacity: 0.3;
     // --border-color: #3880ff;
     // --border-radius: 4px;
     // --border-style: solid;

@@ -22,6 +22,7 @@ import { AddJobComponent } from './work-group/add-job/add-job.component';
 import { WorkGroupComponent } from './work-group/work-group.component';
 import { BookingComponent } from './booking/booking.component';
 import { ShowQrCodeComponent } from './show-qr-code/show-qr-code.component';
+import { CheckJobComponent } from './check-job/check-job.component';
 
 
 
@@ -39,19 +40,20 @@ import { ShowQrCodeComponent } from './show-qr-code/show-qr-code.component';
     GroupComponent,
     JobComponent,
     BookingComponent,
-    ShowQrCodeComponent
+    ShowQrCodeComponent,
+    CheckJobComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    ReactiveFormsModule,
     NgxDatatableModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     LayoutsModule,
     UiModule,
-    ReactiveFormsModule
   ],
   exports: [
     DashboardComponent

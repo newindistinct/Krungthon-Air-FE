@@ -2,7 +2,7 @@
 <ion-content>
   <div class="flex flex-col justify-center items-center p-4">
     <div class="flex flex-row justify-between items-center w-full ellipsis">
-      <ion-label class="text-base">ที่อยู่:</ion-label>
+      <ion-label class="text-base">อาคาร/ชั้น/ห้อง</ion-label>
       <ion-label class="text-base w-1/2 text-right ellipsis">{{job.address}}</ion-label>
     </div>
     <div class="flex flex-row justify-between items-center w-full">
@@ -23,7 +23,7 @@
     </div>
     <div class="flex flex-row justify-between items-center w-full">
       <ion-label class="text-base">จำนวน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.book.time.length}} เครื่อง</ion-label>
+      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.qty || 1}} เครื่อง</ion-label>
     </div>
     <div class="flex flex-row justify-between items-center w-full">
       <ion-label class="text-base">เบอร์โทรศัพท์:</ion-label>

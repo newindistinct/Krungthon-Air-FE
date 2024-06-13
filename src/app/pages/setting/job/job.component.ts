@@ -25,18 +25,32 @@ export class JobComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    const interval = setInterval(() => {
-      if (this.firestoreService.user.length > 0) {
-        clearInterval(interval);
-        this.firestoreService.fetchDataAllJob(this.firestoreService.user[0].project_id)
-      }
-    }, 1000);
-    this.subscription = this.firestoreService.allJobsChange.subscribe(Jobs => {
-      this.serviceService.dismissLoading();
-      this.data = Jobs;
+    this.subscription = this.firestoreService.allJobsChange.subscribe(allJobs => {
+      this.data = allJobs;
       this.results = [...this.data];
+      this.serviceService.dismissLoading();
     })
+    const allJobs = this.firestoreService.allJobs;
+    if (allJobs.length > 0) {
+      this.data = allJobs
+      this.results = [...this.data];
+    } else {
+      this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+      this.firestoreService.fetchDataAllJob(this.firestoreService.user[0].project_id)
+    }
+
+    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+    // const interval = setInterval(() => {
+    //   if (this.firestoreService.user.length > 0) {
+    //     clearInterval(interval);
+    //     this.firestoreService.fetchDataAllJob(this.firestoreService.user[0].project_id)
+    //   }
+    // }, 1000);
+    // this.subscription = this.firestoreService.allJobsChange.subscribe(Jobs => {
+    //   this.serviceService.dismissLoading();
+    //   this.data = Jobs;
+    //   this.results = [...this.data];
+    // })
   }
 
   ngOnDestroy() {
@@ -49,7 +63,7 @@ export class JobComponent implements OnInit {
 
   handleInput(event) {
     const query = event.target.value.toLowerCase();
-    this.results = this.data.filter((d) => d.address.toLowerCase().indexOf(query) > -1 || d.phone.toLowerCase().indexOf(query) > -1);
+    this.results = this.data.filter((d) => d.address.toLowerCase().indexOf(query) > -1 || d.phone.toLowerCase().indexOf(query) > -1 || this.formatTime(d.book.date).toLowerCase().indexOf(query) > -1);
   }
 
   onActivate(event) {
@@ -75,7 +89,7 @@ export class JobComponent implements OnInit {
       cssClass: 'my-custom-class',
     }).then(modal => modal.present());
   }
-  
+
   formatTime(timestamp: Timestamp) {
     const date = new Date(timestamp.seconds * 1000);
     const options: Intl.DateTimeFormatOptions = {

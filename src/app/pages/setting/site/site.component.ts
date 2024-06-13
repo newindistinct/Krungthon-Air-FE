@@ -25,18 +25,31 @@ export class SiteComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    const interval = setInterval(() => {
-      if (this.firestoreService.user.length > 0) {
-        clearInterval(interval);
-        this.firestoreService.fetchDataSite(this.firestoreService.user[0].project_id)
-      }
-    }, 1000);
     this.subscription = this.firestoreService.sitesChange.subscribe(sites => {
-      this.serviceService.dismissLoading();
       this.data = sites;
       this.results = [...this.data];
+      this.serviceService.dismissLoading();
     })
+    const sites = this.firestoreService.sites;
+    if (sites.length > 0) {
+      this.data = sites
+      this.results = [...this.data];
+    } else {
+      this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+      this.firestoreService.fetchDataSite('1')
+    }
+    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
+    // const interval = setInterval(() => {
+    //   if (this.firestoreService.user.length > 0) {
+    //     clearInterval(interval);
+    //     this.firestoreService.fetchDataSite(this.firestoreService.user[0].project_id)
+    //   }
+    // }, 1000);
+    // this.subscription = this.firestoreService.sitesChange.subscribe(sites => {
+    //   this.serviceService.dismissLoading();
+    //   this.data = sites;
+    //   this.results = [...this.data];
+    // })
   }
 
   ngOnDestroy() {
