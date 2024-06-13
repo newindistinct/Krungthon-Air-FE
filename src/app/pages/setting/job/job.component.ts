@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Timestamp } from 'firebase/firestore';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 
@@ -63,7 +65,35 @@ export class JobComponent implements OnInit {
     }).then(modal => modal.present());
   }
 
-  edit(user) {
-    console.log(user);
+  edit(job) {
+    this.modalController.create({
+      component: SettingEditComponent,
+      componentProps: {
+        type: 'job',
+        job: job
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
+  }
+  
+  formatTime(timestamp: Timestamp) {
+    const date = new Date(timestamp.seconds * 1000);
+    const options: Intl.DateTimeFormatOptions = {
+      // year: 'numeric',
+      // month: 'long',
+      // day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+      // second: 'numeric',
+      // timeZoneName: 'short'
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    const formattedDate = date.toLocaleDateString('th-TH', options);
+    return formattedDate;
   }
 }

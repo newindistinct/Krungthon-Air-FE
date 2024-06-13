@@ -9,13 +9,13 @@
             <ion-card-title>{{group.name}}</ion-card-title>
             <ion-card-subtitle>ผู้รับผิดชอบ : {{group.reader}}</ion-card-subtitle>
           </ion-card-header>
-          <ion-icon class="m-8 text-2xl" name="pencil-outline" (click)="editTeam(group)"></ion-icon>
+          <ion-icon class="m-8 text-2xl cursor-pointer" name="pencil-outline" (click)="edit(group)"></ion-icon>
         </div>
 
         <ion-card-content>
           <div class="flex flex-wrap gap-2">
-            <div class=" mr-2 text-black p-2 rounded-lg" [class]="group.color" *ngFor="let list of group.site_groups.site">
-              #{{list.name}}</div>
+            <div class="cursor-pointer mr-2 text-black p-2 rounded-lg" [class]="group.color" *ngFor="let site of group.site_groups.site" (click)="bookingPage(site)"> 
+              #{{site.name}}</div>
           </div>
 
         </ion-card-content>

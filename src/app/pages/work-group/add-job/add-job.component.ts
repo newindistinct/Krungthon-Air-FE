@@ -95,7 +95,7 @@ export class AddJobComponent implements OnInit {
       phone: ['', Validators.required],
       type_other: [''],
       qty: [1, Validators.required],
-      description: [''],
+      remark: [''],
     })
     if (this.subscriptionTime) {
       this.subscriptionTime.unsubscribe();
@@ -288,6 +288,7 @@ export class AddJobComponent implements OnInit {
       site_id: this.form.value.site.value,
       type: this.form.value.type.title,
       phone: this.form.value.phone,
+      remark: this.form.value.remark,
       status: 'BOOKED',
       created_at: new Date(),
       updated_at: new Date(),

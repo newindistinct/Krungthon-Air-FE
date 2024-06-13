@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { SelectionType } from '@swimlane/ngx-datatable';
 import * as dayjs from 'dayjs';
+import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 
@@ -31,7 +34,8 @@ export class JobScheduleComponent implements OnInit {
 
   constructor(
     private firestoreService: FirestoreService,
-    private service: ServiceService
+    private service: ServiceService,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -96,6 +100,16 @@ export class JobScheduleComponent implements OnInit {
     this.updateRow();
   }
 
+  onSelect(job) {
+    this.modalController.create({
+      component: JobInfoComponent,
+      componentProps: {
+        job: job
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
+  }
+
   randomTime() {
     const hours = ["8.00", "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
     const randomHourIndex = Math.floor(Math.random() * hours.length);
@@ -113,6 +127,7 @@ export class JobScheduleComponent implements OnInit {
               row.time[time] = {
                 name: job.address + ' ' + job.type,
                 status: job.status || '',
+                job: job
               };
             }
           })

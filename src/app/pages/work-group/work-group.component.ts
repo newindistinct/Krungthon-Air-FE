@@ -1,8 +1,10 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { AddJobComponent } from 'src/app/pages/work-group/add-job/add-job.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { JobsListComponent } from '../jobs-list/jobs-list.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 
 @Component({
   selector: 'app-work-group',
@@ -78,7 +80,8 @@ export class WorkGroupComponent implements OnInit {
   ]
   constructor(
     private firestoreService: FirestoreService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -97,7 +100,7 @@ export class WorkGroupComponent implements OnInit {
 
   editTeam(group) {
     console.log(group);
-    
+
   }
 
   showTeamDetail(team) {
@@ -155,5 +158,28 @@ export class WorkGroupComponent implements OnInit {
         }
       }).then(modal => modal.present());
     });
+  }
+
+  edit(group) {
+    this.modalController.create({
+      component: SettingEditComponent,
+      componentProps: {
+        type: 'group',
+        group: group
+      },
+      cssClass: 'my-custom-class',
+    }).then(async modal => {
+      await modal.present()
+      await modal.onDidDismiss().then(() => {
+        // this.firestoreService.fetchDataGroup(this.firestoreService.user[0].project_id).then((groups) => {
+        this.getGroups();
+        // })
+      });
+    });
+  }
+
+  bookingPage(site) {
+    console.log(site);
+    this.router.navigate(['booking', site.key]);
   }
 }

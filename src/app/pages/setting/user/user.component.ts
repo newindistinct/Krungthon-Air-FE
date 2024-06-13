@@ -2,6 +2,7 @@ import { ServiceService } from './../../../services/service.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
@@ -67,6 +68,13 @@ export class UserComponent implements OnInit {
   }
 
   edit(user) {
-    console.log(user);
+    this.modalController.create({
+      component: SettingEditComponent,
+      componentProps: {
+        type: 'user',
+        user: user
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
   }
 }

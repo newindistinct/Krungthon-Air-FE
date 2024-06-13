@@ -8,6 +8,8 @@ import { LayoutsModule } from './layouts/layouts.module';
 import { InputComponent } from './forms/input/input.component';
 import { SelectComponent } from './forms/select/select.component';
 import { SettingAddComponent } from './modals/setting-add/setting-add.component';
+import { SettingEditComponent } from './modals/setting-edit/setting-edit.component';
+import { JobInfoComponent } from './modals/job-info/job-info.component';
 
 
 
@@ -16,6 +18,8 @@ import { SettingAddComponent } from './modals/setting-add/setting-add.component'
     InputComponent,
     SelectComponent,
     SettingAddComponent,
+    SettingEditComponent,
+    JobInfoComponent
   ],
   imports: [
     CommonModule,

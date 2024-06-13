@@ -11,7 +11,7 @@
     <!-- sorts dir = 'asc' or 'desc' -->
     <ngx-datatable class="flex w-full material expandable" [columnMode]="'force'" [rows]="rows" [limit]="100"
       rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" [rowClass]="getRowClass"
-      [sorts]="[{prop: 'group_id', dir: 'desc'}]" (activate)="onActivate($event)">
+      [sorts]="[{prop: 'group_id', dir: 'desc'}]"  (activate)="onActivate($event)">
       <ngx-datatable-column name="สถานที่" prop="name">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{row.name}}
@@ -19,7 +19,8 @@
       </ngx-datatable-column>
       <ngx-datatable-column [name]="time" prop="time" *ngFor="let time of column" [width]="100">
         <ng-template let-row="row" ngx-datatable-cell-template>
-          <div class="w-full h-full text-white text-center rounded-md" [ngClass]="{'bg-red-400':row.time[time].status == 'BOOKED','bg-gray-400':row.time[time].status == 'PENDING','bg-green-400' :row.time[time].status == 'COMPLETED'}">
+          <div class="w-full h-full text-white text-center rounded-md cursor-pointer"  (click)="onSelect(row.time[time].job)"
+            [ngClass]="{'bg-red-400':row.time[time].status == 'BOOKED','bg-gray-400':row.time[time].status == 'PENDING','bg-green-400' :row.time[time].status == 'COMPLETED'}">
             {{row.time[time].name}}
           </div>
         </ng-template>

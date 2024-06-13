@@ -77,6 +77,7 @@ export class BookingComponent implements OnInit {
       type_other: [''],
       qty: [1, Validators.required],
       description: [''],
+      remark: ['']
     })
   }
 
@@ -118,6 +119,8 @@ export class BookingComponent implements OnInit {
     date.setDate(date.getDate());
     this.jobs = await this.firestoreService.customerFetchDataJob(date, this.site);
     if (this.jobs.length > 0) {
+      console.log(this.jobs);
+
       this.updateTimes();
     } else {
       this.setJob();
@@ -125,35 +128,35 @@ export class BookingComponent implements OnInit {
   }
 
   updateTimes() {
-    this.jobs.filter((job: any) => {
-      if (job.book.time) {
-        job.book.time.forEach((time: any) => {
-          this.times.filter((data: any) => {
-            if (data.title === time && this.group.id === job.group_id) {
-              data.count++;
-              // if (data.count >= this.group.limit) {
-              data.disabled = true;
-              // }
-            }
-          })
-        });
-      }
-    })
+    this.jobs.forEach((job: any) => {
+      job.book.time.forEach((time: string) => {
+        const timeOption = this.times.find((t: any) => t.title === time);
+        if (timeOption && job.group_id === this.group.id) {
+          timeOption.count++;
+          timeOption.disabled = timeOption.count >= this.group.limit;
+        }
+        const siteTimeOption = this.times.find((t: any) => t.title === time && job.site_id === this.site.site_id);
+        if (siteTimeOption) {
+          siteTimeOption.disabled = true;
+        }
+      });
+    });
   }
 
   newSubmit() {
-    this.checkJobByPhone(this.form.value.phone).then((data) => {
-      if (data.length > 0) {
-        this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานแล้ว', () => { }, { confirmOnly: true })
-      } else {
-        this.LoginWithPhone(this.form.value.phone);
-      }
-    })
+    // this.checkJobByPhone(this.form.value.phone).then((data) => {
+    //   if (data.length > 0) {
+    //     this.service.showAlert('ไม่สามารถเพิ่มงานได้', 'มีงานแล้ว', () => { }, { confirmOnly: true })
+    //   } else {
+    this.addJob();
+    //     this.LoginWithPhone(this.form.value.phone);
+    //   }
+    // })
   }
 
   checkJobByPhone(phone) {
     const collectionRef = collection(db, "jobs");
-    const q = query(collectionRef, where("phone", "==", phone));
+    const q = query(collectionRef, where("phone", "==", phone), where("status", "==", 'PENDING'));
     const data = []
     return new Promise<any>((resolve) => {
       getDocs(q).then((querySnapshot) => {
@@ -173,15 +176,16 @@ export class BookingComponent implements OnInit {
   }
 
   addJob() {
+    this.service.presentLoadingWithOutTime("กำลังจอง...");
     const time = this.form.value.time.title;
     const hour = time.split(".")[0];
-    this.qtyMoreThanOne(this.form.value.qty);
+    this.qtyMoreThanOne();
     const collectionRef = collection(db, "jobs");
     const date = new Date(this.form.value.start_time).setHours(hour, 0, 0, 0);
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
     const data = {
-      book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne(this.form.value.qty) : [time], date: formatDate },
+      book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
@@ -189,28 +193,41 @@ export class BookingComponent implements OnInit {
       site_id: this.site.site_id,
       type: this.form.value.type.title,
       phone: this.form.value.phone,
-      status:'PENDING',
+      remark: this.form.value.remark,
+      status: 'PENDING',
       created_at: new Date(),
       updated_at: new Date(),
     }
-    this.firestoreService.addDatatoFirebase(collectionRef, data).then(() => {
+    this.firestoreService.addDatatoFirebase(collectionRef, data).then(async (res) => {
+      console.log('res', res.id);
       try {
-        this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+        await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
           message: `${this.site.name}
 วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
 บริการ : ${this.form.value.type.title} 
 จํานวน : ${this.form.value.qty} ตัว 
-เบอร์โทร : ${this.form.value.phone}`,
+เบอร์โทร : ${this.form.value.phone}
+ที่อยู่/ห้อง : ${this.form.value.address}
+https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396
-        }).subscribe((res) => {
-          console.log(res);
+        }).subscribe(async (res) => {
+          this.service.dismissLoading();
+          await this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => {
+            window.location.reload();
+          }, { confirmOnly: true }).then(() => {
+            setTimeout(() => {
+              this.service.dismissLoading();
+              window.location.reload();
+            }, 3000);
+          })
         })
       } catch (error) {
+        this.service.dismissLoading();
         console.error(error);
       }
-      this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => { }, { confirmOnly: true })
     }).catch((error) => {
+      this.service.dismissLoading();
       this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })
       console.error(error);
     });
@@ -231,7 +248,8 @@ export class BookingComponent implements OnInit {
     }
   }
 
-  qtyMoreThanOne(qty) {
+  qtyMoreThanOne() {
+    const qty = this.form.value.qty;
     let times = []
     let time = this.form.value.time.title.split(".")[0] // 8.00
     time = parseInt(time)
@@ -242,6 +260,94 @@ export class BookingComponent implements OnInit {
     }
     return times
   }
+  setTimeByQty(qty) {
+    let times = []
+    let time = this.form.value.time.title.split(".")[0] // 8.00
+    time = parseInt(time)
+    for (let i = 0; i < qty; i++) {
+      if (time + i < 18) {
+        times.push(`${time + i}.00`);
+      }
+    }
+    return times
+  }
+  // addQty() {
+  //   const newQty = this.form.value.qty + 1;
+
+  //   const newTimes = this.setTimeByQty(newQty);
+
+  //   const overTime = newTimes.some(time => time === '17.00');
+
+  //   if (!overTime) {
+
+  //     const hasConflict = this.jobs.some(job => {
+  //       if (job.book.time) {
+  //         return job.book.time.some(time => newTimes.includes(time));
+  //       }
+  //       return false;
+  //     });
+  //     console.log('hasConflict', hasConflict);
+
+  //     if (hasConflict) {
+  //         this.service.showAlert('วันนี้มีงานอยู่', 'กรุณาเลือกวันอื่น', () => { }, { confirmOnly: true });
+  //         return;
+  //     }
+
+  //     this.form.patchValue({ qty: newQty });
+  //   } else {
+  //     this.service.showAlert('ไม่สามารถเพิ่มได้', 'สูงกว่า 16.00 ไม่สามารถเพิ่มได้', () => { }, { confirmOnly: true });
+  //   }
+  // }
+
+  addQty() {
+    const newQty = this.form.value.qty + 1;
+
+    const newTimes = this.setTimeByQty(newQty);
+
+    const overTime = newTimes.some(time => time === '17.00');
+
+    if (!overTime) {
+
+      let conflictCount = 0;
+      let siteConflictCount = 0;
+      // console.log(this.site ,this.jobs);
+
+      this.jobs.forEach(job => {
+        if (job.group_id === this.site.group_id) {
+          const jobConflict = job.book.time.some(time => newTimes.includes(time));
+          if (jobConflict) {
+            conflictCount++;
+          }
+        }
+        if (job.site_id === this.site.site_id) {
+          const siteConflict = job.book.time.some(time => newTimes.includes(time));
+          if (siteConflict) {
+            siteConflictCount++;
+          }
+        }
+      });
+
+      if (siteConflictCount > 0) {
+        this.service.showAlert('ไม่สามารถเพิ่มได้', `เวลา ${newTimes[newTimes.length - 1]} มีงานครบกําหนดในคอนโดแล้ว กรุณาเลือกวันหรือเวลาอื่น`, () => { }, { confirmOnly: true });
+        return;
+      }
+
+      if (conflictCount >= this.group.limit) {
+        this.service.showAlert('ไม่สามารถเพิ่มได้', `เวลา ${newTimes[newTimes.length - 1]} มีงานครบกําหนดในโซนแล้ว กรุณาเลือกวันหรือเวลาอื่น`, () => { }, { confirmOnly: true });
+        return;
+      }
+
+      this.form.patchValue({ qty: newQty });
+    } else {
+      this.service.showAlert('ไม่สามารถเพิ่มได้', 'สูงกว่า 16.00 ไม่สามารถเพิ่มได้', () => { }, { confirmOnly: true });
+    }
+  }
+
+  subQty() {
+    if (this.form.value.qty > 1) {
+      this.form.value.qty--;
+    }
+  }
 
   async signInWithPhoneNumber(phone: any) {
     this.service.presentLoadingWithOutTime("waiting...");
@@ -249,19 +355,18 @@ export class BookingComponent implements OnInit {
       size: 'invisible'
     });
     let tel = "+66" + phone.replace(/\D[^.]/g, '').slice(1);
-    signInWithPhoneNumber(auth, tel, verifier)
-      .then((confirmationResult) => {
-        this.confirmationResult = confirmationResult;
-        this.service.dismissLoading();
-        this.alertEnterOTP();
-      }).catch((error) => {
-        console.error(error);
-        const { header, message } = sendOTPverifyFail();
-        this.service.showAlert(header, message, () => {
-          window.location.reload();
-        }, { confirmOnly: true })
-        this.service.dismissLoading();
-      });
+    signInWithPhoneNumber(auth, tel, verifier).then((confirmationResult) => {
+      this.confirmationResult = confirmationResult;
+      this.service.dismissLoading();
+      this.alertEnterOTP();
+    }).catch((error) => {
+      console.error(error);
+      const { header, message } = sendOTPverifyFail();
+      this.service.showAlert(header, message, () => {
+        window.location.reload();
+      }, { confirmOnly: true })
+      this.service.dismissLoading();
+    });
   }
 
   alertEnterOTP() {
@@ -426,4 +531,8 @@ export class BookingComponent implements OnInit {
     };
     return date.toLocaleDateString('th-TH', options);
   }
+  timeChange() {
+    this.form.patchValue({ qty: 1 });
+  }
+
 }

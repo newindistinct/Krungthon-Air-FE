@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild, forwardRef } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, forwardRef } from '@angular/core';
 import { FormGroup, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputComponent } from '../input/input.component';
 
@@ -16,7 +16,8 @@ import { InputComponent } from '../input/input.component';
 })
 export class SelectComponent implements OnInit {
   @ViewChild('childrenWrapper') content: ElementRef<HTMLElement>;
-
+  @Output() selectChangeEvent = new EventEmitter<any>();
+  
   @Input() options = [{
     title: 'test',
     value: 'test',
@@ -87,6 +88,8 @@ export class SelectComponent implements OnInit {
 
     this.touched();
     this.changed(value);
+
+    this.selectChangeEvent.emit(value);
   }
 
   public registerOnChange(fn: any): void {
@@ -101,4 +104,7 @@ export class SelectComponent implements OnInit {
     this.disabled = isDisabled;
   }
 
+  emitSelectChangeEvent() {
+    this.selectChangeEvent.emit(this.value);
+  }
 }

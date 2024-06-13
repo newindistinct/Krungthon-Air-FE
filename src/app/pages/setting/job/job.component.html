@@ -4,13 +4,21 @@
   <!-- <ion-button class="col-span-3 my-2" mode="md" (click)="add()">เพิ่มงาน</ion-button> -->
 </div>
 <ngx-datatable class="flex w-full. material expandable" [columnMode]="'force'" [rows]="results" [limit]="10"
-  rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" (activate)="onActivate($event)"
-    *ngIf="data.length > 0">
-  <ngx-datatable-column name="Job ID" prop="job_id" >
+  rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true" (activate)="onActivate($event)" 
+  [sorts]="[{prop: 'status', dir: 'asc'}]"
+  *ngIf="data.length > 0">
+  <ngx-datatable-column name="Status" prop="status">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <div class="w-full h-full text-white text-center rounded-md " [ngClass]="{'bg-red-400':row.status == 'BOOKED','bg-gray-400':row.status == 'PENDING','bg-green-400' :row.status == 'COMPLETED','bg-black':row.status == 'CANCELED' || row.status == 'REJECTED'}">
+        {{row.status}}
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+  <!-- <ngx-datatable-column name="Job ID" prop="job_id">
     <ng-template let-row="row" ngx-datatable-cell-template>
       {{row.job_id}}
     </ng-template>
-  </ngx-datatable-column>
+  </ngx-datatable-column> -->
   <ngx-datatable-column name="เบอร์มือถือ" prop="phone">
     <ng-template let-row="row" ngx-datatable-cell-template>
       {{row.phone}}
@@ -21,19 +29,29 @@
       {{row.address}}
     </ng-template>
   </ngx-datatable-column>
-  <ngx-datatable-column name="รหัสสถานที่" prop="site_id">
+  <!-- <ngx-datatable-column name="รหัสสถานที่" prop="site_id">
     <ng-template let-row="row" ngx-datatable-cell-template>
       {{row.site_id}}
     </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column name="รหัสกลุ่ม" prop="group_id">
+  </ngx-datatable-column> -->
+  <!-- <ngx-datatable-column name="รหัสกลุ่ม" prop="group_id">
     <ng-template let-row="row" ngx-datatable-cell-template>
       {{row.group_id}}
+    </ng-template>
+  </ngx-datatable-column> -->
+  <ngx-datatable-column name="วันที่" prop="book.date">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{formatTime(row.book.date)}}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="จำนวน" prop="book.time">
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{row.book.time.length}}
     </ng-template>
   </ngx-datatable-column>
   <ngx-datatable-column name="ACTION">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <ion-text (click)="edit(row)" color="primary">
+      <ion-text (click)="edit(row)" color="danger" class="cursor-pointer">
         แก้ไข
       </ion-text>
     </ng-template>

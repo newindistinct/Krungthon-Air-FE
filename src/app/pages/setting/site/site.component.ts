@@ -4,6 +4,7 @@ import { SettingAddComponent } from 'src/app/components/modals/setting-add/setti
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 import { ShowQrCodeComponent } from '../../show-qr-code/show-qr-code.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 
 @Component({
   selector: 'app-site',
@@ -67,8 +68,15 @@ export class SiteComponent implements OnInit {
     }).then(modal => modal.present());
   }
 
-  edit(user) {
-    console.log(user);
+  edit(site) {
+    this.modalController.create({
+      component: SettingEditComponent,
+      componentProps: {
+        type: 'site',
+        site: site
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
   }
 
   showQrCode(site) {

@@ -115,3 +115,21 @@ ion-modal .my-custom-class {
   // --min-width: 100%;
   --width: 500px;
 }
+
+.item-radio-checked.sc-ion-select-popover-md {
+  --background: rgba(var(--ion-color-medium-rgb, 146, 148, 156), 0.08);
+  --background-focused: var(--ion-color-medium);
+  --background-focused-opacity: 0.2;
+  --background-hover: var(--ion-color-medium);
+  --background-hover-opacity: 0.12;
+}
+
+.comma-separated span:not(:last-child)::after {
+  content: ', ';
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

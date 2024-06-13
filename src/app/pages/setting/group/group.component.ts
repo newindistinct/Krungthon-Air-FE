@@ -1,6 +1,8 @@
+import { group } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 
@@ -66,7 +68,14 @@ export class GroupComponent implements OnInit {
     }).then(modal => modal.present());
   }
 
-  edit(user) {
-    console.log(user);
+  edit(group) {
+    this.modalController.create({
+      component: SettingEditComponent,
+      componentProps: {
+        type: 'group',
+        group: group
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
   }
 }

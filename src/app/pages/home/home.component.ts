@@ -1,6 +1,11 @@
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { Timestamp } from 'firebase/firestore';
+import { ModalController } from '@ionic/angular';
+import { Timestamp, doc } from 'firebase/firestore';
+import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
+import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { ServiceService } from 'src/app/services/service.service';
 
 @Component({
   selector: 'app-home',
@@ -8,10 +13,12 @@ import { FirestoreService } from 'src/app/services/firestore.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  job_id = this.route.snapshot.paramMap.get('job_id');
   sites = [];
   jobPending = [];
   jobBooked = [];
   jobCompleted = [];
+  jobRejectedCanceled = [];
   segment = 'booking';
   segment_option = [
     {
@@ -24,11 +31,18 @@ export class HomeComponent implements OnInit {
     },
     {
       title: 'เสร็จสิ้น',
-      value: 'Completed'
+      value: 'completed'
     },
+    {
+      title: 'ยกเลิกแล้ว',
+      value: 'rejected-canceled'
+    }
   ]
   constructor(
-    private firestoreService: FirestoreService
+    private route: ActivatedRoute,
+    private firestoreService: FirestoreService,
+    private service: ServiceService,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -36,6 +50,7 @@ export class HomeComponent implements OnInit {
     this.firestoreService.fetchJobPending();
     this.firestoreService.fetchJobBooked();
     this.firestoreService.fetchJobCompleted();
+    this.firestoreService.fetchJobRejectedCanceled();
     this.firestoreService.sitesChange.subscribe(sites => {
       this.sites = sites;
     })
@@ -51,10 +66,75 @@ export class HomeComponent implements OnInit {
       this.jobCompleted = jobs;
       this.sortJobs(this.jobCompleted);
     })
+    this.firestoreService.jobRejectedCanceledChange.subscribe(jobs => {
+      this.jobRejectedCanceled = jobs;
+      this.sortJobs(this.jobRejectedCanceled);
+    })
+    if (this.job_id) {
+      
+    }
   }
 
   ngOnDestroy() {
     this.firestoreService.unsubscribeSubscriptions()
+  }
+
+  acceptJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'BOOKED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการรับงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
+  rejectJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'REJECTED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการปฏิเสธงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
+  completeJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'COMPLETED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการส่งงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
+  cancelJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'CANCELED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการยกเลิกงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
+  reportJob(job) {
+    // this.firestoreService.reportJob(job);
+  }
+
+  infoJob(job) {
+    this.modalController.create({
+      component: JobInfoComponent,
+      componentProps: {
+        job: job
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
+  }
+
+  openJob(job) {
+    // this.firestoreService.openJob(job);
   }
 
   segmentChanged(event) {
@@ -64,13 +144,19 @@ export class HomeComponent implements OnInit {
   formatTime(timestamp: Timestamp) {
     const date = new Date(timestamp.seconds * 1000);
     const options: Intl.DateTimeFormatOptions = {
+      // year: 'numeric',
+      // month: 'long',
+      // day: 'numeric',
+      // hour: 'numeric',
+      // minute: 'numeric',
+      // second: 'numeric',
+      // timeZoneName: 'short'
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      timeZoneName: 'short'
+      month: '2-digit',
+      day: '2-digit',
+      // hour: '2-digit',
+      // minute: '2-digit',
+      // second: '2-digit'
     };
     const formattedDate = date.toLocaleDateString('th-TH', options);
     return formattedDate;

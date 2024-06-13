@@ -33,7 +33,7 @@ export class FirestoreService {
   jobPendingChange: Subject<any> = new Subject<any>();
   jobBookedChange: Subject<any> = new Subject<any>();
   jobCompletedChange: Subject<any> = new Subject<any>();
-
+  jobRejectedCanceledChange : Subject<any> = new Subject<any>();
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
@@ -140,6 +140,7 @@ export class FirestoreService {
     const q = query(collection(db, "jobs"),
       where("book.date", ">", date),
       where("book.date", "<", nextDay),
+      where("status", "in", ["PENDING", "BOOKED", "COMPLETED"]),
       where("project_id", "==", this.user[0].project_id));
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);
@@ -205,7 +206,8 @@ export class FirestoreService {
   }
 
   fetchJobPending() {
-    const querydate = new Date()
+    // const querydate = new Date()
+    const querydate = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(querydate);
     formatQueryDate.setDate(formatQueryDate.getDate());
     const q = query(collection(db, "jobs"), where("status", "==", "PENDING"), where("book.date", ">=", formatQueryDate));
@@ -223,7 +225,8 @@ export class FirestoreService {
   }
 
   fetchJobBooked() {
-    const querydate = new Date()
+    // const querydate = new Date()
+    const querydate = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(querydate);
     formatQueryDate.setDate(formatQueryDate.getDate());
     const q = query(collection(db, "jobs"), where("status", "==", "BOOKED"), where("book.date", ">=", formatQueryDate));
@@ -252,6 +255,24 @@ export class FirestoreService {
           data.push({ ...docs.data(), key: docs.id });
         }
         this.jobCompletedChange.next(data);
+        resolve(data);
+      })
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  fetchJobRejectedCanceled() {
+    const querydate = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    const q = query(collection(db, "jobs"), where("status", "in", ["REJECTED", "CANCELED"]), where("book.date", ">=", formatQueryDate));
+    return new Promise<any>((resolve) => {
+      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data(), key: docs.id });
+        }
+        this.jobRejectedCanceledChange.next(data);
         resolve(data);
       })
       this.subscriptions.push(subscription);
