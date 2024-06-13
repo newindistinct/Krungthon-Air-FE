@@ -15,7 +15,7 @@ export class JobScheduleComponent implements OnInit {
   date = new Date()
   selectedColor = '';
   time = {
-    '8.00': '',
+    // '8.00': '',
     '9.00': '',
     '10.00': '',
     '11.00': '',
@@ -28,7 +28,16 @@ export class JobScheduleComponent implements OnInit {
     '18.00': ''
   }
   // colors = Color.filter((color: any) => color.includes('400'));
-  column = ['8.00', '9.00', '10.00', '11.00', '12.00', '13.00', '14.00', '15.00', '16.00']
+  column = [
+    // '8.00',
+    '9.00',
+    '10.00',
+    '11.00',
+    '12.00',
+    '13.00',
+    '14.00',
+    '15.00',
+    '16.00']
   rows = []
   sites = []
 
@@ -58,7 +67,7 @@ export class JobScheduleComponent implements OnInit {
       return {
         ...site,
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
@@ -111,7 +120,7 @@ export class JobScheduleComponent implements OnInit {
   }
 
   randomTime() {
-    const hours = ["8.00", "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
+    const hours = [ "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
     const randomHourIndex = Math.floor(Math.random() * hours.length);
     const randomHour = hours[randomHourIndex];
     const hourNumber = parseInt(randomHour.split(".")[0]);

@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Timestamp, doc } from 'firebase/firestore';
+import { Timestamp, doc, getDoc } from 'firebase/firestore';
 import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -13,7 +13,7 @@ import { ServiceService } from 'src/app/services/service.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  job_id = this.route.snapshot.paramMap.get('job_id');
+  param_id = this.route.snapshot.queryParamMap.get('job_id');
   sites = [];
   jobPending = [];
   jobBooked = [];
@@ -46,6 +46,12 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.param_id);
+    if (this.param_id) {
+      getDoc(doc(db, 'jobs', this.param_id)).then(doc => {
+        this.infoJob(doc.data())
+      })
+    }
     this.firestoreService.fetchDataSite('1');
     this.firestoreService.fetchJobPending();
     this.firestoreService.fetchJobBooked();
@@ -70,9 +76,6 @@ export class HomeComponent implements OnInit {
       this.jobRejectedCanceled = jobs;
       this.sortJobs(this.jobRejectedCanceled);
     })
-    if (this.job_id) {
-      
-    }
   }
 
   ngOnDestroy() {

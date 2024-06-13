@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "hosting:dev": "ionic build --prod && firebase deploy"
+    "hosting:prod": "ionic build --prod && firebase deploy"
   },
   "private": true,
   "dependencies": {

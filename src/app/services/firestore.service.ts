@@ -33,7 +33,7 @@ export class FirestoreService {
   jobPendingChange: Subject<any> = new Subject<any>();
   jobBookedChange: Subject<any> = new Subject<any>();
   jobCompletedChange: Subject<any> = new Subject<any>();
-  jobRejectedCanceledChange : Subject<any> = new Subject<any>();
+  jobRejectedCanceledChange: Subject<any> = new Subject<any>();
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
@@ -247,7 +247,9 @@ export class FirestoreService {
     const querydate = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(querydate);
     formatQueryDate.setDate(formatQueryDate.getDate());
-    const q = query(collection(db, "jobs"), where("status", "==", "COMPLETED"), where("book.date", ">=", formatQueryDate));
+    const q = query(collection(db, "jobs"),
+      where("status", "==", "COMPLETED"),
+      where("book.date", ">=", formatQueryDate));
     return new Promise<any>((resolve) => {
       const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
@@ -265,7 +267,9 @@ export class FirestoreService {
     const querydate = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(querydate);
     formatQueryDate.setDate(formatQueryDate.getDate());
-    const q = query(collection(db, "jobs"), where("status", "in", ["REJECTED", "CANCELED"]), where("book.date", ">=", formatQueryDate));
+    const q = query(collection(db, "jobs"),
+      where("status", "in", ["REJECTED", "CANCELED"]),
+      where("book.date", ">=", formatQueryDate));
     return new Promise<any>((resolve) => {
       const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];

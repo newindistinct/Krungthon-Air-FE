@@ -111,11 +111,11 @@ export class AddJobComponent implements OnInit {
 
   setJob() {
     this.times = [
-      {
-        title: '8.00',
-        count: 0,
-        disabled: false,
-      },
+      // {
+      //   title: '8.00',
+      //   count: 0,
+      //   disabled: false,
+      // },
       {
         title: '9.00',
         count: 0,
@@ -161,11 +161,11 @@ export class AddJobComponent implements OnInit {
 
   initTimes() {
     this.times = [
-      {
-        title: '8.00',
-        count: 0,
-        disabled: true,
-      },
+      // {
+      //   title: '8.00',
+      //   count: 0,
+      //   disabled: true,
+      // },
       {
         title: '9.00',
         count: 0,
@@ -304,7 +304,7 @@ export class AddJobComponent implements OnInit {
 
   qtyMoreThanOne(qty) {
     let times = []
-    let time = this.form.value.time.title.split(".")[0] // 8.00
+    let time = this.form.value.time.title.split(".")[0] 
     time = parseInt(time)
     for (let i = 0; i < qty; i++) {
       if (time + i < 17) {

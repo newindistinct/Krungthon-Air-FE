@@ -213,7 +213,7 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
           stickerId: 11825396
         }).subscribe(async (res) => {
           this.service.dismissLoading();
-          await this.service.showAlert('Success', 'เพิ่มงานสําเร็จ', () => {
+          await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
             window.location.reload();
           }, { confirmOnly: true }).then(() => {
             setTimeout(() => {
@@ -422,11 +422,11 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
 
   setJob() {
     this.times = [
-      {
-        title: '8.00',
-        count: 0,
-        disabled: false,
-      },
+      // {
+      //   title: '8.00',
+      //   count: 0,
+      //   disabled: false,
+      // },
       {
         title: '9.00',
         count: 0,
@@ -472,11 +472,11 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
 
   initTimes() {
     this.times = [
-      {
-        title: '8.00',
-        count: 0,
-        disabled: true,
-      },
+      // {
+      //   title: '8.00',
+      //   count: 0,
+      //   disabled: true,
+      // },
       {
         title: '9.00',
         count: 0,

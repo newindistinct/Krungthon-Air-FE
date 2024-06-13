@@ -13,7 +13,7 @@ export class RegisterPage implements OnInit {
   date = new Date();
   selectedColor = '';
   time = {
-    '8.00': '',
+    // '8.00': '',
     '9.00': '',
     '10.00': '',
     '11.00': '',
@@ -26,71 +26,20 @@ export class RegisterPage implements OnInit {
     '18.00': ''
   }
   // colors = Color.filter((color: any) => color.includes('400'));
-  column = ['8.00', '9.00', '10.00', '11.00', '12.00', '13.00', '14.00', '15.00', '16.00']
+  column = [
+    // '8.00',
+    '9.00',
+    '10.00',
+    '11.00',
+    '12.00',
+    '13.00',
+    '14.00',
+    '15.00',
+    '16.00'
+  ]
   rows = []
 
-  work = [
-    {
-      work_id: '1',
-      site_ref: '1',
-      site_name: 'สถานที่ 1',
-      group_id: '1',
-      group_name: 'กลุ่ม 1',
-      group_detail: 'กลุ่ม 1',
-      type: 'ล้าง',
-      time: ['8.00', '9.00'],
-      location: 'A10',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '2',
-      site_ref: '2',
-      site_name: 'สถานที่ 2',
-      group_id: '1',
-      group_name: 'กลุ่ม 1',
-      group_detail: 'กลุ่ม 1',
-      type: 'ล้าง',
-      time: ['9.00'],
-      location: 'A20',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '3',
-      site_ref: '3',
-      site_name: 'สถานที่ 3',
-      group_id: '2',
-      group_name: 'กลุ่ม 2',
-      group_detail: 'กลุ่ม 2',
-      type: 'ล้าง',
-      time: ['10.00'],
-      location: 'A30',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '4',
-      site_ref: '4',
-      site_name: 'สถานที่ 4',
-      group_id: '3',
-      group_name: 'กลุ่ม 3',
-      group_detail: 'กลุ่ม 3',
-      type: 'ล้าง',
-      time: ['11.00'],
-      location: 'A40',
-      detail: 'รายละเอียดงาน'
-    },
-    {
-      work_id: '5',
-      site_ref: '5',
-      site_name: 'สถานที่ 5',
-      group_id: '2',
-      group_name: 'กลุ่ม 2',
-      group_detail: 'กลุ่ม 2',
-      type: 'ล้าง',
-      time: ['12.00'],
-      location: 'A50',
-      detail: 'รายละเอียดงาน'
-    }
-  ]
+  work = []
   constructor(
     private firestoreService: FirestoreService,
     // private datePipe: DatePipe
@@ -119,7 +68,7 @@ export class RegisterPage implements OnInit {
         group_id: '1',
         site_name: 'สถานที่ 1',
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
@@ -138,7 +87,7 @@ export class RegisterPage implements OnInit {
         group_id: '2',
         site_name: 'สถานที่ 2',
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
@@ -157,7 +106,7 @@ export class RegisterPage implements OnInit {
         group_id: '1',
         site_name: 'สถานที่ 3',
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
@@ -176,7 +125,7 @@ export class RegisterPage implements OnInit {
         group_id: '3',
         site_name: 'สถานที่ 4',
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
@@ -195,7 +144,7 @@ export class RegisterPage implements OnInit {
         group_id: '2',
         site_name: 'สถานที่ 5',
         time: {
-          '8.00': '',
+          // '8.00': '',
           '9.00': '',
           '10.00': '',
           '11.00': '',
