@@ -36,6 +36,10 @@ export class DashboardComponent implements OnInit {
     {
       name: 'Rejected',
       value: 0
+    },
+    {
+      name: 'All',
+      value: 0
     }
   ]
   report: [
@@ -95,14 +99,13 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.unsubscribe = this.firestoreService.jobDashboardChange.subscribe((data) => {
+    this.unsubscribe = this.firestoreService.jobDashboardChange.subscribe(async (data) => {
       this.jobs = data;
-      this.filterStatus();
+      await this.filterStatus().then(() => {
+        this.PieChartComponent()
+      });
     })
-    this.firestoreService.fetchDataDashboard(this.date);
-    // this.PieChartComponent();
-    this.SeparateChartComponent();
-    this.distributeByTimeChartComponent();
+    this.searchJobsToday()
   }
 
   ngOnDestroy() {
@@ -115,6 +118,13 @@ export class DashboardComponent implements OnInit {
     this.firestoreService.fetchDataDashboard(this.date);
   }
 
+  async searchJobsToday() {
+    const date = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(date);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    this.firestoreService.fetchDataDashboard(formatQueryDate);
+  }
+
   filterStatus() {
     const statusCounts = this.jobs.reduce((counts, job) => {
       counts[job.status] = (counts[job.status] || 0) + 1;
@@ -123,7 +133,11 @@ export class DashboardComponent implements OnInit {
     const { PENDING, BOOKED, COMPLETED, CANCELED, REJECTED } = statusCounts;
     this.usageCount = (PENDING || 0) + (BOOKED || 0) + (COMPLETED || 0) +
       (CANCELED || 0) + (REJECTED || 0);
-    this.statusCounts = [
+    this.statusCounts = [,
+      {
+        name: 'All',
+        value: this.usageCount
+      },
       {
         name: 'Pending',
         value: PENDING || 0
@@ -145,7 +159,7 @@ export class DashboardComponent implements OnInit {
         value: REJECTED || 0
       }
     ]
-    this.PieChartComponent()
+    return Promise.resolve();
   }
 
   formatDate(date) {
@@ -153,8 +167,9 @@ export class DashboardComponent implements OnInit {
   }
 
   PieChartComponent() {
+    //  '#9F65FF','#5383FF', '#66C0F2','#47CF5D','#FFA215',  '#FF2424',
     this.PieChart = {
-      color: ['#9F65FF', '#66C0F2', '#47CF5D', '#5383FF', '#FFA215', '#FF2424'],
+      color: ['#FF2424','#9F65FF', '#5383FF', '#66C0F2', '#47CF5D', '#FFA215', ],
       // title: {
       //   text: 'Usage count',
       //   subtext: `${this.usageCount}`,

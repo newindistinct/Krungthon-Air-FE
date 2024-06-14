@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { InvalidOTP, sendOTPverify, sendOTPverifyFail } from 'src/app/common/constant/alert-messages';
@@ -12,6 +12,7 @@ import { ServiceService } from 'src/app/services/service.service';
 import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { ContactComponent } from '../contact/contact.component';
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
@@ -55,6 +56,7 @@ export class BookingComponent implements OnInit {
     private service: ServiceService,
     private fb: FormBuilder,
     private alertController: AlertController,
+    private popoverController: PopoverController,
     private http: HttpClient
   ) { }
 
@@ -214,32 +216,32 @@ export class BookingComponent implements OnInit {
       // updated_at: new Date(),
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(async (res) => {
-      //       try {
-      //         await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
-      //           message: `${this.site.name}
-      // วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-      // บริการ : ${this.form.value.type.title} 
-      // จํานวน : ${this.form.value.qty} ตัว 
-      // เบอร์โทร : ${this.form.value.phone}
-      // ที่อยู่/ห้อง : ${this.form.value.address}
-      // https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
-      //           stickerPackageId: 6632,
-      //           stickerId: 11825396
-      //         }).subscribe(async (res) => {
-      //           this.service.dismissLoading();
-      //           await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
-      //             window.location.reload();
-      //           }, { confirmOnly: true }).then(() => {
-      //             setTimeout(() => {
-      //               this.service.dismissLoading();
-      //               window.location.reload();
-      //             }, 3000);
-      //           })
-      //         })
-      //       } catch (error) {
-      //         this.service.dismissLoading();
-      //         console.error(error);
-      //       }
+      try {
+        await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+          message: `${this.site.name}
+วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
+บริการ : ${this.form.value.type.title} 
+จํานวน : ${this.form.value.qty} ตัว 
+เบอร์โทร : ${this.form.value.phone}
+ที่อยู่/ห้อง : ${this.form.value.address}
+https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
+          stickerPackageId: 6632,
+          stickerId: 11825396
+        }).subscribe(async (res) => {
+          this.service.dismissLoading();
+          await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
+            window.location.reload();
+          }, { confirmOnly: true }).then(() => {
+            setTimeout(() => {
+              this.service.dismissLoading();
+              window.location.reload();
+            }, 3000);
+          })
+        })
+      } catch (error) {
+        this.service.dismissLoading();
+        console.error(error);
+      }
       this.service.dismissLoading();
     }).catch((error) => {
       this.service.dismissLoading();
@@ -553,6 +555,18 @@ export class BookingComponent implements OnInit {
   timeChange() {
     console.log('timeChange');
     this.form.patchValue({ qty: 1 });
+  }
+
+  async presentPopover(e: Event) {
+    const popover = await this.popoverController.create({
+      component: ContactComponent,
+      event: e,
+    });
+
+    await popover.present();
+
+    const { role } = await popover.onDidDismiss();
+    console.log(`Popover dismissed with role: ${role}`);
   }
 
 }

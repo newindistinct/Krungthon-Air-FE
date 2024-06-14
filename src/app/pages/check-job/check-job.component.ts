@@ -38,18 +38,10 @@ export class CheckJobComponent implements OnInit {
 
   sortJobs(jobs) {
     jobs.sort((a, b) => {
-      if (a.book.date.seconds < b.book.date.seconds) {
+      if (a.created_at.seconds > b.created_at.seconds) {
         return -1
-      } else if (a.book.date.seconds > b.book.date.seconds) {
-        return 1
       } else {
-        if (a.book.time[0] < b.book.time[0]) {
-          return -1
-        } else if (a.book.time[0] > b.book.time[0]) {
-          return 1
-        } else {
-          return 0
-        }
+        return 1
       }
     })
   }

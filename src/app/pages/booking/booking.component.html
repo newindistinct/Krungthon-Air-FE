@@ -5,6 +5,14 @@
 </ion-header>
 <ion-content class="ion-padding">
   <!-- <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span> -->
+  <div class="w-full flex justify-end items-end">
+    <ion-buttons slot="end" class="text-gray-500">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="start" name="alert-circle"></ion-icon>
+        ติดต่อเรา
+      </ion-button>
+    </ion-buttons>
+  </div>
   <form [formGroup]="form" (ngSubmit)="newSubmit()" *ngIf="site && group">
     <mat-form-field class="w-full py-2">
       <mat-label>กรุณาเลือกวันที่ต้องการจอง</mat-label>

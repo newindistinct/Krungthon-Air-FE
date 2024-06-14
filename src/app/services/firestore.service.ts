@@ -39,6 +39,7 @@ export class FirestoreService {
   subscriptionSites;
   subscriptionGroups;
   subscriptionAllJobs;
+  subscriptionDashboard;
   subscriptions = [];
 
 
@@ -292,21 +293,24 @@ export class FirestoreService {
       where("book.date", "<", nextDay),
       where("project_id", "==", '1')
     );
+    if (this.subscriptionDashboard) {
+      this.subscriptionDashboard();
+    }
     return new Promise<any>((resolve) => {
-      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+      this.subscriptionDashboard = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
           data.push({ ...docs.data(), key: docs.id });
         }
         this.jobDashboardChange.next(data);
         resolve(data);
-      })
-      this.subscriptions.push(subscription);
+      });
     });
   }
 
   unsubscribeSubscriptions() {
     this.subscriptions.forEach((subscription) => {
+      console.log(subscription);
       subscription();
     });
     this.subscriptions = [];

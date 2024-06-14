@@ -48,7 +48,9 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     if (this.param_id) {
       getDoc(doc(db, 'jobs', this.param_id)).then(doc => {
-        this.infoJob(doc.data())
+        if (doc.exists()) {
+          this.infoJob(doc.data())
+        }
       })
     }
     this.firestoreService.fetchDataSite('1');
