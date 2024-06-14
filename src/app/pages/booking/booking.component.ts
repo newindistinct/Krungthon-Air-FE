@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, PopoverController } from '@ionic/angular';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
@@ -57,7 +57,8 @@ export class BookingComponent implements OnInit {
     private fb: FormBuilder,
     private alertController: AlertController,
     private popoverController: PopoverController,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   onInputPhone() {
@@ -228,21 +229,26 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396
         }).subscribe(async (res) => {
-          this.service.dismissLoading();
-          await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
-            window.location.reload();
-          }, { confirmOnly: true }).then(() => {
-            setTimeout(() => {
-              this.service.dismissLoading();
-              window.location.reload();
-            }, 3000);
+          this.form.patchValue({
+            time: ''
           })
+          this.has_date = false
+          this.initForm();
+          this.service.dismissLoading();
+          this.router.navigate(['booking-success']);
+          // await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
+          //   window.location.reload();
+          // }, { confirmOnly: true }).then(() => {
+          //   setTimeout(() => {
+          //     this.service.dismissLoading();
+          //     window.location.reload();
+          //   }, 3000);
+          // })
         })
       } catch (error) {
         this.service.dismissLoading();
         console.error(error);
       }
-      this.service.dismissLoading();
     }).catch((error) => {
       this.service.dismissLoading();
       this.service.showAlert('ไม่สามารถเพิ่มงานได้', error.message, () => { }, { confirmOnly: true })

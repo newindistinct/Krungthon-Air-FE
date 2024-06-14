@@ -11,6 +11,7 @@ import { WorkGroupComponent } from './pages/work-group/work-group.component';
 import { AuthGuard } from './common/guards/auth.guard';
 import { BookingComponent } from './pages/booking/booking.component';
 import { CheckJobComponent } from './pages/check-job/check-job.component';
+import { BookingSuccessComponent } from './pages/booking-success/booking-success.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +58,10 @@ export const routes: Routes = [
   {
     path: 'check-job',
     component: CheckJobComponent
+  },
+  {
+    path:'booking-success',
+    component: BookingSuccessComponent
   }
 ];
 

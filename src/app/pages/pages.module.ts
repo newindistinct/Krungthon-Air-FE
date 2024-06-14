@@ -25,6 +25,7 @@ import { ShowQrCodeComponent } from './show-qr-code/show-qr-code.component';
 import { CheckJobComponent } from './check-job/check-job.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ContactComponent } from './contact/contact.component';
+import { BookingSuccessComponent } from './booking-success/booking-success.component';
 
 
 
@@ -44,7 +45,8 @@ import { ContactComponent } from './contact/contact.component';
     BookingComponent,
     ShowQrCodeComponent,
     CheckJobComponent,
-    ContactComponent
+    ContactComponent,
+    BookingSuccessComponent
   ],
   imports: [
     CommonModule,
