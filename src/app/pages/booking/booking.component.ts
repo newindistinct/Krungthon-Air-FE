@@ -119,7 +119,6 @@ export class BookingComponent implements OnInit {
     date.setDate(date.getDate());
     this.jobs = await this.firestoreService.customerFetchDataJob(date, this.site);
     if (this.jobs.length > 0) {
-      console.log(this.jobs);
       this.updateTimes();
     } else {
       this.setJob();
@@ -215,7 +214,6 @@ export class BookingComponent implements OnInit {
       // updated_at: new Date(),
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(async (res) => {
-      console.log('res', res.id);
       //       try {
       //         await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
       //           message: `${this.site.name}
@@ -302,7 +300,6 @@ export class BookingComponent implements OnInit {
   //       }
   //       return false;
   //     });
-  //     console.log('hasConflict', hasConflict);
 
   //     if (hasConflict) {
   //         this.service.showAlert('วันนี้มีงานอยู่', 'กรุณาเลือกวันอื่น', () => { }, { confirmOnly: true });
@@ -332,7 +329,6 @@ export class BookingComponent implements OnInit {
 
       let conflictCount = 0;
       let siteConflictCount = 0;
-      // console.log(this.site ,this.jobs);
 
       this.jobs.forEach(job => {
         if (job.group_id === this.site.group_id) {

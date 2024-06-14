@@ -158,7 +158,6 @@ export class SettingEditComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.form.value);
     switch (this.type) {
       case 'user':
         this.editUser();

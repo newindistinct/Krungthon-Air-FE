@@ -33,7 +33,6 @@ export class CheckJobComponent implements OnInit {
     getDocs(query(collection(db, "jobs"), where("phone", "==", phone))).then(querySnapshot => {
       this.jobByPhone = querySnapshot.docs.map(doc => doc.data())
       this.sortJobs(this.jobByPhone)
-      console.log(this.jobByPhone)
     })
   }
 

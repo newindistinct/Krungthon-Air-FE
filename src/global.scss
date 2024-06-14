@@ -88,6 +88,35 @@ $app-theme: mat.define-light-theme((color: (primary: $app-primary,
   }
 }
 
+.custom-datatable.ngx-datatable.material {
+  box-shadow: none;
+
+  .datatable-header {
+    border: solid 1px #000;
+
+    .datatable-header-cell {
+      background-color: #f5f5f5;
+      border-right: solid 1px #000;
+      // border-left: solid 1px #000;
+    }
+  }
+
+  .datatable-body-row {
+    border: 1px solid #000;
+    border-top: none;
+
+    .datatable-body-cell {
+      // border-top: none;
+      border-right: solid 1px #000;
+      // border-left: solid 1px #000;
+    }
+  }
+
+  .datatable-footer {
+    border-top: none;
+  }
+}
+
 html,
 body {
   height: 100%;

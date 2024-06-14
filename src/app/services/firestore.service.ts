@@ -34,6 +34,7 @@ export class FirestoreService {
   jobBookedChange: Subject<any> = new Subject<any>();
   jobCompletedChange: Subject<any> = new Subject<any>();
   jobRejectedCanceledChange: Subject<any> = new Subject<any>();
+  jobDashboardChange: Subject<any> = new Subject<any>();
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
@@ -277,6 +278,27 @@ export class FirestoreService {
           data.push({ ...docs.data(), key: docs.id });
         }
         this.jobRejectedCanceledChange.next(data);
+        resolve(data);
+      })
+      this.subscriptions.push(subscription);
+    });
+  }
+
+  fetchDataDashboard(date) {
+    let nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const q = query(collection(db, "jobs"),
+      where("book.date", ">", date),
+      where("book.date", "<", nextDay),
+      where("project_id", "==", '1')
+    );
+    return new Promise<any>((resolve) => {
+      const subscription = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data(), key: docs.id });
+        }
+        this.jobDashboardChange.next(data);
         resolve(data);
       })
       this.subscriptions.push(subscription);

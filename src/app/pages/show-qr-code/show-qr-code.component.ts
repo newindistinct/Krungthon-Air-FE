@@ -22,7 +22,6 @@ export class ShowQrCodeComponent implements OnInit {
     querySnapshot.forEach((doc) => {
       this.group = doc.data();
     });
-    console.log(this.group);
     
     const qrCodeText = 'https://krungthon-air.web.app/booking/' + this.site.key;
     const qrcodeContainer = document.getElementById('qrcode-container');

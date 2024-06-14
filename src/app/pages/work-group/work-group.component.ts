@@ -13,71 +13,8 @@ import { SettingEditComponent } from 'src/app/components/modals/setting-edit/set
 })
 export class WorkGroupComponent implements OnInit {
   groups: any = [];
-  teams = [
-    {
-      group_id: 1,
-      site_id: 1,
-      title: 'team 1',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 2,
-      site_id: 1,
-      title: 'team 2',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 3,
-      site_id: 1,
-      title: 'team 3',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 4,
-      site_id: 1,
-      title: 'team 4',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 5,
-      site_id: 1,
-      title: 'team 5',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 6,
-      site_id: 1,
-      title: 'team 6',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    },
-    {
-      group_id: 7,
-      site_id: 1,
-      title: 'team 7',
-      subtitle: 'ผู้รับผิดชอบ',
-      description: 'คอนโด 1,คอนโด 2,คอนโด 3,คอนโด 4',
-      img: 'https://ionicframework.com/docs/img/demos/card-media.png',
-      url: '/krungthon/home'
-    }
-  ]
+  teams = []
+
   constructor(
     private firestoreService: FirestoreService,
     private modalController: ModalController,
@@ -100,7 +37,6 @@ export class WorkGroupComponent implements OnInit {
 
   editTeam(group) {
     console.log(group);
-
   }
 
   showTeamDetail(team) {
@@ -179,7 +115,6 @@ export class WorkGroupComponent implements OnInit {
   }
 
   bookingPage(site) {
-    console.log(site);
     this.router.navigate(['booking', site.key]);
   }
 }

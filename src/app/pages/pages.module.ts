@@ -23,6 +23,7 @@ import { WorkGroupComponent } from './work-group/work-group.component';
 import { BookingComponent } from './booking/booking.component';
 import { ShowQrCodeComponent } from './show-qr-code/show-qr-code.component';
 import { CheckJobComponent } from './check-job/check-job.component';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 
 
@@ -48,6 +49,7 @@ import { CheckJobComponent } from './check-job/check-job.component';
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+    NgxEchartsModule,
     NgxDatatableModule,
     MatDatepickerModule,
     MatFormFieldModule,

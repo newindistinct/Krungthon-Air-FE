@@ -14,6 +14,8 @@ import { PagesModule } from './pages/pages.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MyDateAdapter, MY_DATE_FORMATS } from './common/constant/date-format';
+import { NgxEchartsModule } from 'ngx-echarts';
+import * as echarts from 'echarts';
 
 
 @NgModule({
@@ -30,6 +32,9 @@ import { MyDateAdapter, MY_DATE_FORMATS } from './common/constant/date-format';
     MatDatepickerModule,
     LayoutsModule,
     PagesModule,
+    NgxEchartsModule.forRoot({
+      echarts
+    }),
   ],
   providers: [
     {
