@@ -37,10 +37,6 @@ export class DashboardComponent implements OnInit {
       name: 'Rejected',
       value: 0
     },
-    {
-      name: 'All',
-      value: 0
-    }
   ]
   report: [
     {
@@ -133,11 +129,7 @@ export class DashboardComponent implements OnInit {
     const { PENDING, BOOKED, COMPLETED, CANCELED, REJECTED } = statusCounts;
     this.usageCount = (PENDING || 0) + (BOOKED || 0) + (COMPLETED || 0) +
       (CANCELED || 0) + (REJECTED || 0);
-    this.statusCounts = [,
-      {
-        name: 'All',
-        value: this.usageCount
-      },
+    this.statusCounts = [
       {
         name: 'Pending',
         value: PENDING || 0
@@ -151,7 +143,7 @@ export class DashboardComponent implements OnInit {
         value: COMPLETED || 0
       },
       {
-        name: 'Cancelled',
+        name: 'Canceled',
         value: CANCELED || 0
       },
       {
@@ -169,7 +161,7 @@ export class DashboardComponent implements OnInit {
   PieChartComponent() {
     //  '#9F65FF','#5383FF', '#66C0F2','#47CF5D','#FFA215',  '#FF2424',
     this.PieChart = {
-      color: ['#FF2424','#9F65FF', '#5383FF', '#66C0F2', '#47CF5D', '#FFA215', ],
+      color: [ '#5383FF', '#66C0F2', '#47CF5D', '#FFA215','#FF2424', ],
       // title: {
       //   text: 'Usage count',
       //   subtext: `${this.usageCount}`,
@@ -187,7 +179,7 @@ export class DashboardComponent implements OnInit {
       // },
       title: {
         text: 'Krungthon Air',
-        subtext: 'Daily Usage',
+        subtext: `งานทั้งหมด ${this.usageCount}`,
         left: 'center'
       },
       legend: {
@@ -216,7 +208,7 @@ export class DashboardComponent implements OnInit {
           },
           emphasis: {
             label: {
-              show: true,
+              show: false,
               fontSize: 40,
               fontWeight: 'bold'
             }

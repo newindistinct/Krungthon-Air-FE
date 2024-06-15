@@ -85,6 +85,7 @@ export class BookingComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.service.presentLoadingWithOutTime("รอสักครู่...")
     this.initForm()
     this.initDate()
     this.initTimes();
@@ -96,7 +97,9 @@ export class BookingComponent implements OnInit {
         const q = query(groupRef, where("id", "==", site.data().group_id));
         getDocs(q).then((querySnapshot) => {
           querySnapshot.forEach((group) => {
-            this.group = group.data()
+            this.group = group.data() 
+            this.service.dismissLoading()
+
             // const jobRef = collection(db, "jobs");
             // const q = query(jobRef, where("site_id", "in", doc.data().site_groups.site_id));
             // const data = []

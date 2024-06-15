@@ -26,6 +26,7 @@ import { CheckJobComponent } from './check-job/check-job.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ContactComponent } from './contact/contact.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 
 
@@ -58,6 +59,7 @@ import { BookingSuccessComponent } from './booking-success/booking-success.compo
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
+    QRCodeModule,
     LayoutsModule,
     UiModule,
   ],
