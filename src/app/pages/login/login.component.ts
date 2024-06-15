@@ -1,30 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { sendOTPverify, sendOTPverifyFail, InvalidOTP } from 'src/app/common/constant/alert-messages';
-import { auth } from 'src/app/services/firebase-config';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { FirestoreService } from 'src/app/services/firestore.service';
-import { ServiceService } from 'src/app/services/service.service';
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { sendOTPverify, sendOTPverifyFail, InvalidOTP } from "src/app/common/constant/alert-messages";
+import { auth } from "src/app/services/firebase-config";
+// import { auth } from "src/app/services/firebase-config";
+import { FirestoreService } from "src/app/services/firestore.service";
+import { ServiceService } from "src/app/services/service.service";
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginPage implements OnInit {
-  is_send_otp = false;
-  phone: string = '';
-  is_request: boolean = false;
-  otp: string = '';
+export class LoginComponent implements OnInit {
+  formPhone: FormGroup;
+  formOTP: FormGroup;
+  has_user: boolean = false;
   confirmationResult: any;
+  // phone: string = '';
+  // is_request: boolean = false;
+  // otp: string = '';
   // site_id: string;
   constructor(
     private firestoreService: FirestoreService,
     private service: ServiceService,
+    private formBuilder: FormBuilder
   ) { }
 
   async ngOnInit() {
+    this.initForm()
   }
+  initForm() {
+    this.formPhone = this.formBuilder.group({
+      phone: ['', Validators.required]
+    })
+    this.formOTP = this.formBuilder.group({
+      otp: ['', Validators.required]
+    })
+  }
+
+  submitPhone() {
+    this.LoginWithPhone(this.formPhone.value.phone);
+  }
+
+  submitOTP() {
+    this.confirmOTP(this.formOTP.value.otp);
+  }
+
   LoginWithPhone(phone: string) {
     this.service.presentLoadingWithOutTime("waiting...");
     this.firestoreService.CheckUserOnSite(phone).then((data: any) => {
@@ -50,7 +73,7 @@ export class LoginPage implements OnInit {
     signInWithPhoneNumber(auth, tel, verifier)
       .then((confirmationResult) => {
         this.confirmationResult = confirmationResult;
-        this.is_send_otp = true;
+        this.has_user = true;
         this.service.dismissLoading();
       }).catch((error) => {
         const { header, message } = sendOTPverifyFail();
@@ -62,6 +85,7 @@ export class LoginPage implements OnInit {
   onSignInSubmit() {
     // Code to submit the verification code entered by the user
   }
+
   confirmOTP(otp: string) {
     this.service.presentLoadingWithOutTime("waiting...");
     this.confirmationResult.confirm(otp).then(async (result: any) => {

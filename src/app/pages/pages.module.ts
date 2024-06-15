@@ -27,6 +27,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { ContactComponent } from './contact/contact.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
 import { QRCodeModule } from 'angularx-qrcode';
+import { LoginComponent } from './login/login.component';
 
 
 
@@ -47,7 +48,8 @@ import { QRCodeModule } from 'angularx-qrcode';
     ShowQrCodeComponent,
     CheckJobComponent,
     ContactComponent,
-    BookingSuccessComponent
+    BookingSuccessComponent,
+    LoginComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,7 @@ import { QRCodeModule } from 'angularx-qrcode';
     UiModule,
   ],
   exports: [
-    DashboardComponent
+    DashboardComponent,LoginComponent
   ],
   providers: [provideNativeDateAdapter()],
 })

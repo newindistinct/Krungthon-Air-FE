@@ -12,6 +12,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { BookingComponent } from './pages/booking/booking.component';
 import { CheckJobComponent } from './pages/check-job/check-job.component';
 import { BookingSuccessComponent } from './pages/booking-success/booking-success.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
   {
@@ -48,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule),
+    component: LoginComponent,
     canActivate: [LoggedInGuard]
   },
   {
@@ -60,7 +61,7 @@ export const routes: Routes = [
     component: CheckJobComponent
   },
   {
-    path:'booking-success',
+    path: 'booking-success',
     component: BookingSuccessComponent
   }
 ];

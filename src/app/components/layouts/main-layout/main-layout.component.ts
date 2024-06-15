@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { signOut } from 'src/app/common/constant/alert-messages';
 import { AuthService } from 'src/app/services/auth.service';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
@@ -57,7 +58,10 @@ export class MainLayoutComponent implements OnInit {
       return phoneNumber;
     }
   }
-  logout(){
-    this.authService.signout();
+  logout() {
+    const { header, message } = signOut();
+    this.service.showAlert(header, message, () => {
+      this.authService.signout();
+    }, { confirmOnly: false });
   }
 }
