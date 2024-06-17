@@ -5,6 +5,7 @@ import { collection, doc } from 'firebase/firestore';
 import { getColor } from 'src/app/data/interfaces/color';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
+import { ServiceService } from 'src/app/services/service.service';
 
 import { v4 as uuidv4 } from 'uuid';
 @Component({
@@ -75,10 +76,54 @@ export class SettingEditComponent implements OnInit {
     },
   ]
 
+  times: any[] = [
+    {
+      title: '9.00',
+      value: '9.00',
+      disabled: false
+    },
+    {
+      title: '10.00',
+      value: '10.00',
+      disabled: false
+    },
+    {
+      title: '11.00',
+      value: '11.00',
+      disabled: false
+    },
+    {
+      title: '12.00',
+      value: '12.00',
+      disabled: false
+    },
+    {
+      title: '13.00',
+      value: '13.00',
+      disabled: false
+    },
+    {
+      title: '14.00',
+      value: '14.00',
+      disabled: false
+    },
+    {
+      title: '15.00',
+      value: '15.00',
+      disabled: false
+    },
+    {
+      title: '16.00',
+      value: '16.00',
+      disabled: false
+    },
+  ]
+
   constructor(
     private firestoreService: FirestoreService,
     private modalController: ModalController,
     private formBuilder: FormBuilder,
+    private service: ServiceService
   ) { }
 
   ngOnInit() {
@@ -145,12 +190,21 @@ export class SettingEditComponent implements OnInit {
   //this.txn.prefix_local ? this.prefixOptions.find(e => e.value === this.txn.prefix_local) || '' : this.txn.ocr_online.FullNameTH ? this.txn.ocr_online.FullNameTH.split(' ')[0] : ''],
   initFormJob() {
     this.form = this.formBuilder.group({
+      date: [new Date(this.job.book.date.seconds * 1000), Validators.required],
+      time: [this.times.find(time => time.value === this.job.book.time[0]), Validators.required],
       address: [this.job.address, Validators.required],
       phone: [this.job.phone, Validators.required],
       type: [this.job.type ? this.types.find(type => type.value === this.job.type) || '' : '', Validators.required],
       status: [this.job.status ? this.statuses.find(type => type.value === this.job.status) || '' : '', Validators.required],
       remark: [this.job.remark],
     })
+    console.log(this.form.value);
+
+  }
+
+  dateChange() {
+    console.log(this.form.value);
+
   }
 
   dismiss() {
@@ -221,7 +275,13 @@ export class SettingEditComponent implements OnInit {
 
   editJob() {
     const collectionRef = doc(db, "jobs", this.job.key);
+    const time = this.form.value.time.value;
+    const hour = time.split(".")[0];
+    const date = new Date(this.form.value.date).setHours(hour, 0, 0, 0);
+    const formatDate = new Date(date);
+    formatDate.setDate(formatDate.getDate());
     const data = {
+      book: { time: [time], date: formatDate },
       address: this.form.value.address,
       phone: this.form.value.phone,
       type: this.form.value.type.value,
@@ -248,4 +308,25 @@ export class SettingEditComponent implements OnInit {
     })
     this.sites.sort((a, b) => a.title.localeCompare(b.title));
   }
+
+  cancelJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'CANCELED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการยกเลิกงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
+  rejectJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'REJECTED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการปฏิเสธงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+
 }

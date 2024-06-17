@@ -38,9 +38,23 @@
     </div>
 
     <div *ngSwitchCase="'job'">
+
+      <!-- date -->
+      <mat-form-field class="w-full py-2">
+        <mat-label>กรุณาเลือกวันที่ต้องการย้าย</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="dateChange()">
+        <mat-hint>DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- time -->
+      <app-select [parentForm]="form" label="เวลา" formControlName="time" placeholder="เลือกเวลา" [multiple]="false"
+        [options]="times"></app-select>
+
       <!-- address -->
-      <app-input [parentForm]="form" label="ที่อยู่" typeInput="text" formControlName="address"
-        placeholder="ที่อยู่"></app-input>
+      <app-input [parentForm]="form" label="อาคาร/ชั้น/ห้อง" typeInput="text" formControlName="address"
+        placeholder="ระบุอาคาร/ชั้น/ห้อง"></app-input>
 
       <!-- phone -->
       <app-input [parentForm]="form" label="เบอร์โทรศัพท์" typeInput="text" formControlName="phone"
@@ -53,13 +67,20 @@
       <!-- status -->
       <app-select [parentForm]="form" label="สถานะงาน" formControlName="status" placeholder="เลือกสถานะงาน"
         [multiple]="false" [options]="statuses"></app-select>
-    
+
       <!-- remark -->
       <app-input [parentForm]="form" label="หมายเหตุ" typeInput="text" formControlName="remark"
         placeholder="หมายเหตุ"></app-input>
-      </div>
+    </div>
   </form>
 </ion-content>
 <ion-footer class="ion-no-border ion-padding">
-  <ion-button type="submit" expand="block" (click)="submit()" [disabled]="form.invalid">บันทึก</ion-button>
+  <div class="grid grid-cols-1 gap-4"
+    [ngClass]="{ 'grid-cols-2': job.status === 'PENDING'|| job.status  === 'BOOKED' }">
+    <ion-button *ngIf="job?.status === 'PENDING'" type="submit" expand="block"
+      (click)="rejectJob(job)">ปฏิเสธ</ion-button>
+    <ion-button *ngIf="job?.status=== 'BOOKED'" type="submit" expand="block"
+      (click)="cancelJob(job)">ยกเลิก</ion-button>
+    <ion-button type="submit" expand="block" (click)="submit()" [disabled]="form.invalid">บันทึก</ion-button>
+  </div>
 </ion-footer>

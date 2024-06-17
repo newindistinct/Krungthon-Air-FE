@@ -11,6 +11,10 @@ import { SettingAddComponent } from './modals/setting-add/setting-add.component'
 import { SettingEditComponent } from './modals/setting-edit/setting-edit.component';
 import { JobInfoComponent } from './modals/job-info/job-info.component';
 import { CheckJobComponent } from '../pages/check-job/check-job.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 
@@ -27,6 +31,10 @@ import { CheckJobComponent } from '../pages/check-job/check-job.component';
     IonicModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxDatatableModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
     LayoutsModule,
     AppRoutingModule
   ],

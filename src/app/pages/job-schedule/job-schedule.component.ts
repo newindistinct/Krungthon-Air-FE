@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { SelectionType } from '@swimlane/ngx-datatable';
 import * as dayjs from 'dayjs';
+import { subscribeOn } from 'rxjs';
 import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
+import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 import { ServiceService } from 'src/app/services/service.service';
 
@@ -40,6 +42,7 @@ export class JobScheduleComponent implements OnInit {
     '16.00']
   rows = []
   sites = []
+  subscription
 
   constructor(
     private firestoreService: FirestoreService,
@@ -48,18 +51,32 @@ export class JobScheduleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const interval = setInterval(() => {
-      this.getSites();
-      if (this.sites.length > 0) {
-        this.initRows(this.sites);
-        this.searchJobsToday();
-        clearInterval(interval);
+    this.subscription = this.firestoreService.jobsChange.subscribe((jobs) => {
+      this.initRows(this.sites);
+      if (jobs.length > 0) {
+        this.jobs = jobs;
+        this.updateRow();
       }
+    })
+    const interval = setInterval(() => {
+      this.getSites().then(() => {
+        if (this.sites.length > 0) {
+          this.initRows(this.sites);
+          this.searchJobsToday();
+          clearInterval(interval);
+        }
+      })
     }, 1000);
   }
 
-  getSites() {
-    this.sites = this.firestoreService.getSites();
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  async getSites() {
+    return this.sites = await this.firestoreService.getSites();
   }
 
   initRows(sites) {
@@ -95,24 +112,21 @@ export class JobScheduleComponent implements OnInit {
 
   jobs: any = [];
   async searchJobs() {
-    this.initRows(this.sites);
-    this.jobs = await this.firestoreService.fetchDataJob(this.date);
-    this.updateRow();
+    await this.firestoreService.fetchDataJob(this.date);
   }
 
   async searchJobsToday() {
     const date = new Date().setHours(0, 0, 0, 0);
     const formatQueryDate = new Date(date);
     formatQueryDate.setDate(formatQueryDate.getDate());
-    this.initRows(this.sites);
-    this.jobs = await this.firestoreService.fetchDataJob(formatQueryDate);
-    this.updateRow();
+    await this.firestoreService.fetchDataJob(formatQueryDate);
   }
 
   onSelect(job) {
     this.modalController.create({
-      component: JobInfoComponent,
+      component: SettingEditComponent,
       componentProps: {
+        type: 'job',
         job: job
       },
       cssClass: 'my-custom-class',
@@ -120,7 +134,7 @@ export class JobScheduleComponent implements OnInit {
   }
 
   randomTime() {
-    const hours = [ "9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
+    const hours = ["9.00", "10.00", "11.00", "12.00", "13.00", "14.00", "15.00", "16.00"];
     const randomHourIndex = Math.floor(Math.random() * hours.length);
     const randomHour = hours[randomHourIndex];
     const hourNumber = parseInt(randomHour.split(".")[0]);
@@ -134,7 +148,7 @@ export class JobScheduleComponent implements OnInit {
           this.rows.filter((row: any) => {
             if (row.group_id === job.group_id && row.site_id === job.site_id) {
               row.time[time] = {
-                name: `${job.address} ${job.type} ${job.qty || 1} ตัว`,
+                name: `${job.address} ${job.type}`,
                 status: job.status || '',
                 job: job
               };

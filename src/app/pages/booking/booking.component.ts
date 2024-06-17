@@ -228,7 +228,7 @@ export class BookingComponent implements OnInit {
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}
-https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
+https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396
         }).subscribe(async (res) => {
@@ -562,7 +562,6 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
   }
 
   timeChange() {
-    console.log('timeChange');
     this.form.patchValue({ qty: 1 });
   }
 
@@ -575,7 +574,6 @@ https://krungthon-air.web.app/krungthon/home?job_id=${res.id}`,
     await popover.present();
 
     const { role } = await popover.onDidDismiss();
-    console.log(`Popover dismissed with role: ${role}`);
   }
 
 }

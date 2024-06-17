@@ -38,6 +38,7 @@ export class FirestoreService {
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
+  subscriptionJobs;
   subscriptionAllJobs;
   subscriptionDashboard;
   subscriptions = [];
@@ -144,21 +145,33 @@ export class FirestoreService {
       where("book.date", "<", nextDay),
       where("status", "in", ["PENDING", "BOOKED", "COMPLETED"]),
       where("project_id", "==", this.user[0].project_id));
+    if (this.subscriptionJobs) {
+      this.subscriptionJobs();
+    }
     return new Promise<any>((resolve) => {
-      const snapshot = getDocs(q);
-      snapshot.then((querySnapshot) => {
+      this.subscriptionJobs = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({
-            ...docs.data(),
-            id: docs.id,
-            time: docs.data().book.time[0],
-          });
+          data.push({ ...docs.data(), key: docs.id });
         }
         this.jobs = data;
         this.jobsChange.next(this.jobs);
         resolve(data);
       });
+      // const snapshot = getDocs(q);
+      // snapshot.then((querySnapshot) => {
+      //   const data: any = [];
+      //   for (const docs of querySnapshot.docs) {
+      //     data.push({
+      //       ...docs.data(),
+      //       key: docs.id,
+      //       time: docs.data().book.time[0],
+      //     });
+      //   }
+      //   this.jobs = data;
+      //   this.jobsChange.next(this.jobs);
+      //   resolve(data);
+      // });
     });
   }
 
@@ -310,7 +323,6 @@ export class FirestoreService {
 
   unsubscribeSubscriptions() {
     this.subscriptions.forEach((subscription) => {
-      console.log(subscription);
       subscription();
     });
     this.subscriptions = [];

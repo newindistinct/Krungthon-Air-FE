@@ -93,15 +93,7 @@ export class HomeComponent implements OnInit {
     }, { confirmOnly: false });
   }
 
-  rejectJob(job) {
-    const docRef = doc(db, 'jobs', job.key);
-    const data = {
-      status: 'REJECTED',
-    }
-    this.service.showAlert('ยืนยัน', 'ยืนยันการปฏิเสธงาน', () => {
-      this.firestoreService.updateDatatoFirebase(docRef, data)
-    }, { confirmOnly: false });
-  }
+
 
   completeJob(job) {
     const docRef = doc(db, 'jobs', job.key);
@@ -123,6 +115,16 @@ export class HomeComponent implements OnInit {
     }, { confirmOnly: false });
   }
 
+  rejectJob(job) {
+    const docRef = doc(db, 'jobs', job.key);
+    const data = {
+      status: 'REJECTED',
+    }
+    this.service.showAlert('ยืนยัน', 'ยืนยันการปฏิเสธงาน', () => {
+      this.firestoreService.updateDatatoFirebase(docRef, data)
+    }, { confirmOnly: false });
+  }
+  
   reportJob(job) {
     // this.firestoreService.reportJob(job);
   }
@@ -165,7 +167,7 @@ export class HomeComponent implements OnInit {
     const formattedDate = date.toLocaleDateString('th-TH', options);
     return formattedDate;
   }
-  
+
   sortJobs(jobs) {
     jobs.sort((a, b) => {
       if (a.book.date.seconds < b.book.date.seconds) {
