@@ -171,7 +171,7 @@ export class SettingEditComponent implements OnInit {
       name: [this.site.name, Validators.required],
       // site_id: [''],
       // project_id: [''],
-      // group_id: ['']
+      // group_id: [this.site.group_id],
     })
   }
 
@@ -181,6 +181,7 @@ export class SettingEditComponent implements OnInit {
       reader: [this.group.reader],
       limit: [this.group.limit],
       color: [this.group.color ? this.colors.find(color => color.value === this.group.color) || '' : ''],
+      site_groups: [this.group.site_groups ? this.sites.filter(site => this.group.site_groups.site_id.includes(site.value)) || '' : [], Validators.required],
       // image: [''],
       // group_id: [''],
       // project_id: [''],
@@ -259,18 +260,33 @@ export class SettingEditComponent implements OnInit {
   }
 
   editGroup() {
+    const site_id = []
+    this.form.value.site_groups.forEach((site) => {
+      site_id.push(site.value)
+    })
     const collectionRef = doc(db, "groups", this.group.key);
     const data = {
       name: this.form.value.name,
       reader: this.form.value.reader,
       limit: this.form.value.limit,
       color: this.form.value.color.value,
+      site_groups: { site_id: site_id },
       // image: this.form.value.image,
       // project_id: this.firestoreService.user[0].project_id,
     }
     this.firestoreService.updateDatatoFirebase(collectionRef, data).then(() => {
+      this.form.value.site_groups.forEach((site) => {
+        const docRef = doc(db, "sites", site.key);
+        const data = {
+          group_id: this.group.id,
+        }
+        this.firestoreService.updateDatatoFirebase(docRef, data)
+      })
+    }).catch((error) => {
+      console.error(error);
+    }).finally(() => {
       this.dismiss()
-    })
+    });
   }
 
   editJob() {
@@ -302,11 +318,12 @@ export class SettingEditComponent implements OnInit {
   }
 
   async setSite() {
-    const sites = await this.firestoreService.fetchDataSiteNoGroup();
+    const sites = this.firestoreService.getSites()
     this.sites = sites.map((site) => {
       return { title: site.name, value: site.site_id, disbled: false, key: site.key }
     })
     this.sites.sort((a, b) => a.title.localeCompare(b.title));
+
   }
 
   cancelJob(job) {

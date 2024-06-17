@@ -133,8 +133,8 @@ export class SettingAddComponent implements OnInit {
   }
 
   addGroup() {
-    const site_id = []
     const group_id = uuidv4();
+    const site_id = []
     this.form.value.site_groups.forEach((site) => {
       site_id.push(site.value)
     })
