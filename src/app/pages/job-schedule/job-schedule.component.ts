@@ -191,6 +191,7 @@ export class JobScheduleComponent implements OnInit {
               row.time[time] = {
                 name: `${job.address} ${job.type}`,
                 status: job.status || '',
+                is_qrcode: job.is_qrcode || false,
                 job: job
               };
             }

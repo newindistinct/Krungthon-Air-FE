@@ -177,7 +177,10 @@ export class FirestoreService {
       this.subscriptionJobs = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
         const data: any = [];
         for (const docs of querySnapshot.docs) {
-          data.push({ ...docs.data(), key: docs.id });
+          data.push({
+            ...docs.data(),
+            key: docs.id,
+          });
         }
         this.jobs = data;
         this.jobsChange.next(this.jobs);

@@ -19,6 +19,7 @@ import { ContactComponent } from '../contact/contact.component';
   styleUrls: ['./booking.component.scss'],
 })
 export class BookingComponent implements OnInit {
+  is_admin = this.route.snapshot.queryParamMap.get('is_admin');
   times: any
   site: any
   group: any
@@ -51,7 +52,7 @@ export class BookingComponent implements OnInit {
     }
   ]
   constructor(
-    private action: ActivatedRoute,
+    private route: ActivatedRoute,
     private firestoreService: FirestoreService,
     private service: ServiceService,
     private fb: FormBuilder,
@@ -89,7 +90,7 @@ export class BookingComponent implements OnInit {
     this.initForm()
     this.initDate()
     this.initTimes();
-    this.action.params.subscribe(param => {
+    this.route.params.subscribe(param => {
       const docRef = doc(db, "sites", param.id);
       getDoc(docRef).then((site) => {
         this.site = site.data()
@@ -204,7 +205,8 @@ export class BookingComponent implements OnInit {
       qty: this.form.value.qty,
       phone: this.form.value.phone,
       remark: this.form.value.remark,
-      status: 'PENDING',
+      status: this.is_admin == 'true' ? 'BOOKED' : 'PENDING',
+      is_qrcode: this.is_admin == 'true' ? false : true,
       created_at: new Date(),
       updated_at: new Date(),
       // book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
@@ -229,7 +231,7 @@ export class BookingComponent implements OnInit {
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}
-หมายเหตุ : ${this.form.value.remark}
+หมายเหตุ : ${this.form.value.remark || '-'}
 https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396

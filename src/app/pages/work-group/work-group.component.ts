@@ -115,6 +115,10 @@ export class WorkGroupComponent implements OnInit {
   }
 
   bookingPage(site) {
-    this.router.navigate(['booking', site.key]);
+    this.router.navigate(['booking', site.key], {
+      queryParams: {
+        is_admin: 'true'
+      }
+    })
   }
 }
