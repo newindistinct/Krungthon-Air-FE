@@ -97,7 +97,7 @@ export class BookingComponent implements OnInit {
         const q = query(groupRef, where("id", "==", site.data().group_id));
         getDocs(q).then((querySnapshot) => {
           querySnapshot.forEach((group) => {
-            this.group = group.data() 
+            this.group = group.data()
             this.service.dismissLoading()
 
             // const jobRef = collection(db, "jobs");
@@ -225,7 +225,7 @@ export class BookingComponent implements OnInit {
         await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
           message: `${this.site.name}
 วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-บริการ : ${this.form.value.type.title} (${this.form.value.type.title == 'อื่นๆ' ? this.form.value.type_other : ''})
+บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ' ? `(${this.form.value.type_other})` : ''}
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}
