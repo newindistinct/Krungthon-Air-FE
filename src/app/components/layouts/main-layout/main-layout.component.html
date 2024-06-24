@@ -11,6 +11,12 @@
             <ion-label>{{ p.title }}</ion-label>
           </ion-item>
         </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false" *ngIf="phone == '0655946927' || phone == '0970250730'">
+          <ion-item routerDirection="root" [routerLink]="['service']" lines="none" detail="false" routerLinkActive="selected">
+            <ion-icon aria-hidden="true" slot="start" [ios]="'information-circle-outline'" [md]="'information-circle-sharp'"></ion-icon>
+            <ion-label>Service</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
 
       <!-- <ion-list id="labels-list">
@@ -22,7 +28,7 @@
         </ion-item>
       </ion-list> -->
     </ion-content>
-    <ion-footer>
+    <ion-footer class="ion-no-border">
       <ion-toolbar>
         <ion-button (click)="logout()" expand="block" fill="clear" shape="round">
           logout

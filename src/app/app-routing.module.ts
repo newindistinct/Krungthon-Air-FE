@@ -13,6 +13,8 @@ import { BookingComponent } from './pages/booking/booking.component';
 import { CheckJobComponent } from './pages/check-job/check-job.component';
 import { BookingSuccessComponent } from './pages/booking-success/booking-success.component';
 import { LoginComponent } from './pages/login/login.component';
+import { BookingGuideComponent } from './pages/booking-guide/booking-guide.component';
+import { ServiceComponent } from './pages/service/service.component';
 
 export const routes: Routes = [
   {
@@ -45,6 +47,10 @@ export const routes: Routes = [
         path: 'setting',
         component: SettingComponent
       },
+      {
+        path: 'service',
+        component: ServiceComponent
+      }
     ],
   },
   {
@@ -63,6 +69,10 @@ export const routes: Routes = [
   {
     path: 'booking-success',
     component: BookingSuccessComponent
+  },
+  {
+    path: 'booking-guide',
+    component: BookingGuideComponent
   }
 ];
 

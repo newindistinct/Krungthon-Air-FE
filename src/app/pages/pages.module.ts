@@ -28,6 +28,8 @@ import { ContactComponent } from './contact/contact.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { LoginComponent } from './login/login.component';
+import { BookingGuideComponent } from './booking-guide/booking-guide.component';
+import { ServiceComponent } from './service/service.component';
 
 
 
@@ -49,7 +51,9 @@ import { LoginComponent } from './login/login.component';
     CheckJobComponent,
     ContactComponent,
     BookingSuccessComponent,
-    LoginComponent
+    LoginComponent,
+    BookingGuideComponent,
+    ServiceComponent
   ],
   imports: [
     CommonModule,

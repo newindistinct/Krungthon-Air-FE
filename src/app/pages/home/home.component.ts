@@ -1,7 +1,11 @@
-import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { Timestamp, doc, getDoc } from 'firebase/firestore';
+import { Amphures } from 'src/app/common/constant/thai-data/thai_amphures';
+import { Geographies } from 'src/app/common/constant/thai-data/thai_geographies';
+import { Provinces } from 'src/app/common/constant/thai-data/thai_provinces';
+import { Tambons } from 'src/app/common/constant/thai-data/thai_tambons';
 import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
 import { db } from 'src/app/services/firebase-config';
 import { FirestoreService } from 'src/app/services/firestore.service';
@@ -45,7 +49,7 @@ export class HomeComponent implements OnInit {
     private modalController: ModalController
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.param_id) {
       getDoc(doc(db, 'jobs', this.param_id)).then(doc => {
         if (doc.exists()) {
@@ -77,6 +81,22 @@ export class HomeComponent implements OnInit {
       this.jobRejectedCanceled = jobs;
       this.sortJobs(this.jobRejectedCanceled);
     })
+    const data = {
+      province: [],
+      amphure: [],
+      tambon: [],
+    }
+    const id = 1;
+    Provinces.filter((province) => province.id == id).forEach((province) => {
+      data.province.push(province)
+      Amphures.filter((amphure) => amphure.province_id == province.id).forEach((amphure) => {
+        data.amphure.push(amphure)
+        Tambons.filter((tambon) => amphure.id == tambon.amphure_id).forEach((tambon) => {
+          data.tambon.push(tambon)
+        })
+      })
+    })
+    console.log(data);
   }
 
   ngOnDestroy() {
@@ -124,7 +144,7 @@ export class HomeComponent implements OnInit {
       this.firestoreService.updateDatatoFirebase(docRef, data)
     }, { confirmOnly: false });
   }
-  
+
   reportJob(job) {
     // this.firestoreService.reportJob(job);
   }

@@ -67,8 +67,8 @@ export class BookingComponent implements OnInit {
 
   initDate() {
     this.date = new Date();
-    this.minDate = new Date();
-    this.maxDate.setDate(this.minDate.getDate() + 30);
+    this.minDate.setDate(this.date.getDate() + 0);
+    this.maxDate.setDate(this.date.getDate() + 30);
   }
   initForm() {
     this.form = this.fb.group({
@@ -228,6 +228,7 @@ export class BookingComponent implements OnInit {
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}
+หมายเหตุ : ${this.form.value.remark}
 https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396

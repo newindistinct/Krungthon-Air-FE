@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { ModalController } from '@ionic/angular';
 import { SelectionType } from '@swimlane/ngx-datatable';
 import * as dayjs from 'dayjs';
@@ -12,8 +13,11 @@ import { ServiceService } from 'src/app/services/service.service';
   selector: 'app-job-schedule',
   templateUrl: './job-schedule.component.html',
   styleUrls: ['./job-schedule.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobScheduleComponent implements OnInit {
+  uniqueDay;
   date = new Date()
   selectedColor = '';
   time = {
@@ -42,7 +46,7 @@ export class JobScheduleComponent implements OnInit {
     '16.00']
   rows = []
   sites = []
-  subscription
+  subscriptions = []
 
   constructor(
     private firestoreService: FirestoreService,
@@ -51,18 +55,27 @@ export class JobScheduleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.subscription = this.firestoreService.jobsChange.subscribe((jobs) => {
+    const subscriptionJobsChange = this.firestoreService.jobsChange.subscribe((jobs) => {
       this.initRows(this.sites);
       if (jobs.length > 0) {
         this.jobs = jobs;
         this.updateRow();
       }
     })
+    const subscriptionSchedules = this.firestoreService.schedulesChange.subscribe((schedules) => {
+      let day = schedules.map((schedule) => {
+        return this.formatDate(schedule.book.date.seconds * 1000)
+      })
+      this.uniqueDay = [...new Set(day)];
+    })
+    this.subscriptions.push(subscriptionJobsChange)
+    this.subscriptions.push(subscriptionSchedules)
     const interval = setInterval(() => {
       this.getSites().then(() => {
         if (this.sites.length > 0) {
           this.initRows(this.sites);
           this.searchJobsToday();
+          this.searchJobsSchedule()
           clearInterval(interval);
         }
       })
@@ -70,10 +83,31 @@ export class JobScheduleComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
+    if (this.subscriptions) {
+      this.subscriptions.forEach(subscription => {
+        subscription.unsubscribe();
+      });
     }
   }
+
+  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    if (view === 'month') {
+      const date = cellDate.getDate();
+      const today = new Date();
+      
+      // Calculate the difference in time
+      const diffTime = cellDate.getTime() - today.getTime();
+      
+      // Calculate the difference in days
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      // Highlight the date if it's within the next 30 days
+      if (diffDays >= 0 && diffDays < 30 && this.uniqueDay) {
+        return this.uniqueDay.includes(date.toString()) ? 'example-custom-date-class' : '';
+      }
+    }
+    return '';
+  };
 
   async getSites() {
     return this.sites = await this.firestoreService.getSites();
@@ -122,6 +156,13 @@ export class JobScheduleComponent implements OnInit {
     await this.firestoreService.fetchDataJob(formatQueryDate);
   }
 
+  async searchJobsSchedule() {
+    const date = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(date);
+    formatQueryDate.setDate(formatQueryDate.getDate());
+    await this.firestoreService.fetchDataJobSchedules(formatQueryDate);
+  }
+
   onSelect(job) {
     this.modalController.create({
       component: SettingEditComponent,
@@ -160,6 +201,6 @@ export class JobScheduleComponent implements OnInit {
   }
 
   formatDate(date) {
-    return dayjs(date).startOf('day').format('ddd MMM DD YYYY 00:00:00 [GMT+0700]');
+    return dayjs(date).startOf('day').format('DD');
   }
 }
