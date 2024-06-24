@@ -200,6 +200,7 @@ export class BookingComponent implements OnInit {
       address: addressUpperCase,
       site_id: this.site.site_id,
       type: this.form.value.type.title,
+      type_other: this.form.value.type.title == 'อื่นๆ' ? this.form.value.type_other : '',
       qty: this.form.value.qty,
       phone: this.form.value.phone,
       remark: this.form.value.remark,
@@ -224,7 +225,7 @@ export class BookingComponent implements OnInit {
         await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
           message: `${this.site.name}
 วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-บริการ : ${this.form.value.type.title} 
+บริการ : ${this.form.value.type.title} (${this.form.value.type.title == 'อื่นๆ' ? this.form.value.type_other : ''})
 จํานวน : ${this.form.value.qty} ตัว 
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}

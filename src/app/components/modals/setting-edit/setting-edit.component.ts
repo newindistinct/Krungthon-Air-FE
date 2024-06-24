@@ -196,6 +196,7 @@ export class SettingEditComponent implements OnInit {
       address: [this.job.address, Validators.required],
       phone: [this.job.phone, Validators.required],
       type: [this.job.type ? this.types.find(type => type.value === this.job.type) || '' : '', Validators.required],
+      type_other: [this.job.type_other||''],
       status: [this.job.status ? this.statuses.find(type => type.value === this.job.status) || '' : '', Validators.required],
       remark: [this.job.remark],
     })
@@ -290,6 +291,7 @@ export class SettingEditComponent implements OnInit {
   }
 
   editJob() {
+    console.log(this.form.value);
     const collectionRef = doc(db, "jobs", this.job.key);
     const time = this.form.value.time.value;
     const hour = time.split(".")[0];
@@ -300,7 +302,8 @@ export class SettingEditComponent implements OnInit {
       book: { time: [time], date: formatDate },
       address: this.form.value.address,
       phone: this.form.value.phone,
-      type: this.form.value.type.value,
+      type: this.form.value.type.title,
+      type_other: this.form.value.type.title == 'อื่นๆ' ? this.form.value.type_other : '',
       status: this.form.value.status.value,
       remark: this.form.value.remark,
     }

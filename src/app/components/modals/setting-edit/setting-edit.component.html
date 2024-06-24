@@ -68,6 +68,9 @@
       <app-select [parentForm]="form" label="ประเภทงาน" formControlName="type" placeholder="เลือกประเภทงาน"
         [multiple]="false" [options]="types"></app-select>
 
+      <app-input [parentForm]="form" label="อื่นๆ(โปรดระบุ)" typeInput="text" formControlName="type_other"
+        placeholder="อื่นๆ(โปรดระบุ)" *ngIf="form.value.type.value=== 'อื่นๆ'"></app-input>
+
       <!-- status -->
       <app-select [parentForm]="form" label="สถานะงาน" formControlName="status" placeholder="เลือกสถานะงาน"
         [multiple]="false" [options]="statuses"></app-select>
