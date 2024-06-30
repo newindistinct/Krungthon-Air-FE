@@ -55,6 +55,7 @@ export class SettingAddComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
       last_name: ['', Validators.required],
+      nick_name: ['', Validators.required],
       phone: ['', Validators.required],
       user_id: [''],
       project_id: [''],
@@ -109,6 +110,7 @@ export class SettingAddComponent implements OnInit {
     const data = {
       name: this.form.value.name,
       last_name: this.form.value.last_name,
+      nick_name: this.form.value.nick_name,
       phone: this.form.value.phone,
       user_id: uuidv4(),
       project_id: this.firestoreService.user[0].project_id,

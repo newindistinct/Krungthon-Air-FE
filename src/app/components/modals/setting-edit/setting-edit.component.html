@@ -8,6 +8,9 @@
       <app-input [parentForm]="form" label="นามสกุล" typeInput="text" formControlName="last_name"
         placeholder="นามสกุล"></app-input>
 
+      <app-input [parentForm]="form" label="ชื่อเล่น" typeInput="text" formControlName="nick_name"
+        placeholder="ชื่อเล่น"></app-input>
+
       <app-input [parentForm]="form" label="เบอร์โทรศัพท์" typeInput="text" formControlName="phone"
         placeholder="เบอร์โทรศัพท์"></app-input>
     </div>
@@ -46,7 +49,7 @@
       <!-- date -->
       <mat-form-field class="w-full py-2">
         <mat-label>กรุณาเลือกวันที่ต้องการย้าย</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="dateChange()">
+        <input matInput [matDatepicker]="picker" formControlName="date" (dateChange)="searchJobs()">
         <mat-hint>DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matTextSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -54,7 +57,7 @@
 
       <!-- time -->
       <app-select [parentForm]="form" label="เวลา" formControlName="time" placeholder="เลือกเวลา" [multiple]="false"
-        [options]="times"></app-select>
+        [options]="times" (selectChange)="timeChange()"></app-select>
 
       <!-- address -->
       <app-input [parentForm]="form" label="อาคาร/ชั้น/ห้อง" typeInput="text" formControlName="address"
@@ -70,6 +73,22 @@
 
       <app-input [parentForm]="form" label="อื่นๆ(โปรดระบุ)" typeInput="text" formControlName="type_other"
         placeholder="อื่นๆ(โปรดระบุ)" *ngIf="form.value.type.value=== 'อื่นๆ'"></app-input>
+
+      <!-- qty -->
+      <label class="block my-1 text-sm font-medium text-black">
+        <span>จํานวน<span class="text-red-500">*</span><span class="text-gray-400">( 1 ตัว = 1 ชั่วโมง )</span></span>
+      </label>
+      <div class="flex items-center">
+        <ion-button shape="round" (click)="subQty()">
+          <!-- <ion-icon slot="icon-only" ios="logo-apple" md="remove-outline"></ion-icon> -->
+          -
+        </ion-button>
+        <span class="px-4 text-2xl">{{form.value.qty}}</span>
+        <ion-button shape="round" (click)="addQty()">
+          <!-- <ion-icon slot="icon-only" ios="logo-apple" md="add-outline"></ion-icon> -->
+          +
+        </ion-button>
+      </div>
 
       <!-- status -->
       <app-select [parentForm]="form" label="สถานะงาน" formControlName="status" placeholder="เลือกสถานะงาน"

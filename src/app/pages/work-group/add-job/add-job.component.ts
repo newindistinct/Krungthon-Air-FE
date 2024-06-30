@@ -280,7 +280,8 @@ export class AddJobComponent implements OnInit {
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
     const data = {
-      book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne(this.form.value.qty) : [time], date: formatDate },
+      // book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne(this.form.value.qty) : [time], date: formatDate },
+      book: { time: [time], date: formatDate },
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
@@ -289,6 +290,7 @@ export class AddJobComponent implements OnInit {
       type: this.form.value.type.title,
       phone: this.form.value.phone,
       remark: this.form.value.remark,
+      qty: this.form.value.qty,
       status: 'BOOKED',
       created_at: new Date(),
       updated_at: new Date(),
@@ -304,7 +306,7 @@ export class AddJobComponent implements OnInit {
 
   qtyMoreThanOne(qty) {
     let times = []
-    let time = this.form.value.time.title.split(".")[0] 
+    let time = this.form.value.time.title.split(".")[0]
     time = parseInt(time)
     for (let i = 0; i < qty; i++) {
       if (time + i < 17) {

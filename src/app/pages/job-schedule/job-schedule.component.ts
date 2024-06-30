@@ -94,20 +94,30 @@ export class JobScheduleComponent implements OnInit {
     if (view === 'month') {
       const date = cellDate.getDate();
       const today = new Date();
-      
+
       // Calculate the difference in time
       const diffTime = cellDate.getTime() - today.getTime();
-      
+
       // Calculate the difference in days
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+      const diffDays = (Math.ceil(diffTime / (1000 * 60 * 60 * 24)));;
+      // const uniqueDay = this.uniqueDay.map((day) => this.removeZeros(day))
+      // console.log(uniqueDay);
+
       // Highlight the date if it's within the next 30 days
       if (diffDays >= 0 && diffDays < 30 && this.uniqueDay) {
-        return this.uniqueDay.includes(date.toString()) ? 'example-custom-date-class' : '';
+        return this.uniqueDay.includes(this.padZero(date)) ? 'example-custom-date-class' : '';
       }
     }
     return '';
   };
+
+  removeZeros(numbers: string): string {
+    return numbers.split(' ').map(num => num.replace(/^0/, '')).join(' ');
+  }
+
+  padZero = (num) => {
+    return num.toString().padStart(2, '0');
+  }
 
   async getSites() {
     return this.sites = await this.firestoreService.getSites();

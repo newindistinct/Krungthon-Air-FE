@@ -99,8 +99,6 @@ export class BookingComponent implements OnInit {
         getDocs(q).then((querySnapshot) => {
           querySnapshot.forEach((group) => {
             this.group = group.data()
-            this.service.dismissLoading()
-
             // const jobRef = collection(db, "jobs");
             // const q = query(jobRef, where("site_id", "in", doc.data().site_groups.site_id));
             // const data = []
@@ -111,6 +109,7 @@ export class BookingComponent implements OnInit {
             //   this.jobs = data
             // });
           });
+          this.service.dismissLoading()
         })
       })
     })
@@ -184,6 +183,7 @@ export class BookingComponent implements OnInit {
 
   addJob() {
     this.service.presentLoadingWithOutTime("กำลังจอง...");
+    const name = this.firestoreService.user.length > 0 ? this.firestoreService.user[0].nick_name : '';
     const time = this.form.value.time.title;
     const hour = time.split(".")[0];
     this.qtyMoreThanOne();
@@ -207,6 +207,7 @@ export class BookingComponent implements OnInit {
       remark: this.form.value.remark,
       status: this.is_admin == 'true' ? 'BOOKED' : 'PENDING',
       is_qrcode: this.is_admin == 'true' ? false : true,
+      created_by: this.is_admin == 'true' ? name : 'คิวอาร์โค้ด',
       created_at: new Date(),
       updated_at: new Date(),
       // book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
@@ -232,6 +233,7 @@ export class BookingComponent implements OnInit {
 เบอร์โทร : ${this.form.value.phone}
 ที่อยู่/ห้อง : ${this.form.value.address}
 หมายเหตุ : ${this.form.value.remark || '-'}
+เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
 https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           stickerPackageId: 6632,
           stickerId: 11825396
@@ -555,10 +557,6 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
 
   formatDateToThaiString(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
-      // weekday: 'long',
-      // year: 'numeric',
-      // month: 'long',
-      // day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
     };
