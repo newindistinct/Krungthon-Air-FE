@@ -176,7 +176,7 @@ export class SettingEditComponent implements OnInit {
       name: [this.site.name, Validators.required],
       // site_id: [''],
       // project_id: [''],
-      // group_id: [this.site.group_id],
+      group_id: [this.site.group_id],
     })
   }
 
@@ -203,6 +203,7 @@ export class SettingEditComponent implements OnInit {
       qty: [this.job.qty, Validators.required],
       type: [this.job.type ? this.types.find(type => type.value === this.job.type) || '' : '', Validators.required],
       type_other: [this.job.type_other || ''],
+      created_by: [this.job.created_by || ''],
       status: [this.job.status ? this.statuses.find(type => type.value === this.job.status) || '' : '', Validators.required],
       remark: [this.job.remark],
     })
@@ -325,9 +326,10 @@ export class SettingEditComponent implements OnInit {
     const collectionRef = doc(db, "sites", this.site.key);
     const data = {
       name: this.form.value.name,
+      is_enabled: true,
       // site_id: uuidv4(),
       // project_id: this.firestoreService.user[0].project_id,
-      // group_id: '',
+      group_id: this.form.value.group_id,
     }
     this.firestoreService.updateDatatoFirebase(collectionRef, data).then(() => {
       this.dismiss()

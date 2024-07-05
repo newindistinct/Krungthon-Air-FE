@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { ContactComponent } from '../contact/contact.component';
+import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
@@ -41,8 +42,18 @@ export class BookingComponent implements OnInit {
       disabled: false
     },
     {
+      title: 'ตัดล้าง',
+      value: 'ตัดล้าง',
+      disabled: false
+    },
+    {
       title: 'ติดตั้ง',
       value: 'ติดตั้ง',
+      disabled: false
+    },
+    {
+      title: 'ซ่อม',
+      value: 'ซ่อม',
       disabled: false
     },
     {
@@ -59,8 +70,30 @@ export class BookingComponent implements OnInit {
     private alertController: AlertController,
     private popoverController: PopoverController,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
+
+  async adminLogin(){
+    const isLogedIn = await this.authService.SessionIsLogedIn();
+    if (isLogedIn == true) {
+      await this.authService.checkAuth().then((res) => {
+        if (res == true) {
+          const UserFormAuth = this.authService.getUserFormAuth();
+          const phone = this.formatPhoneNumber(UserFormAuth.phoneNumber);
+          this.firestoreService.fetchDataUser(phone)
+        }
+      });
+    }
+  }
+
+  formatPhoneNumber(phoneNumber: any) {
+    if (phoneNumber.length === 12 && phoneNumber.startsWith("+66")) {
+      return "0" + phoneNumber.substring(3);
+    } else if (phoneNumber.length === 10 && phoneNumber.startsWith("0")) {
+      return phoneNumber;
+    }
+  }
 
   onInputPhone() {
     this.form.value.phone = this.form.value.phone.replace(/[^0-9]/g, '').replace(' ', '');
@@ -87,6 +120,9 @@ export class BookingComponent implements OnInit {
 
   ngOnInit() {
     this.service.presentLoadingWithOutTime("รอสักครู่...")
+    if (this.is_admin == 'true') {
+      this.adminLogin()
+    }
     this.initForm()
     this.initDate()
     this.initTimes();
@@ -225,7 +261,7 @@ export class BookingComponent implements OnInit {
     }
     this.firestoreService.addDatatoFirebase(collectionRef, data).then(async (res) => {
       try {
-        await this.http.post('https://sendlinenotify-cgzaerrvna-uc.a.run.app', {
+        await this.http.post('https://sendlinenotify-abewfqcbgq-uc.a.run.app', {
           message: `${this.site.name}
 วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
 บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ' ? `(${this.form.value.type_other})` : ''}

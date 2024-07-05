@@ -120,7 +120,12 @@ export class JobScheduleComponent implements OnInit {
   }
 
   async getSites() {
-    return this.sites = await this.firestoreService.getSites();
+    const sites = await this.firestoreService.getSites()
+    if (sites.length > 0) {
+      return this.sites = sites.filter((site: any) => site.group_id !== '');
+    } else {
+      return this.sites = [];
+    }
   }
 
   initRows(sites) {
@@ -197,7 +202,7 @@ export class JobScheduleComponent implements OnInit {
       if (job.book.time) {
         job.book.time.forEach((time: any) => {
           this.rows.filter((row: any) => {
-            if (row.group_id === job.group_id && row.site_id === job.site_id) {
+            if (row.site_id === job.site_id) {
               row.time[time] = {
                 name: `${job.address} ${job.type}`,
                 status: job.status || '',

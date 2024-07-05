@@ -459,6 +459,7 @@ export class FirestoreService {
       return updatedSites;
     } else {
       console.log('no data');
+      return [];
     }
   }
 

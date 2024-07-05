@@ -62,7 +62,11 @@ $app-theme: mat.define-light-theme((color: (primary: $app-primary,
 @import "../node_modules/@swimlane/ngx-datatable/index.css";
 @import "../node_modules/@swimlane/ngx-datatable/assets/icons.css";
 @import "../node_modules/@swimlane/ngx-datatable/themes/material.css";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap');
 
+* {
+    font-family: "Noto Sans Thai", sans-serif;
+}
 .ngx-datatable.material {
   box-shadow: none;
 

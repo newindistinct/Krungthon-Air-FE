@@ -40,8 +40,8 @@
       <app-input [parentForm]="form" label="ชื่อโครงการ" typeInput="text" formControlName="name"
         placeholder="ชื่อโครงการ"></app-input>
 
-      <!-- <app-input [parentForm]="form" label="กลุ่ม" typeInput="text" formControlName="group_id"
-        placeholder="กลุ่ม"></app-input> -->
+      <app-input [parentForm]="form" label="กลุ่ม" typeInput="text" formControlName="group_id"
+        placeholder="กลุ่ม"></app-input>
     </div>
 
     <div *ngSwitchCase="'job'">
@@ -89,6 +89,9 @@
           +
         </ion-button>
       </div>
+
+      <app-input [parentForm]="form" label="เพิ่มโดย" typeInput="text" formControlName="created_by"
+        placeholder="เพิ่มโดย"></app-input>
 
       <!-- status -->
       <app-select [parentForm]="form" label="สถานะงาน" formControlName="status" placeholder="เลือกสถานะงาน"

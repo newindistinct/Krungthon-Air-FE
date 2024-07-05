@@ -5,8 +5,9 @@
 </ion-header>
 <ion-content class="ion-padding">
   <!-- <span *ngIf="site" class="text-3xl">{{site.name}} สวัสดี</span> -->
-  <div class="w-full flex justify-end items-end">
-    <ion-buttons slot="end" class="text-gray-500">
+  <div class="w-full flex justify-end items-center gap-3">
+    <span class="text-2xl text-red-500 bg-red-200 border-2 border-red-500 rounded-lg py-2 px-4 font-bold" *ngIf="is_admin == 'true'">ล้างแอร์ 350 บาท</span>
+    <ion-buttons slot="end"  class="text-gray-500">
       <ion-button (click)="presentPopover($event)">
         <ion-icon slot="start" name="alert-circle"></ion-icon>
         ติดต่อเรา
