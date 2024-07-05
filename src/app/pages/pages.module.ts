@@ -30,6 +30,8 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { LoginComponent } from './login/login.component';
 import { BookingGuideComponent } from './booking-guide/booking-guide.component';
 import { ServiceComponent } from './service/service.component';
+import { HistoryComponent } from './history/history.component';
+import { SiteHistoryComponent } from './history/site-history/site-history.component';
 
 
 
@@ -53,7 +55,9 @@ import { ServiceComponent } from './service/service.component';
     BookingSuccessComponent,
     LoginComponent,
     BookingGuideComponent,
-    ServiceComponent
+    ServiceComponent,
+    HistoryComponent,
+    SiteHistoryComponent
   ],
   imports: [
     CommonModule,

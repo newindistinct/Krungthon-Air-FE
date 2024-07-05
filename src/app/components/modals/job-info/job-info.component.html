@@ -53,6 +53,10 @@
       <ion-label class="text-base">หมายเหตุ:</ion-label>
       <ion-label class="text-base w-1/2 text-right">{{job.remark || '-'}}</ion-label>
     </div>
+    <div class="flex flex-row justify-between items-center w-full">
+      <ion-label class="text-base">เพิ่มโดย:</ion-label>
+      <ion-label class="text-base w-1/2 text-right">{{job.created_by || '-'}}</ion-label>
+    </div>
   </div>
   <div class="flex justify-center">
     <!-- <ion-button (click)="edit()">แก้ไข</ion-button> -->

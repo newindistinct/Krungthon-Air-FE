@@ -13,6 +13,7 @@ export class MainLayoutComponent implements OnInit {
   public appPages = [
     { title: 'home', url: '/krungthon/home', icon: 'home' },
     { title: 'dashboard', url: '/krungthon/dashboard', icon: 'pie-chart' },
+    { title: 'ประวัติการจอง', url: '/krungthon/history', icon: 'book' },
     { title: 'ตารางงาน', url: '/krungthon/job-schedule', icon: 'calendar' },
     { title: 'ทีมงาน', url: '/krungthon/work-group', icon: 'people-circle' },
     { title: 'ตั้งค่า', url: '/krungthon/setting', icon: 'settings' },

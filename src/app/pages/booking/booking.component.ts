@@ -307,8 +307,6 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
         message: `test form booking`,
         stickerPackageId: 6632,
         stickerId: 11825396
-      }).subscribe((res) => {
-        console.log(res);
       })
     } catch (error) {
       console.error(error.message);
@@ -458,7 +456,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel');
+            
           }
         }, {
           text: 'ตกลง',

@@ -36,7 +36,6 @@ export class WorkGroupComponent implements OnInit {
   }
 
   editTeam(group) {
-    console.log(group);
   }
 
   showTeamDetail(team) {

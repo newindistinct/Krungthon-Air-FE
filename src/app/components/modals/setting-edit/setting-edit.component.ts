@@ -271,8 +271,6 @@ export class SettingEditComponent implements OnInit {
   }
 
   timeChange() {
-    console.log(this.form.value);
-
   }
 
   initDate() {
@@ -280,7 +278,6 @@ export class SettingEditComponent implements OnInit {
   }
 
   dateChange() {
-    console.log(this.form.value);
   }
 
   dismiss() {

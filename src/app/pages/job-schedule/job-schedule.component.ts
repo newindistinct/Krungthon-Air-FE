@@ -101,7 +101,6 @@ export class JobScheduleComponent implements OnInit {
       // Calculate the difference in days
       const diffDays = (Math.ceil(diffTime / (1000 * 60 * 60 * 24)));;
       // const uniqueDay = this.uniqueDay.map((day) => this.removeZeros(day))
-      // console.log(uniqueDay);
 
       // Highlight the date if it's within the next 30 days
       if (diffDays >= 0 && diffDays < 30 && this.uniqueDay) {

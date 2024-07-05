@@ -36,6 +36,7 @@ export class FirestoreService {
   jobRejectedCanceledChange: Subject<any> = new Subject<any>();
   jobDashboardChange: Subject<any> = new Subject<any>();
   schedulesChange: Subject<any> = new Subject<any>();
+  jobOnSiteChange: Subject<any> = new Subject<any>();
   subscriptionAllUsers;
   subscriptionSites;
   subscriptionGroups;
@@ -43,6 +44,7 @@ export class FirestoreService {
   subscriptionAllJobs;
   subscriptionDashboard;
   subscriptionSchedules;
+  subscriptionOnSite;
   subscriptions = [];
 
 
@@ -379,6 +381,29 @@ export class FirestoreService {
     });
   }
 
+  fetchDataJobOnSite(site) {
+    const querydate = new Date().setHours(0, 0, 0, 0);
+    const formatQueryDate = new Date(querydate);
+    formatQueryDate.setDate(formatQueryDate.getDate() + 1);
+    const q = query(collection(db, "jobs"),
+      where("site_id", "==", site.site_id),
+      where("book.date", "<", formatQueryDate),
+    );
+    if (this.subscriptionOnSite) {
+      this.subscriptionOnSite();
+    }
+    return new Promise<any>((resolve) => {
+      this.subscriptionOnSite = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data(), key: docs.id });
+        }
+        this.jobOnSiteChange.next(data);
+        resolve(data);
+      });
+    });
+  }
+
   async CheckUserOnSite(phone: any) {
     const q = query(collection(db, "users"), where("phone", "==", phone));
     // const q = query(collection(db, "users"), where("user_phone", "==", phone), where("user_is_enabled", "==", true), where("user_is_deleted", "==", false));
@@ -458,7 +483,6 @@ export class FirestoreService {
       this.data = { ...this.data, sites: updatedSites };
       return updatedSites;
     } else {
-      console.log('no data');
       return [];
     }
   }
@@ -473,7 +497,6 @@ export class FirestoreService {
       return updatedGroups;
     }
     else {
-      console.log('no data');
     }
   }
 }
