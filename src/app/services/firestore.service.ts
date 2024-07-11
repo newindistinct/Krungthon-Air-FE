@@ -496,8 +496,6 @@ export class FirestoreService {
       this.data = { ...this.data, groups: updatedGroups };
       return updatedGroups;
     }
-    else {
-    }
   }
 }
 

@@ -41,9 +41,11 @@ export class MainLayoutComponent implements OnInit {
             }
           });
         } else {
+          this.authService.signout().finally(() => {
+            this.service.dismissLoading2();
+          })
         }
       });
-    } else {
     }
   }
   formatPhoneNumber(phoneNumber: any) {
@@ -53,6 +55,7 @@ export class MainLayoutComponent implements OnInit {
       return phoneNumber;
     }
   }
+
   logout() {
     const { header, message } = signOut();
     this.service.showAlert(header, message, () => {

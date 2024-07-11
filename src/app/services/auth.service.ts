@@ -14,7 +14,7 @@ export class AuthService {
   isLogedIn: boolean;
   constructor(private router: Router,
     private service: ServiceService,
-    ) { }
+  ) { }
 
   SessionIsLogedIn(): Promise<boolean> {
     return new Promise((resolve) => {
@@ -63,6 +63,7 @@ export class AuthService {
       localStorage.removeItem('token');
       this.router.navigate(['/login']);
     }).catch((error) => {
+      // console.log(error);
     });
   }
   signInAnonymously() {
@@ -76,5 +77,5 @@ export class AuthService {
   getUserFormAuth() {
     return this.userFormAuth;
   }
-  
+
 }
