@@ -11,7 +11,7 @@
     <!-- sorts dir = 'asc' or 'desc' -->
     <ngx-datatable class="flex w-full custom-datatable material expandable p-2" [columnMode]="'force'" [rows]="rows"
       [limit]="100" rowHeight="auto" [headerHeight]="50" [footerHeight]="50" [scrollbarH]="true"
-      [rowClass]="getRowClass" [sorts]="[{prop: 'group_id', dir: 'desc'}]" (activate)="onActivate($event)">
+      [rowClass]="getRowClass" [sorts]="[{prop: 'group_id', dir: 'desc'},{prop:'name', dir: 'asc'}]" (activate)="onActivate($event)">
       <ngx-datatable-column name="สถานที่" prop="name">
         <ng-template let-row="row" ngx-datatable-cell-template>
           {{row.name}}

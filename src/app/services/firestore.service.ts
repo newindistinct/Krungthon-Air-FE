@@ -366,7 +366,9 @@ export class FirestoreService {
       where("book.date", ">", date),
       where("book.date", "<", nextDay),
       where("status", "in", ["BOOKED", "PENDING"]),
-      where("project_id", "==", site.project_id));
+      where("project_id", "==", site.project_id),
+      where("group_id", "==", site.group_id)
+    );
     return new Promise<any>((resolve) => {
       const snapshot = getDocs(q);
       snapshot.then((querySnapshot) => {
