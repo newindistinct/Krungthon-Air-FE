@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Timestamp } from 'firebase/firestore';
+import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
 
 @Component({
@@ -10,11 +12,21 @@ import { FirestoreService } from 'src/app/services/firestore.service';
 export class JobsListComponent implements OnInit {
   @Input() jobs: any[]
   constructor(
-    private firestoreService: FirestoreService
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
     this.sortJobs()
+  }
+
+  infoJob(job) {
+    this.modalController.create({
+      component: JobInfoComponent,
+      componentProps: {
+        job: job
+      },
+      cssClass: 'my-custom-class',
+    }).then(modal => modal.present());
   }
 
   sortJobs(){

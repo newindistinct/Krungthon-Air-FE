@@ -56,56 +56,42 @@ export class ServiceService {
       alert.present();
     });
   }
-  async showAlert(header: string, message: string, handler: Function, options?: {
-    confirm?: string,
-    confirmOnly?: boolean,
-    cssStyle?: string,
-  }, handlerCancel?: Function) {
-    let buttons = []
-    if (options?.confirmOnly) {
-      buttons = [
-        {
-          text: 'ตกลง',
-          role: 'confirm',
-          cssClass: "confirm-button",
-          handler: async () => {
-            if (handler) {
-              handler();
-            }
-          },
-        }
-      ]
+  async showAlert(header: string, message: string, confirmHandler: Function, options: {
+    confirmText?: string;
+    confirmOnly?: boolean;
+    cssClass?: string;
+  } = {}, cancelHandler?: Function): Promise<boolean> {
+    const buttons: any[] = [];
+    if (options.confirmOnly) {
+      buttons.push({
+        text: options.confirmText || 'ตกลง',
+        role: 'confirm',
+        cssClass: 'confirm-button',
+        handler: () => confirmHandler(),
+      });
     } else {
-      buttons = [
+      buttons.push(
         {
           text: 'ยกเลิก',
           role: 'cancel',
-          // cssClass: "cancel-button",
-          handler: async () => {
-            if (handlerCancel) {
-              handlerCancel();
-            }
-          },
-
-        }, {
-          text: options?.confirm || 'ยืนยัน',
+          handler: () => cancelHandler ? cancelHandler() : false,
+        },
+        {
+          text: options.confirmText || 'ยืนยัน',
           role: 'confirm',
-          cssClass: "confirm-button",
-          handler: async () => {
-            if (handler) {
-              handler();
-            }
-          },
+          cssClass: 'confirm-button',
+          handler: () => confirmHandler(),
         }
-      ]
+      );
     }
     const alert = await this.alert.create({
-      mode: "ios",
-      header: header,
-      message: message,
-      buttons: buttons,
-      // cssClass: options?.cssStyle || "alert-screen"
-    })
-    alert.present();
+      mode: 'ios',
+      header,
+      message,
+      buttons,
+      cssClass: options.cssClass,
+    });
+    await alert.present();
+    return (await alert.onDidDismiss()).role === 'confirm';
   }
 }

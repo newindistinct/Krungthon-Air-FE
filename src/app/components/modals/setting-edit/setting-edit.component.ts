@@ -34,8 +34,18 @@ export class SettingEditComponent implements OnInit {
       disabled: false
     },
     {
+      title: 'ตัดล้าง',
+      value: 'ตัดล้าง',
+      disabled: false
+    },
+    {
       title: 'ติดตั้ง',
       value: 'ติดตั้ง',
+      disabled: false
+    },
+    {
+      title: 'ซ่อม',
+      value: 'ซ่อม',
       disabled: false
     },
     {
@@ -421,7 +431,11 @@ export class SettingEditComponent implements OnInit {
     }
     this.service.showAlert('ยืนยัน', 'ยืนยันการยกเลิกงาน', () => {
       this.firestoreService.updateDatatoFirebase(docRef, data)
-    }, { confirmOnly: false });
+    }, { confirmOnly: false }).then((result) => {
+      if (result) {
+        this.dismiss();
+      }
+    });
   }
 
   rejectJob(job) {

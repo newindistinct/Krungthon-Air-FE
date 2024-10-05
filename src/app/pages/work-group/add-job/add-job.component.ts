@@ -30,8 +30,18 @@ export class AddJobComponent implements OnInit {
       disabled: false
     },
     {
+      title: 'ตัดล้าง',
+      value: 'ตัดล้าง',
+      disabled: false
+    },
+    {
       title: 'ติดตั้ง',
       value: 'ติดตั้ง',
+      disabled: false
+    },
+    {
+      title: 'ซ่อม',
+      value: 'ซ่อม',
       disabled: false
     },
     {
