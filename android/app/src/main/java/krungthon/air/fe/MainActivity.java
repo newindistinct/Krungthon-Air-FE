@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package krungthon.air.fe;
 
 import com.getcapacitor.BridgeActivity;
 

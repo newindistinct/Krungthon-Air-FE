@@ -16,7 +16,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { BookingGuideComponent } from './pages/booking-guide/booking-guide.component';
 import { ServiceComponent } from './pages/service/service.component';
 import { HistoryComponent } from './pages/history/history.component';
-import { HomeTestComponent } from './pages/test/home/home.component';
+import { TestComponent } from './test/test.component';
 
 export const routes: Routes = [
   {
@@ -82,7 +82,7 @@ export const routes: Routes = [
   },
   {
     path: 'test',
-    component: HomeTestComponent
+    component: TestComponent
   }
 ];
 
