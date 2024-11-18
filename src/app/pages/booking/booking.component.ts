@@ -74,7 +74,7 @@ export class BookingComponent implements OnInit {
     private authService: AuthService
   ) { }
 
-  async adminLogin(){
+  async adminLogin() {
     const isLogedIn = await this.authService.SessionIsLogedIn();
     if (isLogedIn == true) {
       await this.authService.checkAuth().then((res) => {
@@ -230,7 +230,7 @@ export class BookingComponent implements OnInit {
     const formatDate = new Date(date);
     formatDate.setDate(formatDate.getDate());
     const data = {
-      book: { time: [time], date: formatDate },
+      // book: { time: [time], date: formatDate },
       group_id: this.group.id,
       job_id: uuidv4(),
       project_id: this.group.project_id,
@@ -246,6 +246,7 @@ export class BookingComponent implements OnInit {
       created_by: this.is_admin == 'true' ? name : 'คิวอาร์โค้ด',
       created_at: new Date(),
       updated_at: new Date(),
+      book: { time: this.form.value.type.title === 'ตัดล้าง' ? this.typeBigClean() : [time], date: formatDate },
       // book: { time: this.form.value.qty > 1 ? this.qtyMoreThanOne() : [time], date: formatDate },
       // group_id: this.group.id,
       // job_id: uuidv4(),
@@ -319,6 +320,18 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
     let time = this.form.value.time.title.split(".")[0] // 8.00
     time = parseInt(time)
     for (let i = 0; i < qty; i++) {
+      if (time + i < 17) {
+        times.push(`${time + i}.00`);
+      }
+    }
+    return times
+  }
+
+  typeBigClean() {
+    let times = []
+    let time = this.form.value.time.title.split(".")[0] // 8.00
+    time = parseInt(time)
+    for (let i = 0; i < 2; i++) {
       if (time + i < 17) {
         times.push(`${time + i}.00`);
       }
@@ -456,7 +469,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            
+
           }
         }, {
           text: 'ตกลง',
