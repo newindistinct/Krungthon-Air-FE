@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   ModalController,
   ToastController,
@@ -9,6 +9,7 @@ import {
   Customer,
   CustomerService,
   ServiceRecord,
+  Site,
 } from '../../services/customer.service';
 import { ServiceRecordModalComponent } from './service-record-modal/service-record-modal.component';
 import { doc, getDoc } from 'firebase/firestore';
@@ -22,10 +23,11 @@ import { SuccessModalComponent } from './success-modal/success-modal.component';
   templateUrl: './service.component.html',
   styleUrls: ['./service.component.scss'],
 })
-export class ServiceComponent {
+export class ServiceComponent implements OnInit {
   formData: Customer = {
     firstName: '',
     lastName: '',
+    phone: '',
     condoName: '',
     building: '',
     floor: '',
@@ -35,6 +37,7 @@ export class ServiceComponent {
 
   tempServices: ServiceRecord[] = [];
   serviceRecords: ServiceRecord[] = [];
+  sites: Site[] = [];
 
   constructor(
     private modalCtrl: ModalController,
@@ -42,12 +45,23 @@ export class ServiceComponent {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
   ) {
-    this.loadCustomers();
+    // this.loadCustomers();
   }
 
-  async loadCustomers() {
+  async ngOnInit() {
+    try {
+      this.sites = (await this.customerService.getSites())
+        .filter(site => site.name !== 'ว่าง')
+        .sort((a, b) => a.name.localeCompare(b.name, 'th'));
+    } catch (error) {
+      console.error('Error loading sites:', error);
+    }
+  }
+
+  async loadCustomers() {   
     try {
       const customers = await this.customerService.getCustomers();
+      console.log('customers', customers);      
       this.serviceRecords = customers.flatMap(
         (customer) =>
           customer.services?.map((service) => ({
@@ -57,6 +71,7 @@ export class ServiceComponent {
       );
     } catch (error) {
       this.showToast('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+      
     }
   }
 
@@ -102,7 +117,7 @@ export class ServiceComponent {
           await successModal.present();
         }
         this.resetForm();
-        await this.loadCustomers();
+        // await this.loadCustomers();
       }
     } catch (error) {
       this.showToast('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
@@ -169,6 +184,7 @@ export class ServiceComponent {
     this.formData = {
       firstName: '',
       lastName: '',
+      phone: '',
       condoName: '',
       building: '',
       floor: '',

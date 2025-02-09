@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
@@ -5,7 +6,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 @Component({
   selector: 'app-service-record-modal',
   standalone: true,
-  imports: [IonicModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, IonicModule, FormsModule, ReactiveFormsModule],
   template: `
     <ion-header>
       <ion-toolbar>
@@ -45,6 +46,17 @@ import { IonicModule, ModalController } from '@ionic/angular';
           </ion-select>
         </ion-item>
 
+        <ion-item *ngIf="record.roomType === 'other'">
+          <ion-label position="stacked">ระบุประเภทห้อง</ion-label>
+          <ion-input 
+            type="text" 
+            [(ngModel)]="record.roomTypeOther" 
+            name="roomTypeOther" 
+            required
+            placeholder="กรุณาระบุประเภทห้อง"
+          ></ion-input>
+        </ion-item>
+
         <ion-item>
           <ion-label position="stacked">วงเงินสัญญา</ion-label>
           <ion-input type="number" [(ngModel)]="record.contractAmount" name="contractAmount" required></ion-input>
@@ -70,12 +82,13 @@ export class ServiceRecordModalComponent {
     btu: '',
     age: '',
     roomType: '',
-    contractAmount: 0,
+    roomTypeOther: '',
+    contractAmount: 2500,
     note: '',
   };
   @Input() isEdit: boolean = false;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController) { }
 
   dismiss() {
     this.modalCtrl.dismiss();

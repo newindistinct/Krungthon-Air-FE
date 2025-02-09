@@ -11,6 +11,7 @@
               type="text"
               [(ngModel)]="formData.firstName"
               class="border rounded"
+              placeholder="กรุณากรอกชื่อ"
             ></ion-input>
           </div>
           <div class="flex flex-col">
@@ -19,15 +20,29 @@
               type="text"
               [(ngModel)]="formData.lastName"
               class="border rounded"
+              placeholder="กรุณากรอกนามสกุล"
+            ></ion-input>
+          </div>
+          <div class="flex flex-col">
+            <label class="mb-1">เบอร์โทร:</label>
+            <ion-input
+              type="tel"
+              [(ngModel)]="formData.phone"
+              class="border rounded"
+              placeholder="กรุณากรอกเบอร์โทร"
             ></ion-input>
           </div>
           <div class="flex flex-col">
             <label class="mb-1">ชื่อคอนโด:</label>
-            <ion-input
-              type="text"
+            <ion-select
               [(ngModel)]="formData.condoName"
               class="border rounded"
-            ></ion-input>
+              placeholder="เลือกคอนโด"
+            >
+              <ion-select-option *ngFor="let site of sites" [value]="site.name">
+                {{ site.name }}
+              </ion-select-option>
+            </ion-select>
           </div>
           <div class="grid grid-cols-3 gap-2">
             <div class="flex flex-col">
@@ -36,6 +51,7 @@
                 type="text"
                 [(ngModel)]="formData.building"
                 class="border rounded"
+                placeholder="กรุณากรอกอาคาร"
               ></ion-input>
             </div>
             <div class="flex flex-col">
@@ -44,6 +60,7 @@
                 type="text"
                 [(ngModel)]="formData.floor"
                 class="border rounded"
+                placeholder="กรุณากรอกชั้น"
               ></ion-input>
             </div>
             <div class="flex flex-col">
@@ -52,6 +69,7 @@
                 type="text"
                 [(ngModel)]="formData.room"
                 class="border rounded"
+                placeholder="กรุณากรอกห้อง"
               ></ion-input>
             </div>
           </div>

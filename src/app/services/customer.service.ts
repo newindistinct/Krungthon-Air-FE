@@ -17,6 +17,7 @@ export interface Customer {
   customerId?: string;
   firstName: string;
   lastName: string;
+  phone: string;
   condoName: string;
   building: string;
   floor: string;
@@ -50,6 +51,12 @@ export interface ServiceHistory {
   updatedAt?: Timestamp;
 }
 
+export interface Site {
+  id?: string;
+  name: string;
+  address?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -78,7 +85,8 @@ export class CustomerService {
     const customersRef = collection(db, 'customers');
     const snapshot = await getDocs(customersRef);
     const count = snapshot.size + 1;
-    return `CUS${count.toString().padStart(5, '0')}`; // เช่น CUS00001
+    return `${count.toString().padStart(4, '0')}`; // เช่น CUS00001
+    // return `CUS${count.toString().padStart(4, '0')}`; // เช่น CUS00001
   }
 
   // เพิ่มข้อมูลลูกค้าใหม่
@@ -168,5 +176,18 @@ export class CustomerService {
 
     const customerData = customerDoc.data();
     return customerData.serviceHistory || [];
+  }
+
+  // เพิ่มเมธอดใหม่สำหรับดึงข้อมูล sites
+  async getSites(): Promise<Site[]> {
+    const sitesRef = collection(db, 'sites');
+    const querySnapshot = await getDocs(sitesRef);
+    return querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as Site)
+    );
   }
 }

@@ -38,31 +38,38 @@ import { ToastController } from '@ionic/angular';
                 <div class="flex justify-between items-start">
                   <div>
                     <h2 class="text-sm text-gray-600">
+                      <ion-icon name="id-card-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.customerId }} -
-                      {{
-                        customer.createdAt?.toDate() | date : 'dd/MM/yyyy HH:mm'
-                      }}
+                      <ion-icon name="time-outline" class="align-middle mx-1"></ion-icon>
+                      {{ customer.createdAt?.toDate() | date : 'dd/MM/yyyy HH:mm' }}
                     </h2>
                     <h2 class="font-medium">
+                      <ion-icon name="person-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.firstName }} {{ customer.lastName }}
                     </h2>
+                    <p class="text-sm text-gray-600" *ngIf="customer.phone">
+                      <ion-icon name="call-outline" class="align-middle mr-1"></ion-icon>
+                      {{ customer.phone }}
+                    </p>
                     <p class="text-sm text-gray-600">
+                      <ion-icon name="business-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.condoName }}
                     </p>
                     <p class="text-sm text-gray-600">
-                      อาคาร {{ customer.building }} ชั้น
-                      {{ customer.floor }} ห้อง
-                      {{ customer.room }}
+                      <ion-icon name="home-outline" class="align-middle mr-1"></ion-icon>
+                      อาคาร {{ customer.building }} ชั้น {{ customer.floor }} ห้อง {{ customer.room }}
                     </p>
                   </div>
                   <div class="text-right">
                     <ion-badge color="primary" class="mb-2">
+                      <ion-icon name="snow-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.services?.length || 0 }} เครื่อง
                     </ion-badge>
                     <div
                       *ngIf="customer.lastServiceDate"
                       class="text-xs text-gray-500"
                     >
+                      <ion-icon name="calendar-outline" class="align-middle mr-1"></ion-icon>
                       บริการล่าสุด:
                       <br />
                       {{
@@ -240,6 +247,20 @@ import { ToastController } from '@ionic/angular';
       .text-xs {
         font-size: 0.75rem;
         line-height: 1rem;
+      }
+      ion-icon {
+        font-size: 16px;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
+      
+      ion-badge ion-icon {
+        font-size: 14px;
+        margin-right: 2px;
+      }
+      
+      .text-xs ion-icon {
+        font-size: 12px;
       }
     `,
   ],
