@@ -121,7 +121,6 @@ export class CustomerService {
     customerId: string,
     customer: Partial<Customer>
   ): Promise<void> {
-    console.log('customerId', customerId);
     const customerRef = doc(db, 'customers', customerId);
     const now = Timestamp.now();
 

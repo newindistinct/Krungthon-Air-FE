@@ -516,7 +516,6 @@ export class CustomerListComponent {
         }
       });
 
-      console.log('updateData', updateData);
       await this.customerService.updateCustomer(customer.id, updateData);
 
       // อัพเดทข้อมูลในรายการ

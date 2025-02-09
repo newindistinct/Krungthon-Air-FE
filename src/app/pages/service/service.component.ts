@@ -60,8 +60,7 @@ export class ServiceComponent implements OnInit {
 
   async loadCustomers() {   
     try {
-      const customers = await this.customerService.getCustomers();
-      console.log('customers', customers);      
+      const customers = await this.customerService.getCustomers();      
       this.serviceRecords = customers.flatMap(
         (customer) =>
           customer.services?.map((service) => ({
