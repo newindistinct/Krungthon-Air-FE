@@ -28,6 +28,11 @@ export interface Customer {
   updatedAt?: Timestamp;
   isExpanded?: boolean;
   lastServiceDate?: Timestamp; // เพิ่ม field เก็บวันที่บริการล่าสุด
+  status?: 'pending' | 'approved' | 'rejected';  // เพิ่ม status
+  statusNote?: string;  // เพิ่มหมายเหตุสำหรับ status
+  contractStartDate?: Timestamp;  // วันที่เริ่มสัญญา
+  contractEndDate?: Timestamp;    // วันที่สิ้นสุดสัญญา
+  contractCount?: number;         // จำนวนครั้งในการทำสัญญา
 }
 
 export interface ServiceRecord {
@@ -116,6 +121,7 @@ export class CustomerService {
     customerId: string,
     customer: Partial<Customer>
   ): Promise<void> {
+    console.log('customerId', customerId);
     const customerRef = doc(db, 'customers', customerId);
     const now = Timestamp.now();
 

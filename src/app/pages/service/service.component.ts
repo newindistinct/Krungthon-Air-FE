@@ -100,6 +100,7 @@ export class ServiceComponent implements OnInit {
           const customerId = await this.customerService.addCustomer({
             ...this.formData,
             services: this.tempServices,
+            status: 'pending',
           });
 
           const customerRef = doc(db, 'customers', customerId);

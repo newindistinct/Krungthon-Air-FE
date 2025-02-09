@@ -3,6 +3,8 @@ import { Customer, CustomerService } from '../../services/customer.service';
 import { ModalController } from '@ionic/angular';
 import { ServiceHistoryModalComponent } from './service-history-modal/service-history-modal.component';
 import { ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'app-customer-list',
@@ -37,12 +39,15 @@ import { ToastController } from '@ionic/angular';
               <ion-label>
                 <div class="flex justify-between items-start">
                   <div>
-                    <h2 class="text-sm text-gray-600">
-                      <ion-icon name="id-card-outline" class="align-middle mr-1"></ion-icon>
-                      {{ customer.customerId }} -
-                      <ion-icon name="time-outline" class="align-middle mx-1"></ion-icon>
-                      {{ customer.createdAt?.toDate() | date : 'dd/MM/yyyy HH:mm' }}
-                    </h2>
+                    <div class="flex items-center gap-2 mb-1">
+                      <ion-badge [color]="getStatusColor(customer.status)">
+                        {{ getStatusText(customer.status) }}
+                      </ion-badge>
+                      <h2 class="text-sm text-gray-600">
+                        <ion-icon name="id-card-outline"></ion-icon>
+                        {{ customer.customerId }}
+                      </h2>
+                    </div>
                     <h2 class="font-medium">
                       <ion-icon name="person-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.firstName }} {{ customer.lastName }}
@@ -61,6 +66,24 @@ import { ToastController } from '@ionic/angular';
                     </p>
                   </div>
                   <div class="text-right">
+                    <div class="flex gap-2 mb-2" *ngIf="customer.status === 'pending'">
+                      <ion-button 
+                        size="small" 
+                        color="success" 
+                        (click)="updateStatus(customer, 'approved', $event)"
+                      >
+                        <ion-icon name="checkmark-outline" slot="start"></ion-icon>
+                        อนุมัติ
+                      </ion-button>
+                      <ion-button 
+                        size="small" 
+                        color="danger" 
+                        (click)="updateStatus(customer, 'rejected', $event)"
+                      >
+                        <ion-icon name="close-outline" slot="start"></ion-icon>
+                        ไม่อนุมัติ
+                      </ion-button>
+                    </div>
                     <ion-badge color="primary" class="mb-2">
                       <ion-icon name="snow-outline" class="align-middle mr-1"></ion-icon>
                       {{ customer.services?.length || 0 }} เครื่อง
@@ -76,6 +99,21 @@ import { ToastController } from '@ionic/angular';
                         customer.lastServiceDate?.toDate()
                           | date : 'dd/MM/yyyy HH:mm'
                       }}
+                    </div>
+                    <!-- แสดงข้อมูลสัญญา -->
+                    <div *ngIf="customer.status === 'approved'" class="text-xs text-gray-500">
+                      <div class="mb-1">
+                        <ion-icon name="calendar-outline" class="align-middle mr-1"></ion-icon>
+                        เริ่มสัญญา: {{ customer.contractStartDate?.toDate() | date:'dd/MM/yyyy' }}
+                      </div>
+                      <div class="mb-1">
+                        <ion-icon name="calendar-outline" class="align-middle mr-1"></ion-icon>
+                        สิ้นสุดสัญญา: {{ customer.contractEndDate?.toDate() | date:'dd/MM/yyyy' }}
+                      </div>
+                      <div>
+                        <ion-icon name="repeat-outline" class="align-middle mr-1"></ion-icon>
+                        สัญญาครั้งที่: {{ customer.contractCount }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -273,7 +311,8 @@ export class CustomerListComponent {
   constructor(
     private customerService: CustomerService,
     private modalCtrl: ModalController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) {}
 
   async searchCustomers() {
@@ -391,5 +430,121 @@ export class CustomerListComponent {
       other: 'อื่นๆ',
     };
     return types[type] || type;
+  }
+
+  getStatusColor(status: string): string {
+    const colors = {
+      pending: 'warning',
+      approved: 'success',
+      rejected: 'danger'
+    };
+    return colors[status] || 'medium';
+  }
+
+  getStatusText(status: string): string {
+    const texts = {
+      pending: 'รอตรวจสอบ',
+      approved: 'อนุมัติแล้ว',
+      rejected: 'ไม่อนุมัติ'
+    };
+    return texts[status] || 'ไม่ระบุ';
+  }
+
+  async updateStatus(customer: Customer, newStatus: 'approved' | 'rejected', event: Event) {
+    event.stopPropagation();
+    
+    let statusNote = '';
+    if (newStatus === 'rejected') {
+      const alert = await this.alertCtrl.create({
+        header: 'ระบุเหตุผล',
+        inputs: [
+          {
+            name: 'note',
+            type: 'textarea',
+            placeholder: 'กรุณาระบุเหตุผลที่ไม่อนุมัติ'
+          }
+        ],
+        buttons: [
+          {
+            text: 'ยกเลิก',
+            role: 'cancel'
+          },
+          {
+            text: 'ยืนยัน',
+            handler: (data) => {
+              statusNote = data.note;
+              this.confirmUpdateStatus(customer, newStatus, statusNote);
+            }
+          }
+        ]
+      });
+      await alert.present();
+    } else {
+      await this.confirmUpdateStatus(customer, newStatus);
+    }
+  }
+
+  private async confirmUpdateStatus(customer: Customer, status: 'approved' | 'rejected', note?: string) {
+    try {
+      // สร้าง updateData เฉพาะฟิลด์ที่ต้องการอัพเดท
+      const updateData: Partial<Customer> = {
+        status,
+        statusNote: note || null,
+        services: customer.services || [], // เก็บข้อมูล services เดิมไว้
+      };
+
+      if (status === 'approved') {
+        const startDate = Timestamp.now();
+        // คำนวณวันสิ้นสุดสัญญา (1 ปี)
+        const endDate = new Date(startDate.toDate());
+        endDate.setFullYear(endDate.getFullYear() + 1);
+
+        updateData.contractStartDate = startDate;
+        updateData.contractEndDate = Timestamp.fromDate(endDate);
+        updateData.contractCount = (customer.contractCount || 0) + 1;
+      } else {
+        // กรณี rejected ให้ล้างข้อมูลสัญญา
+        updateData.contractStartDate = null;
+        updateData.contractEndDate = null;
+        updateData.contractCount = null;
+      }
+
+      // ตรวจสอบและลบฟิลด์ที่มีค่า undefined ออก
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key] === undefined) {
+          delete updateData[key];
+        }
+      });
+
+      console.log('updateData', updateData);
+      await this.customerService.updateCustomer(customer.id, updateData);
+
+      // อัพเดทข้อมูลในรายการ
+      const index = this.customers.findIndex(c => c.id === customer.id);
+      if (index !== -1) {
+        this.customers[index] = {
+          ...this.customers[index],  // ใช้ข้อมูลเดิมเป็นฐาน
+          ...updateData             // อัพเดทเฉพาะข้อมูลใหม่
+        };
+      }
+
+      const toast = await this.toastCtrl.create({
+        message: status === 'approved' 
+          ? 'อนุมัติและสร้างสัญญาเรียบร้อยแล้ว'
+          : 'ปฏิเสธลูกค้าเรียบร้อยแล้ว',
+        duration: 2000,
+        color: 'success'
+      });
+      await toast.present();
+
+    } catch (error) {
+      console.error('Error updating status:', error);
+      const toast = await this.toastCtrl.create({
+        message: 'เกิดข้อผิดพลาดในการอัพเดทสถานะ',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+    }
   }
 }
