@@ -1,65 +1,135 @@
 <app-header title="รายละเอียดงาน" [modal]="true"></app-header>
-<ion-content>
-  <div class="flex flex-col justify-center items-center p-4">
-    <div class="flex flex-row justify-between items-center w-full ellipsis">
-      <ion-label class="text-base">อาคาร/ชั้น/ห้อง</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.address}}</ion-label>
+<ion-content class="ion-padding-top">
+  <div class="max-w-md mx-auto">
+    <!-- Content -->
+    <div class="px-4 space-y-6">
+      <!-- ข้อมูลที่อยู่ -->
+      <div class="bg-blue-50 rounded-xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <ion-icon name="location" class="text-xl text-blue-600"></ion-icon>
+          <h2 class="font-medium text-blue-800">ข้อมูลที่อยู่</h2>
+        </div>
+        <div class="ml-7 space-y-2 text-gray-600">
+          <p>{{ job.address }}</p>
+          <p class="flex items-center gap-2">
+            <ion-icon name="call-outline" class="text-gray-400"></ion-icon>
+            {{ job.phone }}
+          </p>
+        </div>
+      </div>
+
+      <!-- ข้อมูลงาน -->
+      <div class="bg-gray-50 rounded-xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <ion-icon
+            name="document-text"
+            class="text-xl text-primary"
+          ></ion-icon>
+          <h2 class="font-medium text-gray-800">ข้อมูลงาน</h2>
+        </div>
+        <div class="ml-7 space-y-3">
+          <!-- สถานะงาน -->
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">สถานะงาน</span>
+            <span
+              class="px-3 py-1 rounded-full text-sm"
+              [ngClass]="{
+                'bg-green-100 text-green-700': job.status === 'เสร็จสิ้น',
+                'bg-yellow-100 text-yellow-700':
+                  job.status === 'กำลังดำเนินการ',
+                'bg-blue-100 text-blue-700': job.status === 'รอดำเนินการ'
+              }"
+            >
+              {{ job.status }}
+            </span>
+          </div>
+
+          <!-- ประเภทงาน -->
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">ประเภทงาน</span>
+            <span class="font-medium text-gray-800">{{ job.type }}</span>
+          </div>
+
+          <!-- จำนวน -->
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">จำนวน</span>
+            <span class="font-medium text-gray-800"
+              >{{ job.qty || 1 }} เครื่อง</span
+            >
+          </div>
+
+          <!-- วันที่และเวลา -->
+          <div class="pt-2 border-t space-y-3">
+            <div class="flex items-center gap-2">
+              <ion-icon
+                name="calendar-outline"
+                class="text-gray-400"
+              ></ion-icon>
+              <span class="text-gray-600">วันที่จอง:</span>
+              <span class="font-medium text-gray-800">{{
+                formatTime(job.book.date)
+              }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <ion-icon name="time-outline" class="text-gray-400"></ion-icon>
+              <span class="text-gray-600">เวลาที่ทำรายการ:</span>
+              <span class="font-medium text-gray-800">{{
+                formatTime(job.created_at)
+              }}</span>
+            </div>
+          </div>
+          <!-- หมายเหตุและผู้ทำรายการ -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <ion-icon name="chatbox-outline" class="text-gray-400"></ion-icon>
+          <span class="text-gray-600">หมายเหตุ:</span>
+          <span class="text-gray-800">{{ job.remark || "-" }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <ion-icon name="person-outline" class="text-gray-400"></ion-icon>
+          <span class="text-gray-600">เพิ่มโดย:</span>
+          <span class="text-gray-800">{{ job.created_by || "-" }}</span>
+        </div>
+      </div>
+        </div>
+      </div>
+
+      <!-- รหัสอ้างอิง -->
+      <div class="bg-gray-50 rounded-xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <ion-icon name="key" class="text-xl text-primary"></ion-icon>
+          <h2 class="font-medium text-gray-800">รหัสอ้างอิง</h2>
+        </div>
+        <div class="ml-7 space-y-3 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">รหัสงาน</span>
+            <span class="font-mono font-medium text-gray-800">{{
+              job.job_id
+            }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">รหัสกลุ่ม</span>
+            <span class="font-mono font-medium text-gray-800">{{
+              job.group_id
+            }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">รหัสคอนโด</span>
+            <span class="font-mono font-medium text-gray-800">{{
+              job.site_id
+            }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">รหัสโปรเจค</span>
+            <span class="font-mono font-medium text-gray-800">{{
+              job.project_id
+            }}</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">สถานะงาน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.status}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">วันที่จอง:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{formatTime(job.book.date)}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">เวลาที่ทำรายการ:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{formatTime(job.created_at)}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">ประเภทงาน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.type}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">จำนวน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.qty || 1}} เครื่อง</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">เบอร์โทรศัพท์:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.phone}}</ion-label>
-    </div>
-    <!-- <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">รหัสงาน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.id}}</ion-label>
-    </div> -->
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">รหัสงาน:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.job_id}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">รหัสกลุ่ม:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.group_id}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">รหัสคอนโด:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.site_id}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">รหัสโปรเจค:</ion-label>
-      <ion-label class="text-base w-1/2 text-right ellipsis">{{job.project_id}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">หมายเหตุ:</ion-label>
-      <ion-label class="text-base w-1/2 text-right">{{job.remark || '-'}}</ion-label>
-    </div>
-    <div class="flex flex-row justify-between items-center w-full">
-      <ion-label class="text-base">เพิ่มโดย:</ion-label>
-      <ion-label class="text-base w-1/2 text-right">{{job.created_by || '-'}}</ion-label>
-    </div>
-  </div>
-  <div class="flex justify-center">
-    <!-- <ion-button (click)="edit()">แก้ไข</ion-button> -->
-    <!-- <ion-button (click)="delete()">ลบ</ion-button> -->
+
+    <!-- Spacer for bottom padding -->
+    <div class="h-6"></div>
   </div>
 </ion-content>

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Timestamp } from 'firebase/firestore';
 
 @Component({
@@ -6,18 +7,17 @@ import { Timestamp } from 'firebase/firestore';
   templateUrl: './job-info.component.html',
   styleUrls: ['./job-info.component.scss'],
 })
-export class JobInfoComponent implements OnInit {
+export class JobInfoComponent {
   @Input() job: any;
-  constructor() { }
+  constructor(private modalCtrl: ModalController) {}
 
-  ngOnInit() { }
-  edit() {
+  edit() {}
+  delete() {}
 
+  async dismiss() {
+    await this.modalCtrl.dismiss();
   }
-  delete() {
 
-  }
-  
   formatTime(timestamp: Timestamp) {
     const date = new Date(timestamp.seconds * 1000);
     const options: Intl.DateTimeFormatOptions = {
@@ -33,7 +33,7 @@ export class JobInfoComponent implements OnInit {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     };
     const formattedDate = date.toLocaleDateString('th-TH', options);
     return formattedDate;
