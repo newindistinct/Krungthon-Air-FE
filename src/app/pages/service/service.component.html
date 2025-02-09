@@ -1,13 +1,131 @@
 <app-header title="Service"></app-header>
 <ion-content>
-  <div class="h-full flex justify-center items-center">
-    <div class="p-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-      <div class="h-60 w-60 bg-gray-200 flex justify-center items-center p-4 rounded-lg">
-        <h1 class="text-2xl font-bold">ตรวจสอบ</h1>
+  <div class="flex flex-col p-4 space-y-6">
+    <!-- Form section -->
+    <div class="bg-white p-4 rounded-lg shadow">
+      <div class="grid grid-cols-1 gap-4">
+        <div class="space-y-2">
+          <div class="flex flex-col">
+            <label class="mb-1">ชื่อ:</label>
+            <ion-input
+              type="text"
+              [(ngModel)]="formData.firstName"
+              class="border rounded"
+            ></ion-input>
+          </div>
+          <div class="flex flex-col">
+            <label class="mb-1">นามสกุล:</label>
+            <ion-input
+              type="text"
+              [(ngModel)]="formData.lastName"
+              class="border rounded"
+            ></ion-input>
+          </div>
+          <div class="flex flex-col">
+            <label class="mb-1">ชื่อคอนโด:</label>
+            <ion-input
+              type="text"
+              [(ngModel)]="formData.condoName"
+              class="border rounded"
+            ></ion-input>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="flex flex-col">
+              <label class="mb-1">อาคาร:</label>
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.building"
+                class="border rounded"
+              ></ion-input>
+            </div>
+            <div class="flex flex-col">
+              <label class="mb-1">ชั้น:</label>
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.floor"
+                class="border rounded"
+              ></ion-input>
+            </div>
+            <div class="flex flex-col">
+              <label class="mb-1">ห้อง:</label>
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.room"
+                class="border rounded"
+              ></ion-input>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="h-60 w-60 bg-gray-200 flex justify-center items-center p-4 rounded-lg">
-        <h1 class="text-2xl font-bold">เพิ่ม</h1>
+    </div>
+
+    <!-- ข้อมูลแอร์ section -->
+    <div class="bg-white p-4 rounded-lg shadow">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">รายการแอร์</h2>
+        <ion-button fill="clear" (click)="addNewRecord()">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          เพิ่มเครื่อง
+        </ion-button>
       </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border p-2">ลำดับ</th>
+              <th class="border p-2">ยี่ห้อแอร์</th>
+              <th class="border p-2">ขนาด BTU</th>
+              <th class="border p-2">อายุเครื่อง</th>
+              <th class="border p-2">ประเภทห้อง</th>
+              <th class="border p-2">วงเงินสัญญา</th>
+              <th class="border p-2">หมายเหตุ</th>
+              <th class="border p-2">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let record of tempServices; let i = index"
+              class="hover:bg-gray-50"
+            >
+              <td class="border p-2">{{ i + 1 }}</td>
+              <td class="border p-2">{{ record.brand }}</td>
+              <td class="border p-2">{{ record.btu }}</td>
+              <td class="border p-2">{{ record.age }}</td>
+              <td class="border p-2">{{ getRoomTypeName(record.roomType) }}</td>
+              <td class="border p-2">
+                {{ record.contractAmount | number }} บาท
+              </td>
+              <td class="border p-2">{{ record.note }}</td>
+              <td class="border p-2">
+                <div class="flex gap-2 justify-center">
+                  <ion-button
+                    fill="clear"
+                    size="small"
+                    (click)="editRecord(record)"
+                  >
+                    <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+                  </ion-button>
+                  <ion-button
+                    fill="clear"
+                    size="small"
+                    color="danger"
+                    (click)="deleteRecord(record, i)"
+                  >
+                    <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                  </ion-button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <ion-button expand="block" (click)="onSubmit()">
+        บันทึกข้อมูล
+      </ion-button>
     </div>
   </div>
 </ion-content>

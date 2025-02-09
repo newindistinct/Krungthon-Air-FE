@@ -32,8 +32,11 @@ import { BookingGuideComponent } from './booking-guide/booking-guide.component';
 import { ServiceComponent } from './service/service.component';
 import { HistoryComponent } from './history/history.component';
 import { SiteHistoryComponent } from './history/site-history/site-history.component';
-
-
+import { CustomerListComponent } from './customer/customer-list.component';
+import { ServiceHistoryModalComponent } from './customer/service-history-modal/service-history-modal.component';
+import { ConfirmDeleteModalComponent } from './service/confirm-delete-modal/confirm-delete-modal.component';
+import { ConfirmSaveModalComponent } from './service/confirm-save-modal/confirm-save-modal.component';
+import { SuccessModalComponent } from './service/success-modal/success-modal.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +60,12 @@ import { SiteHistoryComponent } from './history/site-history/site-history.compon
     BookingGuideComponent,
     ServiceComponent,
     HistoryComponent,
-    SiteHistoryComponent
+    SiteHistoryComponent,
+    CustomerListComponent,
+    ServiceHistoryModalComponent,
+    ConfirmDeleteModalComponent,
+    ConfirmSaveModalComponent,
+    SuccessModalComponent,
   ],
   imports: [
     CommonModule,
@@ -73,9 +81,7 @@ import { SiteHistoryComponent } from './history/site-history/site-history.compon
     LayoutsModule,
     UiModule,
   ],
-  exports: [
-    DashboardComponent,LoginComponent
-  ],
+  exports: [DashboardComponent, LoginComponent],
   providers: [provideNativeDateAdapter()],
 })
-export class PagesModule { }
+export class PagesModule {}

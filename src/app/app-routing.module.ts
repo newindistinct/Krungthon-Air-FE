@@ -17,12 +17,13 @@ import { BookingGuideComponent } from './pages/booking-guide/booking-guide.compo
 import { ServiceComponent } from './pages/service/service.component';
 import { HistoryComponent } from './pages/history/history.component';
 import { TestComponent } from './test/test.component';
+import { CustomerListComponent } from './pages/customer/customer-list.component';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'krungthon/home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'krungthon',
@@ -31,65 +32,69 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
       },
       {
         path: 'work-group',
-        component: WorkGroupComponent
+        component: WorkGroupComponent,
       },
       {
         path: 'job-schedule',
-        component: JobScheduleComponent
+        component: JobScheduleComponent,
       },
       {
         path: 'home',
-        component: HomeComponent
+        component: HomeComponent,
       },
       {
         path: 'setting',
-        component: SettingComponent
+        component: SettingComponent,
       },
       {
         path: 'service',
-        component: ServiceComponent
+        component: ServiceComponent,
       },
       {
         path: 'history',
-        component: HistoryComponent
-      }
+        component: HistoryComponent,
+      },
+      {
+        path: 'customers',
+        component: CustomerListComponent,
+      },
     ],
   },
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard],
   },
   {
     path: 'booking/:id',
-    component: BookingComponent
+    component: BookingComponent,
   },
   {
     path: 'check-job',
-    component: CheckJobComponent
+    component: CheckJobComponent,
   },
   {
     path: 'booking-success',
-    component: BookingSuccessComponent
+    component: BookingSuccessComponent,
   },
   {
     path: 'booking-guide',
-    component: BookingGuideComponent
+    component: BookingGuideComponent,
   },
   {
     path: 'test',
-    component: TestComponent
-  }
+    component: TestComponent,
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

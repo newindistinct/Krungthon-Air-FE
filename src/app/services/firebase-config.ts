@@ -5,6 +5,7 @@ import { getAuth } from "firebase/auth";
 import { CACHE_SIZE_UNLIMITED, initializeFirestore, persistentLocalCache } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { environment } from "src/environments/environment";
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = environment.firebaseConfig;
 
@@ -13,6 +14,4 @@ export const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 export const firebaseApp = getApp();
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ cacheSizeBytes: CACHE_SIZE_UNLIMITED })
-});
+export const db = getFirestore(app);

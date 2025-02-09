@@ -1,0 +1,10 @@
+/* ถ้ายังไม่มี Tailwind utility classes เหล่านี้ */
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+/* ... อื่นๆ ตามที่ใช้ในเทมเพลต */ 
