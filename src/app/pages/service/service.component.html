@@ -1,8 +1,32 @@
-<app-header title="Service"></app-header>
+<app-header title="บริการ"></app-header>
 <ion-content>
   <div class="flex flex-col p-4 space-y-6">
+    <!-- โปรโมชั่น section -->
+    <div class="bg-blue-50 p-4 rounded-lg shadow">
+      <h2 class="text-xl font-semibold text-blue-800 mb-3">โปรโครตคุ้ม</h2>
+      <div class="space-y-2 text-blue-700">
+        <div class="flex items-start">
+          <ion-icon name="checkmark-circle" class="text-blue-500 mt-1 mr-2"></ion-icon>
+          <p>บริษัทฯ ล้างแอร์ให้ 2 ครั้ง/ปี</p>
+        </div>
+        <div class="flex items-start">
+          <ion-icon name="checkmark-circle" class="text-blue-500 mt-1 mr-2"></ion-icon>
+          <p>บริษัทฯ คุ้มครอง ซ่อม เปลี่ยนอะไหล่ เติมน้ำยา ฟรีตลอดสัญญา</p>
+        </div>
+        <div class="flex items-start">
+          <ion-icon name="checkmark-circle" class="text-blue-500 mt-1 mr-2"></ion-icon>
+          <p>ปีที่ 5 บริษัทฯ จะมีการลงทะเบียนจัดลำดับลูกค้าที่ต่อเนื่องและทำสัญญาต่อเนื่อง</p>
+        </div>
+        <div class="text-sm text-blue-600 mt-2">
+          <ion-icon name="information-circle" class="mr-1"></ion-icon>
+          ค่าบริการ 2,500/ปี
+        </div>
+      </div>
+    </div>
+
     <!-- Form section -->
     <div class="bg-white p-4 rounded-lg shadow">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">ข้อมูลลูกค้า</h3>
       <div class="grid grid-cols-1 gap-4">
         <div class="space-y-2">
           <div class="flex flex-col">
@@ -80,8 +104,8 @@
     <!-- ข้อมูลแอร์ section -->
     <div class="bg-white p-4 rounded-lg shadow">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-semibold">รายการแอร์</h2>
-        <ion-button fill="clear" (click)="addNewRecord()">
+        <h3 class="text-lg font-semibold text-gray-700">รายการแอร์</h3>
+        <ion-button fill="outline" color="primary" (click)="addNewRecord()">
           <ion-icon name="add-circle-outline" slot="start"></ion-icon>
           เพิ่มเครื่อง
         </ion-button>
@@ -140,10 +164,42 @@
       </div>
     </div>
 
-    <div class="mt-4">
-      <ion-button expand="block" (click)="onSubmit()">
-        บันทึกข้อมูล
-      </ion-button>
-    </div>
+    <!-- Submit button -->
+    <ion-button expand="block" (click)="onSubmit()" class="mt-4">
+      <ion-icon name="save-outline" slot="start"></ion-icon>
+      บันทึกข้อมูล
+    </ion-button>
   </div>
 </ion-content>
+
+<style>
+  /* Add to service.component.scss */
+  ion-content {
+    --background: #f3f4f6;
+  }
+
+  .bg-blue-50 {
+    background-color: #eff6ff;
+  }
+
+  ion-button {
+    --box-shadow: none;
+  }
+
+  ion-input, ion-select {
+    --background: #ffffff;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    margin-top: 4px;
+  }
+
+  table {
+    @apply bg-white;
+    th {
+      @apply bg-gray-50 text-gray-600 text-sm;
+    }
+    td {
+      @apply text-gray-700;
+    }
+  }
+</style>
