@@ -82,7 +82,7 @@ export class BookingComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 
   async adminLogin() {
     const isLogedIn = await this.authService.SessionIsLogedIn();
@@ -303,41 +303,32 @@ export class BookingComponent implements OnInit {
       .addDatatoFirebase(collectionRef, data)
       .then(async (res) => {
         try {
-          await this.http
-            .post('https://sendlinenotify-abewfqcbgq-uc.a.run.app', {
-              message: `${this.site.name}
-วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-บริการ : ${this.form.value.type.title} ${
-                this.form.value.type.title == 'อื่นๆ'
-                  ? `(${this.form.value.type_other})`
-                  : ''
-              }
-จํานวน : ${this.form.value.qty} ตัว 
-เบอร์โทร : ${this.form.value.phone}
-ที่อยู่/ห้อง : ${this.form.value.address}
-หมายเหตุ : ${this.form.value.remark || '-'}
-เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
-https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
-              stickerPackageId: 6632,
-              stickerId: 11825396,
-            })
-            .subscribe(async (res) => {
-              this.form.patchValue({
-                time: '',
-              });
-              this.has_date = false;
-              this.initForm();
-              this.service.dismissLoading();
-              this.router.navigate(['booking-success']);
-              // await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
-              //   window.location.reload();
-              // }, { confirmOnly: true }).then(() => {
-              //   setTimeout(() => {
-              //     this.service.dismissLoading();
-              //     window.location.reload();
-              //   }, 3000);
-              // })
-            });
+          const mainMessage = {
+            // username: 'LINE Notify',
+            // avatar_url: 'https://cdn2.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-line-circle-512.png',
+            embeds: [{
+              color: 0x00ff00, // สีเขียว
+              title: `📢 แจ้งเตือนงานใหม่: ${this.site.name}`,
+              description: `📅 วันที่จอง : ${this.formatDateToThaiString(formatDate)}
+🛠️  บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ' ? `(${this.form.value.type_other})` : ''}
+🔢  จำนวน : ${this.form.value.qty} ตัว
+📞  เบอร์โทร : ${this.form.value.phone}
+🏠  ที่อยู่/ห้อง : ${this.form.value.address}
+📝  หมายเหตุ : ${this.form.value.remark || '-'}
+👤  เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
+      
+[คลิกเพื่อดูรายละเอียด](https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id})`,
+              timestamp: new Date().toISOString()
+            }]
+          };
+          await this.sendNotification(mainMessage);
+          this.form.patchValue({
+            time: '',
+          });
+          this.has_date = false;
+          this.initForm();
+          this.service.dismissLoading();
+          this.router.navigate(['booking-success']);
         } catch (error) {
           this.service.dismissLoading();
           console.error(error);
@@ -348,7 +339,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
         this.service.showAlert(
           'ไม่สามารถเพิ่มงานได้',
           error.message,
-          () => {},
+          () => { },
           { confirmOnly: true }
         );
         console.error(error);
@@ -468,10 +459,9 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
       if (siteConflictCount > 0) {
         this.service.showAlert(
           'ไม่สามารถเพิ่มได้',
-          `เวลา ${
-            newTimes[newTimes.length - 1]
+          `เวลา ${newTimes[newTimes.length - 1]
           } มีงานครบกําหนดในคอนโดแล้ว กรุณาเลือกวันหรือเวลาอื่น`,
-          () => {},
+          () => { },
           { confirmOnly: true }
         );
         return;
@@ -480,10 +470,9 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
       if (conflictCount >= this.group.limit) {
         this.service.showAlert(
           'ไม่สามารถเพิ่มได้',
-          `เวลา ${
-            newTimes[newTimes.length - 1]
+          `เวลา ${newTimes[newTimes.length - 1]
           } มีงานครบกําหนดในโซนแล้ว กรุณาเลือกวันหรือเวลาอื่น`,
-          () => {},
+          () => { },
           { confirmOnly: true }
         );
         return;
@@ -494,7 +483,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
       this.service.showAlert(
         'ไม่สามารถเพิ่มได้',
         'สูงกว่า 16.00 ไม่สามารถเพิ่มได้',
-        () => {},
+        () => { },
         { confirmOnly: true }
       );
     }
@@ -552,7 +541,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
             text: 'ยกเลิก',
             role: 'cancel',
             cssClass: 'secondary',
-            handler: () => {},
+            handler: () => { },
           },
           {
             text: 'ตกลง',
@@ -585,7 +574,7 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
       .catch((error: any) => {
         this.service.dismissLoading();
         const { header, message } = InvalidOTP();
-        this.service.showAlert(header, message, () => {}, {
+        this.service.showAlert(header, message, () => { }, {
           confirmOnly: true,
         });
       });
@@ -712,5 +701,14 @@ https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
     await popover.present();
 
     const { role } = await popover.onDidDismiss();
+  }
+
+  private async sendNotification(payload: any) {
+    const webhookUrl = 'https://discordapp.com/api/webhooks/1339445876195721258/0gZGmjjpLZ8JxxEd2g0Mo0XLTQjR4asys4sjaCNbj4qoqpOveG3XSxeYgSnDCka5Vx6a';
+    try {
+      await this.http.post(webhookUrl, payload).toPromise();
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
   }
 }

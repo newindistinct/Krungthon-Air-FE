@@ -1,10 +1,23 @@
 <app-header title="บริการ"></app-header>
 <ion-content>
   <div class="flex flex-col p-4 space-y-6">
+    <!-- วัตถุประสงค์ section -->
+    <div class="bg-gray-50 p-4 rounded-lg shadow">
+      <h2 class="text-lg font-semibold text-gray-800 mb-3">วัตถุประสงค์</h2>
+      <div class="space-y-2 text-gray-700">
+        <div class="flex items-start">
+          <p>บริษัท กรุงธนประกันแอร์ จำกัด ต้องการดูแลเครื่องปรับอากาศของลูกค้าอย่างต่อเนื่อง
+            และลูกค้าจะได้ใช้เครื่องปรับอากาศตัวใหม่เสมอ บริษัทฯ จึงจัดโปรนี้เพื่อลูกค้า</p>
+        </div>
+      </div>
+    </div>
+
     <!-- โปรโมชั่น section -->
     <div class="bg-blue-50 p-4 rounded-lg shadow">
-      <h2 class="text-xl font-semibold text-blue-800 mb-3">โปรโครตคุ้ม</h2>
+      <h2 class="text-xl font-semibold text-blue-800 mb-3">โปรโครตคุ้ม สิทธิประโยชน์ของลูกค้า</h2>
       <div class="space-y-2 text-blue-700">
+
+
         <div class="flex items-start">
           <ion-icon name="checkmark-circle" class="text-blue-500 mt-1 mr-2"></ion-icon>
           <p>บริษัทฯ ล้างแอร์ให้ 2 ครั้ง/ปี</p>
@@ -15,7 +28,7 @@
         </div>
         <div class="flex items-start">
           <ion-icon name="checkmark-circle" class="text-blue-500 mt-1 mr-2"></ion-icon>
-          <p>ปีที่ 5 บริษัทฯ จะมีการลงทะเบียนจัดลำดับลูกค้าที่ต่อเนื่องและทำสัญญาต่อเนื่อง</p>
+          <p>ปีที่ 5 บริษัทฯ จะมีการลงทะเบียนจัดลำดับการติดตั้งเครื่องปรับอากาศใหม่และทำสัญญาต่อเนื่อง</p>
         </div>
         <div class="text-sm text-blue-600 mt-2">
           <ion-icon name="information-circle" class="mr-1"></ion-icon>
@@ -31,38 +44,22 @@
         <div class="space-y-2">
           <div class="flex flex-col">
             <label class="mb-1">ชื่อ:</label>
-            <ion-input
-              type="text"
-              [(ngModel)]="formData.firstName"
-              class="border rounded"
-              placeholder="กรุณากรอกชื่อ"
-            ></ion-input>
+            <ion-input type="text" [(ngModel)]="formData.firstName" class="border rounded"
+              placeholder="กรุณากรอกชื่อ"></ion-input>
           </div>
           <div class="flex flex-col">
             <label class="mb-1">นามสกุล:</label>
-            <ion-input
-              type="text"
-              [(ngModel)]="formData.lastName"
-              class="border rounded"
-              placeholder="กรุณากรอกนามสกุล"
-            ></ion-input>
+            <ion-input type="text" [(ngModel)]="formData.lastName" class="border rounded"
+              placeholder="กรุณากรอกนามสกุล"></ion-input>
           </div>
           <div class="flex flex-col">
             <label class="mb-1">เบอร์โทร:</label>
-            <ion-input
-              type="tel"
-              [(ngModel)]="formData.phone"
-              class="border rounded"
-              placeholder="กรุณากรอกเบอร์โทร"
-            ></ion-input>
+            <ion-input type="tel" [(ngModel)]="formData.phone" class="border rounded"
+              placeholder="กรุณากรอกเบอร์โทร"></ion-input>
           </div>
           <div class="flex flex-col">
             <label class="mb-1">ชื่อคอนโด:</label>
-            <ion-select
-              [(ngModel)]="formData.condoName"
-              class="border rounded"
-              placeholder="เลือกคอนโด"
-            >
+            <ion-select [(ngModel)]="formData.condoName" class="border rounded" placeholder="เลือกคอนโด">
               <ion-select-option *ngFor="let site of sites" [value]="site.name">
                 {{ site.name }}
               </ion-select-option>
@@ -71,30 +68,18 @@
           <div class="grid grid-cols-3 gap-2">
             <div class="flex flex-col">
               <label class="mb-1">อาคาร:</label>
-              <ion-input
-                type="text"
-                [(ngModel)]="formData.building"
-                class="border rounded"
-                placeholder="กรุณากรอกอาคาร"
-              ></ion-input>
+              <ion-input type="text" [(ngModel)]="formData.building" class="border rounded"
+                placeholder="กรุณากรอกอาคาร"></ion-input>
             </div>
             <div class="flex flex-col">
               <label class="mb-1">ชั้น:</label>
-              <ion-input
-                type="text"
-                [(ngModel)]="formData.floor"
-                class="border rounded"
-                placeholder="กรุณากรอกชั้น"
-              ></ion-input>
+              <ion-input type="text" [(ngModel)]="formData.floor" class="border rounded"
+                placeholder="กรุณากรอกชั้น"></ion-input>
             </div>
             <div class="flex flex-col">
               <label class="mb-1">ห้อง:</label>
-              <ion-input
-                type="text"
-                [(ngModel)]="formData.room"
-                class="border rounded"
-                placeholder="กรุณากรอกห้อง"
-              ></ion-input>
+              <ion-input type="text" [(ngModel)]="formData.room" class="border rounded"
+                placeholder="กรุณากรอกห้อง"></ion-input>
             </div>
           </div>
         </div>
@@ -126,10 +111,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="let record of tempServices; let i = index"
-              class="hover:bg-gray-50"
-            >
+            <tr *ngFor="let record of tempServices; let i = index" class="hover:bg-gray-50">
               <td class="border p-2">{{ i + 1 }}</td>
               <td class="border p-2">{{ record.brand }}</td>
               <td class="border p-2">{{ record.btu }}</td>
@@ -141,19 +123,10 @@
               <td class="border p-2">{{ record.note }}</td>
               <td class="border p-2">
                 <div class="flex gap-2 justify-center">
-                  <ion-button
-                    fill="clear"
-                    size="small"
-                    (click)="editRecord(record)"
-                  >
+                  <ion-button fill="clear" size="small" (click)="editRecord(record)">
                     <ion-icon name="create-outline" slot="icon-only"></ion-icon>
                   </ion-button>
-                  <ion-button
-                    fill="clear"
-                    size="small"
-                    color="danger"
-                    (click)="deleteRecord(record, i)"
-                  >
+                  <ion-button fill="clear" size="small" color="danger" (click)="deleteRecord(record, i)">
                     <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
                   </ion-button>
                 </div>
@@ -186,7 +159,8 @@
     --box-shadow: none;
   }
 
-  ion-input, ion-select {
+  ion-input,
+  ion-select {
     --background: #ffffff;
     --padding-start: 12px;
     --padding-end: 12px;
@@ -195,11 +169,25 @@
 
   table {
     @apply bg-white;
+
     th {
       @apply bg-gray-50 text-gray-600 text-sm;
     }
+
     td {
       @apply text-gray-700;
     }
+  }
+
+  .bg-gray-50 {
+    background-color: #f9fafb;
+  }
+
+  ion-icon {
+    font-size: 1.25rem;
+  }
+
+  .space-y-2>*+* {
+    margin-top: 0.5rem;
   }
 </style>
