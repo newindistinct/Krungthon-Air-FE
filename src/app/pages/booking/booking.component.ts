@@ -704,11 +704,47 @@ export class BookingComponent implements OnInit {
   }
 
   private async sendNotification(payload: any) {
-    const webhookUrl = 'https://discordapp.com/api/webhooks/1339445876195721258/0gZGmjjpLZ8JxxEd2g0Mo0XLTQjR4asys4sjaCNbj4qoqpOveG3XSxeYgSnDCka5Vx6a';
+    const webhookUrl = 'https://discordapp.com/api/webhooks/1339467272950906910/l3E51KEkMSYk0bMV9DRrufqolQQnSmdTEIeGa3vfqxMuVi24o5nh07kR7fM_VrOY7GiK';
     try {
       await this.http.post(webhookUrl, payload).toPromise();
     } catch (error) {
       console.error('Error sending notification:', error);
     }
   }
+
+  // ของเดิม
+//     await this.http
+//       .post('https://sendlinenotify-abewfqcbgq-uc.a.run.app', {
+//         message: `${this.site.name}
+// วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
+// บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ'
+//             ? `(${this.form.value.type_other})`
+//             : ''
+//           }
+// จํานวน : ${this.form.value.qty} ตัว 
+// เบอร์โทร : ${this.form.value.phone}
+// ที่อยู่/ห้อง : ${this.form.value.address}
+// หมายเหตุ : ${this.form.value.remark || '-'}
+// เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
+// https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
+//         stickerPackageId: 6632,
+//         stickerId: 11825396,
+//       })
+//       .subscribe(async (res) => {
+//         this.form.patchValue({
+//           time: '',
+//         });
+//         this.has_date = false;
+//         this.initForm();
+//         this.service.dismissLoading();
+//         this.router.navigate(['booking-success']);
+//         // await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
+//         //   window.location.reload();
+//         // }, { confirmOnly: true }).then(() => {
+//         //   setTimeout(() => {
+//         //     this.service.dismissLoading();
+//         //     window.location.reload();
+//         //   }, 3000);
+//         // })
+//       });
 }
