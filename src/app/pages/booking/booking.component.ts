@@ -321,6 +321,27 @@ export class BookingComponent implements OnInit {
               timestamp: new Date().toISOString()
             }]
           };
+          const payload = {
+            "groupId": "C495b9d94419095143c229b5e66ffa74e",
+            "messages": [
+              {
+                "type": "text",
+                "text": `แจ้งเตือนงานใหม่ : ${this.site.name}
+วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
+บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ'
+              ? `(${this.form.value.type_other})`
+              : ''
+            }
+จํานวน : ${this.form.value.qty} ตัว 
+เบอร์โทร : ${this.form.value.phone}
+ที่อยู่/ห้อง : ${this.form.value.address}
+หมายเหตุ : ${this.form.value.remark || '-'}
+เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
+https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`
+              }
+            ]
+          }
+          await this.sendMessagingAPI(payload);
           await this.sendNotification(mainMessage);
           this.form.patchValue({
             time: '',
@@ -712,39 +733,48 @@ export class BookingComponent implements OnInit {
     }
   }
 
+  private async sendMessagingAPI(payload: any) {
+    try {
+      await this.http.post('https://sendlinemessage-abewfqcbgq-uc.a.run.app', payload).toPromise();
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  }
+
+
   // ของเดิม
-//     await this.http
-//       .post('https://sendlinenotify-abewfqcbgq-uc.a.run.app', {
-//         message: `${this.site.name}
-// วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
-// บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ'
-//             ? `(${this.form.value.type_other})`
-//             : ''
-//           }
-// จํานวน : ${this.form.value.qty} ตัว 
-// เบอร์โทร : ${this.form.value.phone}
-// ที่อยู่/ห้อง : ${this.form.value.address}
-// หมายเหตุ : ${this.form.value.remark || '-'}
-// เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
-// https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
-//         stickerPackageId: 6632,
-//         stickerId: 11825396,
-//       })
-//       .subscribe(async (res) => {
-//         this.form.patchValue({
-//           time: '',
-//         });
-//         this.has_date = false;
-//         this.initForm();
-//         this.service.dismissLoading();
-//         this.router.navigate(['booking-success']);
-//         // await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
-//         //   window.location.reload();
-//         // }, { confirmOnly: true }).then(() => {
-//         //   setTimeout(() => {
-//         //     this.service.dismissLoading();
-//         //     window.location.reload();
-//         //   }, 3000);
-//         // })
-//       });
+  //     await this.http
+  //       .post('https://sendlinenotify-abewfqcbgq-uc.a.run.app', {
+  //         message: `${this.site.name}
+  // วันที่จอง : ${this.formatDateToThaiString(formatDate)} 
+  // บริการ : ${this.form.value.type.title} ${this.form.value.type.title == 'อื่นๆ'
+  //             ? `(${this.form.value.type_other})`
+  //             : ''
+  //           }
+  // จํานวน : ${this.form.value.qty} ตัว 
+  // เบอร์โทร : ${this.form.value.phone}
+  // ที่อยู่/ห้อง : ${this.form.value.address}
+  // หมายเหตุ : ${this.form.value.remark || '-'}
+  // เพิ่มโดย : ${this.is_admin == 'true' ? name : 'คิวอาร์โค้ด'}
+  // https://krungthon-air.web.app/krungthon/job-schedule?job_id=${res.id}`,
+  //         stickerPackageId: 6632,
+  //         stickerId: 11825396,
+  //       })
+  //       .subscribe(async (res) => {
+  //         this.form.patchValue({
+  //           time: '',
+  //         });
+  //         this.has_date = false;
+  //         this.initForm();
+  //         this.service.dismissLoading();
+  //         this.router.navigate(['booking-success']);
+  //         // await this.service.showAlert('Success', 'จองคิวสําเร็จ', () => {
+  //         //   window.location.reload();
+  //         // }, { confirmOnly: true }).then(() => {
+  //         //   setTimeout(() => {
+  //         //     this.service.dismissLoading();
+  //         //     window.location.reload();
+  //         //   }, 3000);
+  //         // })
+  //       });
 }

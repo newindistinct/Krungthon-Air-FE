@@ -88,6 +88,9 @@ export const routes: Routes = [
   {
     path: 'test',
     component: TestComponent,
+  },{
+    path: 'history',
+    component: HistoryComponent,
   },
 ];
 

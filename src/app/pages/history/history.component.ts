@@ -16,6 +16,8 @@ export class HistoryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.firestoreService.fetchDataGroup('1');
+    this.firestoreService.fetchDataSite('1');
     const interval = setInterval(() => {
       this.getSites().then(() => {
         if (this.sites.length > 0) {

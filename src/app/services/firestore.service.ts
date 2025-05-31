@@ -350,7 +350,30 @@ export class FirestoreService {
       });
     });
   }
-
+  
+  fetchDataDashboardByDateRange(startDate: Date, endDate: Date) {
+    const start = dayjs(startDate).startOf('day').toDate();
+    const end = dayjs(endDate).endOf('day').toDate();
+    const q = query(collection(db, "jobs"),
+      where("book.date", ">=", start),
+      where("book.date", "<=", end),
+      where("project_id", "==", '1')
+    );
+    if (this.subscriptionDashboard) {
+      this.subscriptionDashboard();
+    }
+    return new Promise<any>((resolve) => {
+      this.subscriptionDashboard = onSnapshot(q, { includeMetadataChanges: true }, async (querySnapshot) => {
+        const data: any = [];
+        for (const docs of querySnapshot.docs) {
+          data.push({ ...docs.data(), key: docs.id });
+        }
+        this.jobDashboardChange.next(data);
+        resolve(data);
+      });
+    });
+  }
+  
   unsubscribeSubscriptions() {
     this.subscriptions.forEach((subscription) => {
       subscription();
