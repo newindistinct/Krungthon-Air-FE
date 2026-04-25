@@ -10,7 +10,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "hosting:prod": "ionic build --prod && firebase deploy",
+    "hosting:prod": "ionic build && firebase deploy",
     "app:android": "ionic build && npx cap sync android"
   },
   "private": true,
@@ -41,6 +41,7 @@
     "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "firebase": "^10.8.1",
+    "ionic": "^5.4.16",
     "ionicons": "^7.0.0",
     "ngx-echarts": "^17.1.0",
     "qrcode": "^1.5.3",

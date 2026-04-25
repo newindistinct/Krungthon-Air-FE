@@ -104,7 +104,7 @@ import { Timestamp } from 'firebase/firestore';
                     <div *ngIf="customer.status === 'approved'" class="text-xs text-gray-500">
                       <div class="mb-1">
                         <ion-icon name="calendar-outline" class="align-middle mr-1"></ion-icon>
-                        เริ่มสัญญา: {{ customer.contractStartDate?.toDate() | date:'dd/MM/yyyy' }}
+                        เริ่มสัญญา: {{ customer.createdAt?.toDate() | date:'dd/MM/yyyy' }}
                       </div>
                       <div class="mb-1">
                         <ion-icon name="calendar-outline" class="align-middle mr-1"></ion-icon>
