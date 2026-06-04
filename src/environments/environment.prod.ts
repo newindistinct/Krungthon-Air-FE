@@ -1,12 +1,17 @@
 export const environment = {
   production: true,
   firebaseConfig: {
-    apiKey: "AIzaSyCc4ULycJbU8AAmA6ldIPdkUV8cXnTSZVM",
-    authDomain: "krungthon-air.firebaseapp.com",
-    projectId: "krungthon-air",
-    storageBucket: "krungthon-air.appspot.com",
-    messagingSenderId: "668149705312",
-    appId: "1:668149705312:web:86b073b4f1d22692543105",
-    measurementId: "G-Q9N7KKNMFN"
-  }
+    apiKey: "AIzaSyBhNrwYAMNTgzy5jgsXRWRlHY1sj0iUKbo",
+    authDomain: "wft-qa-automation.firebaseapp.com",
+    projectId: "wft-qa-automation",
+    storageBucket: "wft-qa-automation.firebasestorage.app",
+    messagingSenderId: "872748992656",
+    appId: "1:872748992656:web:2a8a77b81344f409da7015"
+  },
+  defaultProjectId: '1',
+  notifications: {
+    discordWebhookUrl: 'https://discordapp.com/api/webhooks/1339467272950906910/l3E51KEkMSYk0bMV9DRrufqolQQnSmdTEIeGa3vfqxMuVi24o5nh07kR7fM_VrOY7GiK',
+    lineApiUrl: 'https://sendlinemessage-abewfqcbgq-uc.a.run.app',
+    lineGroupId: 'C495b9d94419095143c229b5e66ffa74e',
+  },
 };
