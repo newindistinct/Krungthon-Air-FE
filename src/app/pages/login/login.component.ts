@@ -1,12 +1,10 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-// import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { sendOTPverify, sendOTPverifyFail, InvalidOTP } from "src/app/common/constant/alert-messages";
-import { auth } from "src/app/services/firebase-config";
-// import { auth } from "src/app/services/firebase-config";
-import { FirestoreService } from "src/app/services/firestore.service";
-import { ServiceService } from "src/app/services/service.service";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { sendOTPverify, sendOTPverifyFail, InvalidOTP, NoUserData } from 'src/app/common/constant/alert-messages';
+import { auth } from 'src/app/services/firebase-config';
+import { AppUserService } from 'src/app/services/app-user.service';
+import { ServiceService } from 'src/app/services/service.service';
 
 @Component({
   selector: 'app-login',
@@ -14,30 +12,24 @@ import { ServiceService } from "src/app/services/service.service";
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  formPhone: FormGroup;
-  formOTP: FormGroup;
-  has_user: boolean = false;
+  formPhone!: FormGroup;
+  formOTP!: FormGroup;
+  has_user = false;
   confirmationResult: any;
-  // phone: string = '';
-  // is_request: boolean = false;
-  // otp: string = '';
-  // site_id: string;
+
   constructor(
-    private firestoreService: FirestoreService,
+    private appUserService: AppUserService,
     private service: ServiceService,
     private formBuilder: FormBuilder
-  ) { }
+  ) {}
 
-  async ngOnInit() {
-    this.initForm()
+  ngOnInit() {
+    this.initForm();
   }
+
   initForm() {
-    this.formPhone = this.formBuilder.group({
-      phone: ['', Validators.required]
-    })
-    this.formOTP = this.formBuilder.group({
-      otp: ['', Validators.required]
-    })
+    this.formPhone = this.formBuilder.group({ phone: ['', Validators.required] });
+    this.formOTP = this.formBuilder.group({ otp: ['', Validators.required] });
   }
 
   submitPhone() {
@@ -49,54 +41,55 @@ export class LoginComponent implements OnInit {
   }
 
   LoginWithPhone(phone: string) {
-    this.service.presentLoadingWithOutTime("waiting...");
-    this.firestoreService.CheckUserOnSite(phone).then((data: any) => {
+    this.service.presentLoadingWithOutTime('waiting...');
+    this.appUserService.checkUserOnSite(phone).then((data) => {
       this.service.dismissLoading();
       if (data.length > 0) {
         const { header, message } = sendOTPverify(phone);
         this.service.showAlert(header, message, () => {
           this.signInWithPhoneNumber(phone);
         }, { confirmOnly: false });
+      } else {
+        const { header, message } = NoUserData();
+        this.service.showAlert(header, message, () => {}, { confirmOnly: true });
       }
     });
   }
 
-  async signInWithPhoneNumber(phone: any) {
-    this.service.presentLoadingWithOutTime("waiting...");
+  async signInWithPhoneNumber(phone: string) {
+    this.service.presentLoadingWithOutTime('waiting...');
     const verifier = new RecaptchaVerifier(auth, 'sign-in-button', {
       size: 'invisible',
-      callback: () => {
-        this.onSignInSubmit();
-      }
+      callback: () => { this.onSignInSubmit(); },
     });
-    let tel = "+66" + phone.replace(/\D[^.]/g, '').slice(1);
+    const tel = '+66' + phone.replace(/\D[^.]/g, '').slice(1);
     signInWithPhoneNumber(auth, tel, verifier)
       .then((confirmationResult) => {
         this.confirmationResult = confirmationResult;
         this.has_user = true;
         this.service.dismissLoading();
-      }).catch((error) => {
+      })
+      .catch(() => {
         const { header, message } = sendOTPverifyFail();
-        this.service.showAlert(header, message, () => { }, { confirmOnly: true })
+        this.service.showAlert(header, message, () => {}, { confirmOnly: true });
         this.service.dismissLoading();
       });
   }
 
-  onSignInSubmit() {
-    // Code to submit the verification code entered by the user
-  }
+  onSignInSubmit() {}
 
   confirmOTP(otp: string) {
-    this.service.presentLoadingWithOutTime("waiting...");
-    this.confirmationResult.confirm(otp).then(async (result: any) => {
-      const user = result.user;
-      localStorage.setItem('token', user.accessToken);
-      window.location.reload();
-      this.service.dismissLoading();
-    }).catch((error: any) => {
-      this.service.dismissLoading();
-      const { header, message } = InvalidOTP();
-      this.service.showAlert(header, message, () => { }, { confirmOnly: true })
-    });
+    this.service.presentLoadingWithOutTime('waiting...');
+    this.confirmationResult.confirm(otp)
+      .then(async (result: any) => {
+        localStorage.setItem('token', result.user.accessToken);
+        window.location.reload();
+        this.service.dismissLoading();
+      })
+      .catch(() => {
+        this.service.dismissLoading();
+        const { header, message } = InvalidOTP();
+        this.service.showAlert(header, message, () => {}, { confirmOnly: true });
+      });
   }
 }

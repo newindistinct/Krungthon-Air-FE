@@ -1,94 +1,71 @@
-import { ServiceService } from './../../../services/service.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
 import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
-import { FirestoreService } from 'src/app/services/firestore.service';
+import { AppUserService } from 'src/app/services/app-user.service';
+import { ServiceService } from 'src/app/services/service.service';
+import { AppUser } from 'src/app/data/models';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
 })
-export class UserComponent implements OnInit {
-  search: any
-  public data = [];
-  public results = [...this.data];
+export class UserComponent implements OnInit, OnDestroy {
+  search: string = '';
+  data: AppUser[] = [];
+  results: AppUser[] = [];
 
-  subscription;
+  private subscription!: Subscription;
 
   constructor(
     private serviceService: ServiceService,
     private modalController: ModalController,
-    private firestoreService: FirestoreService
-  ) { }
+    private appUserService: AppUserService
+  ) {}
 
   ngOnInit() {
-    this.subscription = this.firestoreService.allUsersChange.subscribe(allUsers => {
-      this.data = allUsers;
-      this.results = [...this.data];
+    this.subscription = this.appUserService.allUsersChange.subscribe(users => {
+      this.data = users;
+      this.results = [...users];
       this.serviceService.dismissLoading();
-    })
-    const allUsers = this.firestoreService.allUsers;
-    if (allUsers.length > 0) {
-      this.data = allUsers
+    });
+
+    if (this.appUserService.allUsers.length > 0) {
+      this.data = this.appUserService.allUsers;
       this.results = [...this.data];
     } else {
       this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-      this.firestoreService.fetchDataAllUser(this.firestoreService.user[0].project_id)
+      this.appUserService.fetchAllUsers(this.appUserService.user[0].project_id);
     }
-
-
-    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    // const interval = setInterval(() => {
-    //   if (this.firestoreService.user.length > 0) {
-    //     clearInterval(interval);
-    //     this.firestoreService.fetchDataAllUser(this.firestoreService.user[0].project_id)
-    //   }
-    // }, 1000);
-    // this.subscription = this.firestoreService.allUsersChange.subscribe(users => {
-    //   this.serviceService.dismissLoading();
-    //   this.data = users;
-    //   this.results = [...this.data];
-    // })
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  closeModal() {
-    this.modalController.dismiss();
-  }
+  onActivate(event: any) {}
 
-  handleInput(event) {
+  handleInput(event: any) {
     const query = event.target.value.toLowerCase();
-    this.results = this.data.filter((d) => d.name.toLowerCase().indexOf(query) > -1 || d.phone.toLowerCase().indexOf(query) > -1);
-  }
-
-  onActivate(event) {
-    if (event.type === "click") {
-      console.log(event.row)
-    }
+    this.results = this.data.filter(d =>
+      d.name?.toLowerCase().includes(query) || d.phone.toLowerCase().includes(query)
+    );
   }
 
   add() {
     this.modalController.create({
       component: SettingAddComponent,
       cssClass: 'my-custom-class',
-      componentProps: {
-        type: 'user'
-      }
+      componentProps: { type: 'user' },
     }).then(modal => modal.present());
   }
 
-  edit(user) {
+  edit(user: AppUser) {
     this.modalController.create({
       component: SettingEditComponent,
-      componentProps: {
-        type: 'user',
-        user: user
-      },
+      componentProps: { type: 'user', user },
       cssClass: 'my-custom-class',
     }).then(modal => modal.present());
   }
