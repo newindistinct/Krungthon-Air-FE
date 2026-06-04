@@ -1,0 +1,206 @@
+input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  background: white;
+}
+
+.custom-alert {
+  --backdrop-opacity: 0.8;
+
+  .alert-wrapper {
+    --min-width: 320px;
+    --max-width: 90%;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .alert-head {
+    padding: 16px;
+    background: var(--ion-color-primary);
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .alert-message {
+    padding: 16px;
+    max-height: 60vh;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    font-family: 'Sarabun', sans-serif;
+
+    // สำหรับข้อมูลลูกค้า
+    .customer-info {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    // สำหรับรายการเครื่อง
+    .service-item {
+      margin-left: 12px;
+      margin-bottom: 12px;
+      
+      .service-header {
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .delete-btn {
+          height: 30px;
+          width: 30px;
+          margin: 0;
+          --padding-start: 0;
+          --padding-end: 0;
+          
+          ion-icon {
+            font-size: 18px;
+          }
+        }
+      }
+      
+      .service-detail {
+        margin-left: 16px;
+        color: #666;
+      }
+    }
+  }
+
+  .alert-button-group {
+    padding: 12px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+
+    button {
+      flex: 1;
+      margin: 0;
+      text-transform: none;
+      font-size: 1rem;
+      height: 44px;
+      border-radius: 8px;
+
+      &.alert-button-cancel {
+        --background: #f4f4f4;
+        --color: #666;
+      }
+
+      &.alert-button-confirm {
+        --background: var(--ion-color-primary);
+        --color: white;
+      }
+    }
+  }
+}
+
+// สำหรับ success alert
+.success-alert {
+  .alert-wrapper {
+    --min-width: 300px;
+  }
+
+  .alert-head {
+    background: var(--ion-color-success);
+    text-align: center;
+    padding: 20px 16px;
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+  }
+
+  .alert-message {
+    text-align: center;
+    font-size: 1.1rem;
+    padding: 20px 16px;
+    color: var(--ion-color-dark);
+  }
+
+  .alert-button-group {
+    justify-content: center;
+    
+    button {
+      --background: var(--ion-color-success);
+      width: 120px;
+    }
+  }
+}
+
+// สำหรับ delete alert
+.delete-alert {
+  .alert-wrapper {
+    --min-width: 300px;
+  }
+
+  .alert-head {
+    background: var(--ion-color-danger);
+    text-align: center;
+    padding: 16px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    color: white;
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  .alert-message {
+    text-align: center;
+    padding: 16px;
+  }
+
+  .alert-button-group {
+    padding: 12px;
+    display: flex;
+    gap: 8px;
+
+    button {
+      flex: 1;
+      margin: 0;
+      text-transform: none;
+      font-size: 1rem;
+      height: 44px;
+      border-radius: 8px;
+
+      &.alert-button-delete {
+        --background: var(--ion-color-danger);
+        --color: white;
+      }
+    }
+  }
+}
+
+.small-modal {
+  --height: auto;
+  --width: 90%;
+  --max-width: 400px;
+  
+  .modal-wrapper {
+    border-radius: 8px;
+  }
+}
+
+.confirm-modal {
+  --height: auto;
+  --max-height: 90%;
+  --width: 90%;
+  --max-width: 600px;
+  
+  .modal-wrapper {
+    border-radius: 8px;
+  }
+}
