@@ -25,10 +25,13 @@ jobs:
       - name: Build
         run: npx ionic build
 
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
       - name: Write service account
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' > /tmp/sa.json
 
       - name: Deploy to Firebase Hosting
-        run: npx firebase deploy --only hosting --non-interactive
+        run: firebase deploy --only hosting --non-interactive
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
