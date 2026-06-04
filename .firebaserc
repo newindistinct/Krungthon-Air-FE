@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "krungthon-air"
-  }
+    "default": "krungthon-air",
+    "prod": "krungthon-air"
+  },
+  "targets": {},
+  "etags": {}
 }
