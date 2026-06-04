@@ -1,213 +1,118 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
-import { Timestamp, doc, getDoc } from 'firebase/firestore';
-import { Amphures } from 'src/app/common/constant/thai-data/thai_amphures';
-import { Geographies } from 'src/app/common/constant/thai-data/thai_geographies';
-import { Provinces } from 'src/app/common/constant/thai-data/thai_provinces';
-import { Tambons } from 'src/app/common/constant/thai-data/thai_tambons';
+import { doc, getDoc } from 'firebase/firestore';
 import { JobInfoComponent } from 'src/app/components/modals/job-info/job-info.component';
 import { db } from 'src/app/services/firebase-config';
-import { FirestoreService } from 'src/app/services/firestore.service';
+import { JobService } from 'src/app/services/job.service';
+import { SiteGroupService } from 'src/app/services/site-group.service';
 import { ServiceService } from 'src/app/services/service.service';
+import { Job, JobStatus, Site } from 'src/app/data/models';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   param_id = this.route.snapshot.queryParamMap.get('job_id');
-  sites = [];
-  jobPending = [];
-  jobBooked = [];
-  jobCompleted = [];
-  jobRejectedCanceled = [];
+  sites: Site[] = [];
+  jobPending: Job[] = [];
+  jobBooked: Job[] = [];
+  jobCompleted: Job[] = [];
+  jobRejectedCanceled: Job[] = [];
   segment = 'booking';
   segment_option = [
-    {
-      title: 'รับงาน',
-      value: 'booking'
-    },
-    {
-      title: 'รอดำเนินการ',
-      value: 'pending'
-    },
-    {
-      title: 'เสร็จสิ้น',
-      value: 'completed'
-    },
-    {
-      title: 'ยกเลิกแล้ว',
-      value: 'rejected-canceled'
-    }
-  ]
+    { title: 'รับงาน', value: 'booking' },
+    { title: 'รอดำเนินการ', value: 'pending' },
+    { title: 'เสร็จสิ้น', value: 'completed' },
+    { title: 'ยกเลิกแล้ว', value: 'rejected-canceled' },
+  ];
+
   constructor(
     private route: ActivatedRoute,
-    private firestoreService: FirestoreService,
+    private jobService: JobService,
+    private siteGroupService: SiteGroupService,
     private service: ServiceService,
     private modalController: ModalController
-  ) { }
+  ) {}
 
   async ngOnInit() {
     if (this.param_id) {
-      getDoc(doc(db, 'jobs', this.param_id)).then(doc => {
-        if (doc.exists()) {
-          this.infoJob(doc.data())
-        }
-      })
+      getDoc(doc(db, 'jobs', this.param_id)).then(jobDoc => {
+        if (jobDoc.exists()) { this.infoJob(jobDoc.data() as Job); }
+      });
     }
-    this.firestoreService.fetchDataSite('1');
-    this.firestoreService.fetchJobPending();
-    this.firestoreService.fetchJobBooked();
-    this.firestoreService.fetchJobCompleted();
-    this.firestoreService.fetchJobRejectedCanceled();
-    this.firestoreService.sitesChange.subscribe(sites => {
-      this.sites = sites;
-    })
-    this.firestoreService.jobPendingChange.subscribe(jobs => {
-      this.jobPending = jobs;
-      this.sortJobs(this.jobPending);
-    })
-    this.firestoreService.jobBookedChange.subscribe(jobs => {
-      this.jobBooked = jobs;
-      this.sortJobs(this.jobBooked);
-    })
-    this.firestoreService.jobCompletedChange.subscribe(jobs => {
-      this.jobCompleted = jobs;
-      this.sortJobs(this.jobCompleted);
-    })
-    this.firestoreService.jobRejectedCanceledChange.subscribe(jobs => {
-      this.jobRejectedCanceled = jobs;
-      this.sortJobs(this.jobRejectedCanceled);
-    })
-    const data = {
-      province: [],
-      amphure: [],
-      tambon: [],
-    }
-    const id = 1;
-    Provinces.filter((province) => province.id == id).forEach((province) => {
-      data.province.push(province)
-      Amphures.filter((amphure) => amphure.province_id == province.id).forEach((amphure) => {
-        data.amphure.push(amphure)
-        Tambons.filter((tambon) => amphure.id == tambon.amphure_id).forEach((tambon) => {
-          data.tambon.push(tambon)
-        })
-      })
-    })
+
+    this.siteGroupService.fetchSites('1');
+    this.jobService.fetchJobsPending();
+    this.jobService.fetchJobsBooked();
+    this.jobService.fetchJobsCompleted();
+    this.jobService.fetchJobsRejectedCanceled();
+
+    this.siteGroupService.sitesChange.subscribe(sites => { this.sites = sites; });
+    this.jobService.jobPendingChange.subscribe(jobs => { this.jobPending = jobs; this.sortJobs(this.jobPending); });
+    this.jobService.jobBookedChange.subscribe(jobs => { this.jobBooked = jobs; this.sortJobs(this.jobBooked); });
+    this.jobService.jobCompletedChange.subscribe(jobs => { this.jobCompleted = jobs; this.sortJobs(this.jobCompleted); });
+    this.jobService.jobRejectedCanceledChange.subscribe(jobs => { this.jobRejectedCanceled = jobs; this.sortJobs(this.jobRejectedCanceled); });
   }
 
   ngOnDestroy() {
-    this.firestoreService.unsubscribeSubscriptions()
+    this.jobService.unsubscribeAll();
   }
 
-  acceptJob(job) {
-    const docRef = doc(db, 'jobs', job.key);
-    const data = {
-      status: 'BOOKED',
-    }
+  acceptJob(job: Job) {
+    const docRef = doc(db, 'jobs', job.key!);
     this.service.showAlert('ยืนยัน', 'ยืนยันการรับงาน', () => {
-      this.firestoreService.updateDatatoFirebase(docRef, data)
+      this.jobService.updateJob(job.key!, { status: 'BOOKED' });
     }, { confirmOnly: false });
   }
 
-
-
-  completeJob(job) {
-    const docRef = doc(db, 'jobs', job.key);
-    const data = {
-      status: 'COMPLETED',
-    }
+  completeJob(job: Job) {
     this.service.showAlert('ยืนยัน', 'ยืนยันการส่งงาน', () => {
-      this.firestoreService.updateDatatoFirebase(docRef, data)
+      this.jobService.updateJob(job.key!, { status: 'COMPLETED' });
     }, { confirmOnly: false });
   }
 
-  cancelJob(job) {
-    const docRef = doc(db, 'jobs', job.key);
-    const data = {
-      status: 'CANCELED',
-    }
+  cancelJob(job: Job) {
     this.service.showAlert('ยืนยัน', 'ยืนยันการยกเลิกงาน', () => {
-      this.firestoreService.updateDatatoFirebase(docRef, data)
+      this.jobService.updateJob(job.key!, { status: 'CANCELED' });
     }, { confirmOnly: false });
   }
 
-  rejectJob(job) {
-    const docRef = doc(db, 'jobs', job.key);
-    const data = {
-      status: 'REJECTED',
-    }
+  rejectJob(job: Job) {
     this.service.showAlert('ยืนยัน', 'ยืนยันการปฏิเสธงาน', () => {
-      this.firestoreService.updateDatatoFirebase(docRef, data)
+      this.jobService.updateJob(job.key!, { status: 'REJECTED' });
     }, { confirmOnly: false });
   }
 
-  reportJob(job) {
-    // this.firestoreService.reportJob(job);
-  }
-
-  infoJob(job) {
+  infoJob(job: Job) {
     this.modalController.create({
       component: JobInfoComponent,
-      componentProps: {
-        job: job
-      },
+      componentProps: { job },
       cssClass: 'my-custom-class',
     }).then(modal => modal.present());
   }
 
-  openJob(job) {
-    // this.firestoreService.openJob(job);
-  }
-
-  segmentChanged(event) {
+  segmentChanged(event: any) {
     this.segment = event.target.value;
   }
 
-  formatTime(timestamp: Timestamp) {
-    const date = new Date(timestamp.seconds * 1000);
-    const options: Intl.DateTimeFormatOptions = {
-      // year: 'numeric',
-      // month: 'long',
-      // day: 'numeric',
-      // hour: 'numeric',
-      // minute: 'numeric',
-      // second: 'numeric',
-      // timeZoneName: 'short'
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      // hour: '2-digit',
-      // minute: '2-digit',
-      // second: '2-digit'
-    };
-    const formattedDate = date.toLocaleDateString('th-TH', options);
-    return formattedDate;
+  formatTime(timestamp: any): string {
+    const date = timestamp?.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
+    return date.toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' });
   }
 
-  sortJobs(jobs) {
+  sortJobs(jobs: Job[]) {
     jobs.sort((a, b) => {
-      if (a.book.date.seconds < b.book.date.seconds) {
-        return -1
-      } else if (a.book.date.seconds > b.book.date.seconds) {
-        return 1
-      } else {
-        if (a.book.time[0] < b.book.time[0]) {
-          return -1
-        } else if (a.book.time[0] > b.book.time[0]) {
-          return 1
-        } else {
-          return 0
-        }
-      }
-    })
+      const aDate = (a.book.date as any).seconds;
+      const bDate = (b.book.date as any).seconds;
+      if (aDate !== bDate) { return aDate - bDate; }
+      return a.book.time[0] < b.book.time[0] ? -1 : a.book.time[0] > b.book.time[0] ? 1 : 0;
+    });
   }
 
-  getSiteName(site_id: string) {
-    const site = this.sites.find(site => site.site_id === site_id);
-    return site ? site.name : '';
+  getSiteName(site_id: string): string {
+    return this.sites.find(s => s.site_id === site_id)?.name ?? '';
   }
-
 }

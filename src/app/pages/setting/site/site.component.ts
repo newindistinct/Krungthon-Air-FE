@@ -1,104 +1,80 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { SettingAddComponent } from 'src/app/components/modals/setting-add/setting-add.component';
-import { FirestoreService } from 'src/app/services/firestore.service';
-import { ServiceService } from 'src/app/services/service.service';
-import { ShowQrCodeComponent } from '../../show-qr-code/show-qr-code.component';
 import { SettingEditComponent } from 'src/app/components/modals/setting-edit/setting-edit.component';
+import { ShowQrCodeComponent } from '../../show-qr-code/show-qr-code.component';
+import { SiteGroupService } from 'src/app/services/site-group.service';
+import { ServiceService } from 'src/app/services/service.service';
+import { Site } from 'src/app/data/models';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-site',
   templateUrl: './site.component.html',
   styleUrls: ['./site.component.scss'],
 })
-export class SiteComponent implements OnInit {
-  search: any
-  public data = [];
-  public results = [...this.data];
+export class SiteComponent implements OnInit, OnDestroy {
+  search: string = '';
+  data: Site[] = [];
+  results: Site[] = [];
 
-  subscription;
+  private subscription!: Subscription;
 
   constructor(
     private serviceService: ServiceService,
     private modalController: ModalController,
-    private firestoreService: FirestoreService
-  ) { }
+    private siteGroupService: SiteGroupService
+  ) {}
 
   ngOnInit() {
-    this.subscription = this.firestoreService.sitesChange.subscribe(sites => {
+    this.subscription = this.siteGroupService.sitesChange.subscribe(sites => {
       this.data = sites;
-      this.results = [...this.data];
+      this.results = [...sites];
       this.serviceService.dismissLoading();
-    })
-    const sites = this.firestoreService.sites;
-    if (sites.length > 0) {
-      this.data = sites
+    });
+
+    if (this.siteGroupService.sites.length > 0) {
+      this.data = this.siteGroupService.sites;
       this.results = [...this.data];
     } else {
       this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-      this.firestoreService.fetchDataSite('1')
+      this.siteGroupService.fetchSites(environment.defaultProjectId);
     }
-    // this.serviceService.presentLoadingWithOutTime('กําลังโหลดข้อมูล...');
-    // const interval = setInterval(() => {
-    //   if (this.firestoreService.user.length > 0) {
-    //     clearInterval(interval);
-    //     this.firestoreService.fetchDataSite(this.firestoreService.user[0].project_id)
-    //   }
-    // }, 1000);
-    // this.subscription = this.firestoreService.sitesChange.subscribe(sites => {
-    //   this.serviceService.dismissLoading();
-    //   this.data = sites;
-    //   this.results = [...this.data];
-    // })
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  closeModal() {
-    this.modalController.dismiss();
-  }
+  onActivate(event: any) {}
 
-  handleInput(event) {
+  handleInput(event: any) {
     const query = event.target.value.toLowerCase();
-    this.results = this.data.filter((d) => d.name.toLowerCase().indexOf(query) > -1);
-  }
-
-  onActivate(event) {
-    if (event.type === "click") {
-      console.log(event.row)
-    }
+    this.results = this.data.filter(d => d.name.toLowerCase().includes(query));
   }
 
   add() {
     this.modalController.create({
       component: SettingAddComponent,
       cssClass: 'my-custom-class',
-      componentProps: {
-        type: 'site'
-      }
+      componentProps: { type: 'site' },
     }).then(modal => modal.present());
   }
 
-  edit(site) {
+  edit(site: Site) {
     this.modalController.create({
       component: SettingEditComponent,
-      componentProps: {
-        type: 'site',
-        site: site
-      },
+      componentProps: { type: 'site', site },
       cssClass: 'my-custom-class',
     }).then(modal => modal.present());
   }
 
-  showQrCode(site) {
+  showQrCode(site: Site) {
     this.modalController.create({
       component: ShowQrCodeComponent,
       cssClass: 'my-custom-class',
-      componentProps: {
-        site: site
-      }
+      componentProps: { site },
     }).then(modal => modal.present());
   }
 }
